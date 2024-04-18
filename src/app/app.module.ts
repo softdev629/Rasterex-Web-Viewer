@@ -65,6 +65,7 @@ import { SaveComparisonMenuComponent } from './components/compare/save-compariso
 import { SignaturePanelComponent } from './components/side-nav-menu/signature-panel/signature-panel.component';
 import { DropdownMenuComponent } from './components/common/dropdown-menu/dropdown-menu.component';
 import { BlocksComponent } from './components/side-nav-menu/blocks/blocks.component';
+import { AnnotationShapeIconComponent } from './components/annotation-tools/annotation-shape-icon/annotation-shape-icon.component';
 
 @NgModule({
   declarations: [
@@ -121,6 +122,7 @@ import { BlocksComponent } from './components/side-nav-menu/blocks/blocks.compon
     SignaturePanelComponent,
     DropdownMenuComponent,
     BlocksComponent,
+    AnnotationShapeIconComponent,
   ],
   imports: [
     BrowserModule,

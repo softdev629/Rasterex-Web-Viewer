@@ -185,4 +185,19 @@ export class RxCoreService {
   public guiOnPanUpdated: BehaviorSubject<any> = new BehaviorSubject<any>({});
   guiOnPanUpdated$: Observable<any> = this.guiOnPanUpdated.asObservable();
 
+  /*bugfix 2 commentlist*/
+  
+  private _guiOnCommentSelect: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  guiOnCommentSelect$: Observable<boolean> = this._guiOnCommentSelect.asObservable();
+  public setCommentSelected(isselected: boolean): void {
+    this._guiOnCommentSelect.next(isselected);
+  }
+  
+  public getCommentSelected(): boolean {
+    return this._guiOnCommentSelect.getValue();
+  }
+  /*bugfix 2 commentlist*/
+
+
+
 }

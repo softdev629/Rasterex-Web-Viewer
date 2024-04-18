@@ -72,7 +72,7 @@ export class CountPanelComponent implements OnInit, OnDestroy {
   onSave(): void {
     this.count = 0;
     RXCore.markupCount(false);
-    RXCore.markupCount(true, this.type);
+    //RXCore.markupCount(true, this.type);
   }
 
 }

@@ -104,8 +104,8 @@
     
     .main-section {
         flex-grow: 1;
-        max-height: 100%;
-        overflow-y: auto;
+        max-height: 79%;
+        overflow-y: scroll;
         .comments-title{
             font-weight: 700;
             margin: 12px 12px 0 12px;
@@ -119,6 +119,7 @@
             gap: 12px;
             padding: 12px;
             box-sizing: border-box;
+            //overflow-y: scroll;
 
             .note {
                 width: 100%;
@@ -160,6 +161,7 @@
 
                 .note-comment-list{
                     padding: 8px 12px;
+                    
                     .note-comment{
                         margin-left: 32px;
                         padding-left: 12px;

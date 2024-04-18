@@ -41,9 +41,9 @@ export class AppComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    RXCore.initialize({ offsetWidth: 0, offsetHeight: 0 });
+    RXCore.initialize({ offsetWidth: 0, offsetHeight: 0});
     RXCore.disablewelcome(true);
-    RXCore.scaleOnResize(true);
+    RXCore.scaleOnResize(false);
     RXCore.restrictPan(false);
 
     RXCore.onGuiReady(() => {
@@ -83,6 +83,8 @@ export class AppComponent implements AfterViewInit {
 
     RXCore.onGuiState((state: any) => {
       console.log('RxCore GUI_State:', state);
+      console.log('RxCore GUI_State:', state.source);
+
       this.state = state;
       this.rxCoreService.setNumOpenFiles(state?.numOpenFiles);
       this.rxCoreService.setGuiState(state);

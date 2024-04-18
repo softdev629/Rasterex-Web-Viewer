@@ -39,6 +39,7 @@ export class AnnotationToolsComponent implements OnInit {
     "MEASURE_LENGTH": false,
     "MEASURE_AREA": false,
     "MEASURE_PATH": false,
+    "MARKUP_LOCK" : false
   };
 
   get isPaintSelected(): boolean {
@@ -105,7 +106,12 @@ export class AnnotationToolsComponent implements OnInit {
       if (markup === -1 || operation?.created) {
         const selectedAction = Object.entries(this.isActionSelected).find(([key, value]) => value);
 
-        this._deselectAllActions();
+        //console.log("reset to default tool here");
+        if(operation?.created){
+          this._deselectAllActions();
+        }
+        //this._deselectAllActions();
+
 
         if (operation?.created && this.shapesAvailable == 1 && selectedAction) {
           this.onActionSelect(selectedAction[0]);
@@ -118,20 +124,22 @@ export class AnnotationToolsComponent implements OnInit {
     Object.entries(this.isActionSelected).forEach(([key, value]) => {
       this.isActionSelected[key] = false;
 
-      if (key == 'NOTE') {
+      /*if (key == 'NOTE') {
         RXCore.markUpNote(false);
-      }
+      }*/
     });
 
+    console.log("deselect all called");
+    RXCore.restoreDefault();
     this.service.hideQuickActionsMenu();
-    this.service.setNotePanelState({ visible: false });
+    //this.service.setNotePanelState({ visible: false });
     this.service.setPropertiesPanelState({ visible: false });
     this.service.setMeasurePanelState({ visible: false });
   }
 
   onActionSelect(actionName: string) {
     const selected = this.isActionSelected[actionName];
-    this._deselectAllActions();
+    //this._deselectAllActions();
     this.isActionSelected[actionName] = !selected;
 
     switch(actionName) {
@@ -175,7 +183,7 @@ export class AnnotationToolsComponent implements OnInit {
 
       case 'NOTE':
         RXCore.markUpNote(this.isActionSelected[actionName]);
-        this.service.setNotePanelState({ visible: this.isActionSelected[actionName] });
+        //this.service.setNotePanelState({ visible: this.isActionSelected[actionName] });
         break;
 
       case 'ERASE':
@@ -238,6 +246,15 @@ export class AnnotationToolsComponent implements OnInit {
         this.service.setMeasurePanelState({ visible: this.isActionSelected[actionName], type:  MARKUP_TYPES.MEASURE.PATH.type, created: true });
         RXCore.markupMeasurePath(this.isActionSelected[actionName]);
         break;
+      case 'COUNT':
+        if(!this.isActionSelected[actionName]){
+          RXCore.markupCount(this.isActionSelected[actionName]);
+        }
+        break;
+      case 'MARKUP_LOCK' :
+        RXCore.lockMarkup(this.isActionSelected[actionName]);
+        break;
+
     }
   }
 

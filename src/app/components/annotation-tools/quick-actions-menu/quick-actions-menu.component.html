@@ -1,5 +1,5 @@
 <div
-    *ngIf="((guiMode$ | async) == 'annotate' || (guiMode$ | async) == 'compare') && visible"
+    *ngIf="((guiMode$ | async) == 'annotate' || (guiMode$ | async) == 'compare' || (guiMode$ | async) == 'measure' ) && visible"
     class="quick-actions-container"
     [ngStyle]="{ 'top.px' : rectangle.y, 'left.px' : rectangle.x }">
     <ul class="menu" [class.bottom]="rectangle.position == 'bottom'">
@@ -15,10 +15,10 @@
         <li>
             <img src="/assets/images/copy-ico.svg" (click)="copyMarkUp()"/>
         </li>
-        <li (click)="onNoteClick()">
+<!--         <li (click)="onNoteClick()">
             <img src="/assets/images/comment-ico.svg" />
         </li>
-        <li
+ -->        <li
             *ngIf="annotation.bCanHaveLink && !annotation.bhaveLink"
             (click)="addLink = true;"
             [ngClass]="{'is-link': addLink}">

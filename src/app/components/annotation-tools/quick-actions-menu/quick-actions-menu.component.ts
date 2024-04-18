@@ -128,7 +128,7 @@ export class QuickActionsMenuComponent implements OnInit, OnDestroy {
         dx = (wscaled / 2) - 24 + _dx;
         this.rectangle = {
           x: xscaled + dx,
-          y: yscaled + dy,
+          y: (yscaled + dy) + rotoffset,
           x_1: xscaled + wscaled - 20,
           y_1: yscaled - yoffset,
         };
@@ -279,11 +279,11 @@ export class QuickActionsMenuComponent implements OnInit, OnDestroy {
   }
 
   onNoteClick(): void {
-    //RXCore.markUpNote(true);
-    this.annotationToolsService.setNotePanelState({ visible: true, markupnumber: this.annotation.markupnumber });
-    setTimeout(() => {
+    RXCore.markUpNote(true);
+    //this.annotationToolsService.setNotePanelState({ visible: true, markupnumber: this.annotation.markupnumber });
+    /*setTimeout(() => {
       RXCore.doResize(0, 0);
-    }, 100);
+    }, 100);*/
 
     this.visible = false;
   }

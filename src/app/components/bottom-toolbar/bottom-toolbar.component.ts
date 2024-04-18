@@ -44,7 +44,18 @@ export class BottomToolbarComponent implements OnInit, AfterViewInit {
   state: IBottomToolbarState = { isActionSelected: {}};
   private _deselectAllActions(): void {
     Object.entries(this.state.isActionSelected).forEach(([key, value]) => {
-      this.state.isActionSelected[key] = false;
+
+
+      /* todo BIRDSEYE
+        turn off all actions except BIRDSEYE
+        if(action != 'BIRDSEYE'){
+      }*/
+
+      if(key !== "BIRDSEYE"){
+        this.state.isActionSelected[key] = false;
+      }
+
+      
     });
   }
 
@@ -107,7 +118,9 @@ export class BottomToolbarComponent implements OnInit, AfterViewInit {
     RXCore.unSelectAllMarkup();
     this.rxCoreService.setGuiMarkup(-1, -1);
     const selected = this.state.isActionSelected[action];
+
     this._deselectAllActions();
+    
     this.state.isActionSelected[action] = !selected;
     this.service.setState(this.state);
 

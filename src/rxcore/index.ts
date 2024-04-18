@@ -36,8 +36,8 @@ export class RXCore {
         RxCore.closeDocument();
     }
 
-    public static doResize(offsetWidth: number, offsetHeight: number): void {
-        RxCore.doResize(offsetWidth, offsetHeight);
+    public static doResize(binternal: boolean , offsetWidth: number, offsetHeight: number): void {
+        RxCore.doResize(binternal, offsetWidth, offsetHeight);
     }
 
     public static setActiveFileEx(index: number): void {
@@ -380,6 +380,10 @@ export class RXCore {
         RxCore.loadThumbnail(pageindex);
     }
 
+    public static lockMarkup(onoff: boolean): void {
+        RxCore.lockMarkup(onoff);
+    }
+
     public static markUpRedraw(): void {
         RxCore.markUpRedraw();
     }
@@ -441,10 +445,10 @@ export class RXCore {
 
     }
 
-    public static lockMarkup(onoff: boolean): void {
+/*     public static lockMarkup(onoff: boolean): void {
         RxCore.lockMarkup(onoff);
     }
-
+ */
     public static singlePageScrollPan(onoff: boolean): void {
         RxCore.singlePageScrollPan(onoff);
     }
@@ -473,9 +477,14 @@ export class RXCore {
         return RxCore.getmarkupobjByGUID(guid);
     }
 
+    public static restoreDefault(): void{
+        RxCore.restoreDefault();
+    }
+    
     public static restrictPan(onoff): void {
         RxCore.restrictPan(onoff);
     }
+
 
     public static exportPDF(paperSize: string = "A4"): void {
         RxCore.exportFile(false, "PDF", "0", paperSize, "1");
@@ -548,7 +557,8 @@ export class RXCore {
                 "FrontColor": frontRgbColor,
                 "EqualColor": equalRgbColor,
                 "ReturnData": "text",
-                "DestFolder": "C:/Rasterex/Upload",
+                //"DestFolder": "C:/Rasterex/Upload",
+                "DestFolder":`${RXCore.Config.UploadServerfolder.replaceAll('\\', '/')}`,
                 "OutputName": outputName,
             }];
 

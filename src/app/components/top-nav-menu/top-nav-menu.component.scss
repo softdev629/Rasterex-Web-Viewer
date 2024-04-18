@@ -156,3 +156,18 @@ svg {
         fill: $top-nav-color;
     }
 }
+
+.Comments-icon{
+    width: 28px;
+    height: 28px;
+    margin-right: 10px;
+    border-radius: 4px;
+    &.selected {
+        background-color: $toolbar-background-active;
+        color: $toolbar-background;
+        svg{
+            filter: brightness(0) invert(1);
+        }
+    }
+
+}

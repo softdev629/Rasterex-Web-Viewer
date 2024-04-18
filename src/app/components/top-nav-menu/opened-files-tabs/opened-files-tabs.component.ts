@@ -88,7 +88,7 @@ export class OpenedFilesTabsComponent implements OnInit {
     }
     // end set active frame for pdf
 
-    RXCore.doResize(0, 0);
+    //RXCore.doResize(0, 0);
 
     this.rxCoreService.resetGuiConfig();
     if (this.compareService.isComparisonActive) {

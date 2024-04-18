@@ -8,6 +8,7 @@ import { IGuiConfig } from 'src/rxcore/models/IGuiConfig';
 import { CompareService } from '../compare/compare.service';
 import { TopNavMenuService } from './top-nav-menu.service';
 import { GuiMode } from 'src/rxcore/enums/GuiMode';
+import { Subscription } from 'rxjs';
 import { SideNavMenuService } from '../side-nav-menu/side-nav-menu.service';
 
 
@@ -45,6 +46,8 @@ export class TopNavMenuComponent implements OnInit {
   canChangeSign: boolean = false;
   containLayers: boolean = false;
   containBlocks: boolean = false;
+  isActionSelected: boolean = false;
+  private guiOnNoteSelected: Subscription;
 
   constructor(
     private readonly fileGaleryService: FileGaleryService,
@@ -60,6 +63,7 @@ export class TopNavMenuComponent implements OnInit {
     this.options = [
       { value: GuiMode.View, label: "View" },
       { value: GuiMode.Annotate, label: "Annotate", hidden: !this.guiConfig.canAnnotate },
+      { value: GuiMode.Measure, label: "Measure", hidden: !this.guiConfig.canAnnotate },
       { value: GuiMode.Signature, label: "Signature", hidden: !(this.guiConfig.canSignature && this.canChangeSign) },
       { value: GuiMode.Compare, label: "Revision", hidden: !this.guiConfig.canCompare || !this.compareService.isComparisonActive }
     ];
@@ -109,6 +113,11 @@ export class TopNavMenuComponent implements OnInit {
 
     this.service.activeFile$.subscribe(file => {
     })
+
+    this.guiOnNoteSelected = this.rxCoreService.guiOnCommentSelect$.subscribe((value: boolean) => {
+      this.isActionSelected = value;
+    });
+
   }
 
   /* Listeners */
@@ -164,7 +173,7 @@ export class TopNavMenuComponent implements OnInit {
   onModeChange(option: any, broadcast: boolean = true) {
     this.selectedValue = option;
 
-    if (option.value === 'annotate' || option.value === 'compare') {
+    if (option.value === 'annotate' || option.value === 'compare' || option.value === 'measure') {
       if (option.value === 'compare') {
         this.rxCoreService.setGuiConfig({
           canSignature: false,
@@ -196,6 +205,8 @@ export class TopNavMenuComponent implements OnInit {
           enableGrayscaleButton: this.compareService.isComparisonActive
         });
       } else {
+
+
         if (this.compareService.isComparisonActive) {
           this.rxCoreService.setGuiConfig({
             canCompare: true,
@@ -228,7 +239,49 @@ export class TopNavMenuComponent implements OnInit {
             enableGrayscaleButton: this.compareService.isComparisonActive
           });
         } else {
-          this.rxCoreService.resetGuiConfig();
+
+          if (option.value === 'measure') {
+            this.rxCoreService.setGuiConfig({
+              disableMarkupTextButton: true,
+              disableMarkupCalloutButton: true,
+              disableMarkupEraseButton: true,
+              disableMarkupNoteButton: true,
+              //disableMarkupShapeRectangleButton: true,
+              //disableMarkupShapeEllipseButton: true,
+              //disableMarkupShapeRoundedRectangleButton: true,
+              //disableMarkupShapePolygonButton: true,
+              disableMarkupShapeButton : true,
+              disableMarkupStampButton: true,
+              disableMarkupPaintButton: true,
+              disableMarkupArrowButton: true,
+              disableMarkupCountButton: false,
+              disableMarkupMeasureButton: false
+            });
+  
+          } else if(option.value === 'annotate'){
+            this.rxCoreService.setGuiConfig({
+              disableMarkupTextButton: false,
+              disableMarkupCalloutButton: false,
+              disableMarkupEraseButton: false,
+              disableMarkupNoteButton: false,
+              //disableMarkupShapeRectangleButton: false,
+              //disableMarkupShapeEllipseButton: false,
+              //disableMarkupShapeRoundedRectangleButton: false,
+              //disableMarkupShapePolygonButton: false,
+              disableMarkupShapeButton : false,
+              disableMarkupStampButton: false,
+              disableMarkupPaintButton: false,
+              disableMarkupArrowButton: false,
+              disableMarkupCountButton: true,
+              disableMarkupMeasureButton: true
+            });
+
+          }else{
+            this.rxCoreService.resetGuiConfig();
+          }
+  
+
+          
         }
       }
 
@@ -245,6 +298,8 @@ export class TopNavMenuComponent implements OnInit {
   openModalPrint() {
     this.state?.activefile ? (this.isPrint = true, this.burgerOpened = false) : this.isPrint = false;
   }
+
+  
 
   fileInfoDialog(): void {
     this.burgerOpened = false;
@@ -271,6 +326,19 @@ export class TopNavMenuComponent implements OnInit {
     }
   }
 
+  onActionSelect(): void {
+    this.isActionSelected = true;
+    this.rxCoreService.setCommentSelected(this.isActionSelected);
+    this.annotationToolsService.setNotePanelState({ visible: this.isActionSelected });
+
+
+    setTimeout(() => {
+      //RXCore.doResize(false, 0, 0);      
+    }, 100);
+    
+  }
+
+
   handleOpenSidebarMenu() {
     const visibleItems = [
       { index: 0, visible: !(this.guiConfig?.disableViewPages) },
@@ -294,5 +362,10 @@ export class TopNavMenuComponent implements OnInit {
     this.sideNavMenuService.toggleSidebar(index);
     this.sidebarOpened = false;
   }
+  
+  ngOnDestroy(): void {
+    this.guiOnNoteSelected.unsubscribe();
+  }
+
 
 }
