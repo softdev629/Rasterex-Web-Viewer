@@ -36,7 +36,7 @@
                         </section>
                     </ng-container>
                     <ng-container *ngSwitchCase="1">
-                    <!--  <section>
+                        <!--  <section>
                             <h4>Opacity</h4>
                             <div class="slider-container">
                                 <ngx-slider
@@ -48,7 +48,7 @@
                                 <span class="value">{{strokeOpacity}}%</span>
                             </div>
                         </section> -->
-                        <section *ngIf="markup?.type == 7">
+                        <section *ngIf="currentType == 7">
                             <h4>Type</h4>
                             <div class="btn-group" role="group">
                                 <button [class.selected]="lengthMeasureType == 0" (click)="onLengthMeasureTypeChange(0)">
@@ -61,6 +61,17 @@
                                 </button>
                             </div>
                         </section>
+                        <!-- <section *ngIf="isPropertyArrowsVisible"> -->
+                        <section *ngIf="currentType == 6">
+                            <div class="btn-group" role="group" style="margin-top: 16px;">
+                                <button [class.selected]="annotation?.subtype == 3" (click)="onArrowStyleSelect(3)">
+                                    <img src="/assets/images/arrow-filled-both-end-ico.svg"/></button>
+                                <button [class.selected]="annotation?.subtype == 1" (click)="onArrowStyleSelect(1)"><img src="/assets/images/arrow-filled-single-end-ico.svg" /></button>
+                                <button [class.selected]="annotation?.subtype == 2" (click)="onArrowStyleSelect(2)"><img src="/assets/images/arrow-both-end-ico.svg" /></button>
+                                <button [class.selected]="annotation?.subtype == 0" (click)="onArrowStyleSelect(0)"><img src="/assets/images/arrow-single-end-ico.svg" /></button>
+                            </div>
+                        </section>
+
                         <section>
                             <h4>Thickness</h4>
                             <div class="slider-container">
@@ -87,6 +98,16 @@
                                 (valueChange)="onStrokeColorSelect($event)">
                             </rx-color-picker>
                         </section>
+                        <section>
+                            <div class="snap-section">
+                                <span>Snap</span>
+                                <rx-switch
+                                    [checked]="snap"
+                                    (change)="onSnapChange($event)">
+                                </rx-switch>
+                            </div>
+                        </section>
+
                     </ng-container>
                     <ng-container *ngSwitchCase="2">
                         <ng-container *ngIf="markup?.type == 13">
@@ -125,11 +146,20 @@
                                 (valueChange)="onFillColorSelect($event)">
                             </rx-color-picker>
                         </section>
+                        <section>
+                            <div class="snap-section">
+                                <span>Snap</span>
+                                <rx-switch
+                                    [checked]="snap"
+                                    (change)="onSnapChange($event)">
+                                </rx-switch>
+                            </div>
+                        </section>
                     </ng-container>
                 </div>
             </ng-container>
             <ng-container *ngSwitchCase="1">
-                <div class="info-container">
+                <div *ngIf="isInfoTabVisible" class="info-container">
                     <div class="header">Attribute</div><div class="header">Value</div>
                     <ng-container *ngFor="let item of infoData | keyvalue">
                         <div class="row-header">{{item.key}}</div><div>{{item.value}}</div>

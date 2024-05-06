@@ -1,4 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { RXCore } from 'src/rxcore';
 import { FileGaleryService } from './file-galery.service';
 
 @Component({
@@ -12,12 +13,15 @@ export class FileGaleryComponent implements OnInit {
   @Output() onSelect = new EventEmitter<any>();
   @Output() onUpload = new EventEmitter<void>();
 
+
+  cacheUrl = RXCore.Config.xmlurlrel + '/cache/';
+
   groups = [
     {
       "name": "CAD Drawings",
       "items":
       [
-        {"id": "CAD_AUTOCAD", "name": "AutoCAD Drawing", "file": "demo1.dwg", "type": "2D", "size": 106},
+        {"id": "CAD_AUTOCAD", "name": "AutoCAD Drawing", "file": "demo1.dwg", "type": "2D", "size": 106, "thumbnail" : this.cacheUrl + "demo1-1aaac-468d814f/1_1T.PNG"},
         {"id": "CAD_MIROSTATION", "name": "Microstation Drawing", "file": "demo5.dgn", "type": "2D", "size": 5706},
         //{"id": "CAD_SOLIDWORKS", "name": "SolidWorks Drawing", "file": "Sprinkler.SLDDRW", "type": "2D", "size": 3127},
         //{"id": "CAD_COMPARE", "name": "Compare", "action": "compare", "file": ["RXHDEMO5.dwg","Rxhdemo6.dwg"], "type": "2D"}
@@ -62,6 +66,7 @@ export class FileGaleryComponent implements OnInit {
     }
   ];
 
+  
   selected = this.groups[0];
   leftTabActiveIndex: number = 0;
   selectedFileName: string;

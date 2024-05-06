@@ -41,10 +41,20 @@ export class AppComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    RXCore.initialize({ offsetWidth: 0, offsetHeight: 0});
+    
+    RXCore.usePanToMarkup(true);
     RXCore.disablewelcome(true);
+    RXCore.forceUniqueMarkup(true);
     RXCore.scaleOnResize(false);
     RXCore.restrictPan(false);
+    RXCore.overrideLinewidth(true, 1.0);
+
+    RXCore.setGlobalStyle(true);
+    RXCore.setLineWidth(4);
+    RXCore.setGlobalStyle(false);
+    
+    RXCore.initialize({ offsetWidth: 0, offsetHeight: 0});
+
 
     RXCore.onGuiReady(() => {
 
@@ -91,9 +101,19 @@ export class AppComponent implements AfterViewInit {
 
       if (this.eventUploadFile) this.fileGaleryService.sendStatusActiveDocument('awaitingSetActiveDocument');
       if ((state.source === 'forcepagesState' && state.isPDF) || (state.source === 'setActiveDocument' && !state.isPDF)) {
+        
         this.fileGaleryService.sendStatusActiveDocument(state.source);
         this.eventUploadFile = false;
       }
+
+      if(state.isPDF && state.numpages > 1){
+        RXCore.usePanToMarkup(true);
+      }else{
+        RXCore.usePanToMarkup(false);
+      }
+
+      //
+
     });
 
     RXCore.onGuiPage((state) => {
@@ -108,6 +128,13 @@ export class AppComponent implements AfterViewInit {
       console.log('RxCore GUI_Markup:', annotation, operation);
       if (annotation !== -1 || this.rxCoreService.lastGuiMarkup.markup !== -1) {
         this.rxCoreService.setGuiMarkup(annotation, operation);
+      }
+    });
+
+    RXCore.onGuiMarkupIndex((annotation: any, operation: any) => {
+      console.log('RxCore GUI_Markup index:', annotation, operation);
+      if (annotation !== -1 || this.rxCoreService.lastGuiMarkup.markup !== -1) {
+        this.rxCoreService.setGuiMarkupIndex(annotation, operation);
       }
     });
 
@@ -183,6 +210,10 @@ export class AppComponent implements AfterViewInit {
 
     RXCore.onGuiPanUpdated((sx, sy, pagerect) => { 
       this.rxCoreService.guiOnPanUpdated.next({sx, sy, pagerect});
+    });
+
+    RXCore.onGuiZoomUpdate((zoomparams, type) => { 
+      this.rxCoreService.guiOnZoomUpdate.next({zoomparams, type});
     });
 
 

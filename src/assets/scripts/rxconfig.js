@@ -4,7 +4,7 @@ var RxConfig = (function() {
     /* server connect */
     var gui360URL = "rxweb/";
 
-    var baseURL = "http://viewpoint.rasterex.com/";
+    var baseURL = "http://viewserver.rasterex.com/";
 
     var baseURLBin = baseURL + "RxBinWeb/";
     var baseURLWeb = baseURL + "rxweb/";

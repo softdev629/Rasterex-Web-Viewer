@@ -74,6 +74,16 @@ export class RxCoreService {
     return this._lastGuiMarkup;
   }
 
+
+  private _guiMarkupIndex: Subject<{markup: IMarkup | -1, operation: any}> = new Subject<{markup: IMarkup | -1, operation: any}>();
+  guiMarkupIndex$: Observable<{markup: IMarkup | -1, operation}> = this._guiMarkupIndex.asObservable();
+  public setGuiMarkupIndex(markup, operation): void {
+    this._lastGuiMarkup = {markup, operation};
+    this._guiMarkupIndex.next({markup, operation});
+  }
+
+
+
   private _guiMarkupUnselect: Subject<IMarkup> = new Subject<IMarkup>();
   guiMarkupUnselect$: Observable<IMarkup> = this._guiMarkupUnselect.asObservable();
   public setGuiMarkupUnselect(markup: IMarkup): void {
@@ -185,6 +195,12 @@ export class RxCoreService {
   public guiOnPanUpdated: BehaviorSubject<any> = new BehaviorSubject<any>({});
   guiOnPanUpdated$: Observable<any> = this.guiOnPanUpdated.asObservable();
 
+//onGuiZoomUpdate
+
+  public guiOnZoomUpdate: BehaviorSubject<any> = new BehaviorSubject<any>({});
+  guiOnZoomUpdate$: Observable<any> = this.guiOnZoomUpdate.asObservable();
+
+
   /*bugfix 2 commentlist*/
   
   private _guiOnCommentSelect: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -192,6 +208,13 @@ export class RxCoreService {
   public setCommentSelected(isselected: boolean): void {
     this._guiOnCommentSelect.next(isselected);
   }
+
+  private _resetLeaderLine: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  resetLeaderLine$: Observable<boolean> = this._resetLeaderLine.asObservable();
+  public resetLeaderLine(isReset: boolean): void {
+    this._resetLeaderLine.next(isReset);
+  }
+
   
   public getCommentSelected(): boolean {
     return this._guiOnCommentSelect.getValue();

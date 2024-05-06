@@ -11,8 +11,13 @@ export class StampTemplateDirective {
   onDragStart(event: DragEvent): void {
     if (!event.dataTransfer) return;
 
+    console.log(event.dataTransfer.effectAllowed);
+
     RXCore.markupSymbol(true);
     event.dataTransfer.effectAllowed = "move";
+
+    
+
     event.dataTransfer.setData('Text', JSON.stringify(this.stampTemplate));
   }
 

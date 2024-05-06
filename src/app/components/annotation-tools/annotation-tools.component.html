@@ -258,9 +258,12 @@
                     </svg>
                     <span class="tooltip-text tooltip-left">Count</span>
             </li>
-            <li *ngIf="!(guiConfig$ | async).disableMarkupEraseButton && (!(guiConfig$ | async).disableMarkupShapeButton || !(guiConfig$ | async).disableMarkupArrowButton || !(guiConfig$ | async).disableMarkupMeasureButton || !(guiConfig$ | async).disableMarkupCountButton)" class="separator"></li>
-            <!--  -->
 
+            <!--disabled erase
+                <li *ngIf="!(guiConfig$ | async).disableMarkupEraseButton && (!(guiConfig$ | async).disableMarkupShapeButton || !(guiConfig$ | async).disableMarkupArrowButton || !(guiConfig$ | async).disableMarkupMeasureButton || !(guiConfig$ | async).disableMarkupCountButton)" class="separator"></li>
+              -->
+
+            <!--disabled erase
             <li
                 *ngIf="!(guiConfig$ | async).disableMarkupEraseButton"
                 class="tooltip"
@@ -274,7 +277,7 @@
                     <span class="tooltip-text tooltip-left">Erase</span>
             </li>
             <li *ngIf="!(guiConfig$ | async).disableMarkupEraseButton" class="separator"></li>
-            <!--  -->
+              -->
 
             <li
                 *ngIf="!(guiConfig$ | async).disableMarkupNoteButton"

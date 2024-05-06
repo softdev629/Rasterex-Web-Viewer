@@ -12,6 +12,7 @@ import { MARKUP_TYPES } from 'src/rxcore/constants';
 })
 export class PropertiesPanelComponent implements OnInit {
   markup: any = -1;
+  currentType: number = 0;
   visible: boolean = false;
   title: string;
   mainTabActiveIndex: number = 0;
@@ -20,6 +21,8 @@ export class PropertiesPanelComponent implements OnInit {
   font: any = { style: {}};
   color: string;
   strokeColor: string;
+  snap: boolean = false;
+
   //strokeOpacity: number = 100;
   strokeThickness: number = 1;
   strokeLineStyle: number = 0;
@@ -28,11 +31,14 @@ export class PropertiesPanelComponent implements OnInit {
   displayName: string;
   infoData = {};
   lengthMeasureType: number = 0;
+  arrowType: number = 0;
 
   isMainTabsVisible: boolean = true;
   isPropertyTextVisible: boolean = false;
   isPropertyTabsVisible: boolean = true;
+  isPropertyArrowsVisible : boolean = false;
   isFillOpacityVisible: boolean = true;
+  isInfoTabVisible: boolean = true;
 
   placeholder = ['Circle', 'Square', 'Triangle', 'Diamond'];
 
@@ -57,6 +63,12 @@ export class PropertiesPanelComponent implements OnInit {
       return;
     }
 
+    if (this.markup.type == MARKUP_TYPES.ARROW.type && this.markup.subtype != MARKUP_TYPES.CALLOUT.subType) {
+      this.title = "Arrow";
+      return;
+    }
+
+
     switch(this.markup.type) {
       case MARKUP_TYPES.TEXT.type:
         this.title = "Text";
@@ -67,14 +79,41 @@ export class PropertiesPanelComponent implements OnInit {
         break;
 
       case MARKUP_TYPES.SHAPE.RECTANGLE.type:
+        this.title = "Rectangle";
+        break;
       case MARKUP_TYPES.SHAPE.ROUNDED_RECTANGLE.type:
+        this.title = "Rouned Rectangle";
+        break;
+
       case MARKUP_TYPES.SHAPE.ELLIPSE.type:
+        this.title = "Ellipse";
+        break;
+
       case MARKUP_TYPES.SHAPE.CLOUD.type:
-        this.title = "Shape";
+        this.title = "Cloud";
         break;
 
       case MARKUP_TYPES.SHAPE.POLYGON.type:
+
+        switch(this.markup.subtype) {
+          case MARKUP_TYPES.MEASURE.PATH.subType:
+            this.title = "Measure Path";
+            break;
+          default:
+            this.title = "Polygon";
+            break;
+        }
+        break;
+
+
+        //this.title = "Polygon";
+        //break;
+
       case MARKUP_TYPES.PAINT.POLYLINE.type:
+        this.title = "Poly line";
+        break;
+
+
       case MARKUP_TYPES.MEASURE.PATH.type:
         switch(this.markup.subtype) {
           case MARKUP_TYPES.MEASURE.PATH.subType:
@@ -87,8 +126,13 @@ export class PropertiesPanelComponent implements OnInit {
         break;
 
       case MARKUP_TYPES.MEASURE.AREA.type:
+        this.title = "Area";
+        break;
+      case MARKUP_TYPES.ARROW.type:
+          this.title = "Arrow";
+          break;
       case MARKUP_TYPES.MEASURE.LENGTH.type:
-        this.title = "Measure";
+        this.title = "Dimension";
         break;
 
       case MARKUP_TYPES.COUNT.type:
@@ -111,8 +155,17 @@ export class PropertiesPanelComponent implements OnInit {
     this.isPropertyTextVisible = false;
     this.isPropertyTabsVisible = true;
     this.isFillOpacityVisible = true;
+    this.isPropertyArrowsVisible = false;
 
-    if (this.markup.type == MARKUP_TYPES.PAINT.HIGHLIGHTER.type && this.markup.subtype == MARKUP_TYPES.PAINT.HIGHLIGHTER.subType) {
+    if (this.markup.type == MARKUP_TYPES.ARROW.type ) {
+      //this.isFillOpacityVisible = false;
+      this.isPropertyTextVisible = false;
+      this.isPropertyTabsVisible = false;
+      this.propertyTabActiveIndex = 1;
+      this.isPropertyArrowsVisible = true;
+
+    }else if
+    (this.markup.type == MARKUP_TYPES.PAINT.HIGHLIGHTER.type && this.markup.subtype == MARKUP_TYPES.PAINT.HIGHLIGHTER.subType) {
       this.propertyTabActiveIndex = 2;
       this.isPropertyTabsVisible = false;
     } else if (this.markup.type == MARKUP_TYPES.PAINT.FREEHAND.type && this.markup.subtype == MARKUP_TYPES.PAINT.FREEHAND.subType) {
@@ -121,7 +174,6 @@ export class PropertiesPanelComponent implements OnInit {
     } else if (
       (this.markup.type == MARKUP_TYPES.PAINT.POLYLINE.type && this.markup.subtype == MARKUP_TYPES.PAINT.POLYLINE.subType)
       || (this.markup.type == MARKUP_TYPES.MEASURE.PATH.type && this.markup.subtype == MARKUP_TYPES.MEASURE.PATH.subType)
-      || (this.markup.type == MARKUP_TYPES.MEASURE.AREA.type && this.markup.subtype == MARKUP_TYPES.MEASURE.AREA.subType)
       || (this.markup.type == MARKUP_TYPES.MEASURE.LENGTH.type)) {
       this.propertyTabActiveIndex = 1;
       this.isPropertyTabsVisible = false;
@@ -141,6 +193,8 @@ export class PropertiesPanelComponent implements OnInit {
         this.propertyTabActiveIndex = 1;
       }
     }
+
+    console.log(this.isFillOpacityVisible);
   }
 
   ngOnInit(): void {
@@ -150,16 +204,23 @@ export class PropertiesPanelComponent implements OnInit {
       if (
         markup === -1
         || operation.deleted
-        || markup.type == MARKUP_TYPES.ARROW.type
-        || markup.type == MARKUP_TYPES.MEASURE.LENGTH.type
-        || markup.type == MARKUP_TYPES.MEASURE.PATH.type && markup.subtype == MARKUP_TYPES.MEASURE.PATH.subType
-        || markup.type == MARKUP_TYPES.MEASURE.AREA.type && markup.subtype == MARKUP_TYPES.MEASURE.AREA.subType) {
+        //|| markup.type == MARKUP_TYPES.ARROW.type
+        //|| markup.type == MARKUP_TYPES.MEASURE.LENGTH.type
+        //|| markup.type == MARKUP_TYPES.MEASURE.PATH.type && markup.subtype == MARKUP_TYPES.MEASURE.PATH.subType
+        ) {
         this.visible = false;
         return;
       }
+      this.currentType = markup.type;
+
+      //|| markup.type == MARKUP_TYPES.MEASURE.AREA.type && markup.subtype == MARKUP_TYPES.MEASURE.AREA.subType
 
       this._setVisibility();
-      this._setTitle();
+      //this._setTitle();
+
+      this.title = this.markup.getMarkupType().label;
+
+      this.snap = RXCore.getSnapState();
 
       this.text = markup.text;
       this.font = {
@@ -193,8 +254,41 @@ export class PropertiesPanelComponent implements OnInit {
       }
     });
 
+    
+
     this.annotationToolsService.propertiesPanelState$.subscribe(state => {
       this.visible = state?.visible;
+      this.markup = state?.markup;
+
+      if(this.markup){
+
+        this.markup.subtype = this.markup.subType;
+        this.currentType = this.markup.type;
+
+        this._setVisibility();
+        this.isMainTabsVisible = false;
+        this._setTitle();
+  
+        this.snap = RXCore.getSnapState();
+
+        this.color = RXCore.getLineColor();
+        this.strokeColor = RXCore.getLineColor();
+
+        
+        this.fillColor = this.colorHelper.hexToRgba(this.colorHelper.rgbToHex(RXCore.getFillColor()), 100);
+        this.fillOpacity = 100;
+  
+        
+        this.strokeThickness = RXCore.getLineWidth();
+        this.strokeLineStyle = 0;
+        this.lengthMeasureType = 0;
+        this.lengthMeasureType = this.markup.subtype;
+    
+      }
+        
+      
+
+
     });
   }
 
@@ -255,6 +349,15 @@ export class PropertiesPanelComponent implements OnInit {
     RXCore.markUpSubType(type);
   }
 
+  onArrowStyleSelect(type: number): void {
+    this.arrowType = type;
+    RXCore.markUpSubType(type);
+  }
+
+
+  onSnapChange(onoff: boolean): void {
+    RXCore.changeSnapState(onoff);
+  }
   onClose(): void {
     this.visible = false;
     RXCore.selectMarkUp(false);

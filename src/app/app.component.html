@@ -17,7 +17,7 @@
         <p class="description">Select any file including CAD Drawings, 3D Models, Plotter File, etc. and start exploring with our demo right now.</p>
       </div>
       <div *ngIf="(guiConfig$ | async).canFileOpen && !eventUploadFile" class="btn-choice-file" (click)="handleChoiceFileClick()">CHOOSE FILE</div>
-      <p class="copyright">PDF Reader powered by Foxit. Copyright (c) 2003-2024 by Foxit Software Incorporated</p>
+      <!-- <p class="copyright">PDF Reader powered by Foxit. Copyright (c) 2003-2024 by Foxit Software Incorporated</p> -->
     </div>
     <notification />
     <div

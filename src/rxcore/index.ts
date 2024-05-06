@@ -12,12 +12,21 @@ declare var RxConfig: any;
 export class RXCore {
     public static Config: any = RxConfig;
 
-    public static initialize(layout: any): void {
-        RxCore.initialize(layout);
+    public static birdseyetool(): void {
+        RxCore.birdseyetool();
+    }
+
+    public static changeTextColor(color: string): void {
+        RxCore.changeTextColor(color);
     }
 
     public static disablewelcome(onoff: boolean): void {
         RxCore.disablewelcome(onoff);
+    }
+    
+
+    public static overrideLinewidth(onoff:boolean , thickness: number): void {
+        RxCore.overrideLinewidth(onoff, thickness);
     }
 
     public static scaleOnResize(onoff: boolean): void {
@@ -26,6 +35,10 @@ export class RXCore {
 
     public static getOpenFilesList(): Array<any> {
         return RxCore.getOpenFilesList();
+    }
+
+    public static initialize(layout: any): void {
+        RxCore.initialize(layout);
     }
 
     public static openFile(fileUrl: any): void {
@@ -140,9 +153,29 @@ export class RXCore {
         RxCore.markUpTextRect(onoff);
     }
 
+    public static forceUniqueMarkup(onoff: boolean): void {
+        RxCore.forceUniqueMarkup(onoff);    
+    }
+
+    
+
     public static getSelectedMarkup(): IMarkup {
         return RxCore.getSelectedMarkup();
     }
+
+    public static getLineColor(): string {
+        return RxCore.getLineColor();
+    }
+
+    public static getLineWidth(): number {
+        return RxCore.getLineWidth();
+    }
+
+    public static setLayout(width :number, height : number, absolute : boolean): void {
+        return RxCore.setLayout(width, height, absolute);
+    }
+
+    
 
     public static setText(text: string): void {
         RxCore.GUI_TextInput.setText(text);
@@ -176,9 +209,6 @@ export class RXCore {
         RxCore.setFontFull(font);
     }
 
-    public static changeTextColor(color: string): void {
-        RxCore.changeTextColor(color);
-    }
 
     public static getTextColor(): string {
         return RxCore.getTextColor();
@@ -228,9 +258,6 @@ export class RXCore {
         RxCore.renderBirdseye();
     }
 
-    public static birdseyetool(): void {
-        RxCore.birdseyetool();
-    }
 
     public static markUpTextRectArrow(onoff: boolean): void {
         RxCore.markUpTextRectArrow(onoff);
@@ -248,9 +275,16 @@ export class RXCore {
         RxCore.vectorLayersAll(onoff);
     }
 
+    public static changePDFLayer(index: number, visible : boolean): void {
+
+
+        RxCore.changePDFLayer(index, visible)
+    }
+
     public static changeVectorLayer(index: number): void {
         RxCore.changeVectorLayer(index);
     }
+
 
     public static vectorBlocksAll(onoff: boolean): void {
         RxCore.vectorBlocksAll(onoff);
@@ -315,6 +349,13 @@ export class RXCore {
     public static unSelectAllMarkup(): void {
         RxCore.unSelectAllMarkup();
     }
+
+
+    public static usePanToMarkup(onoff: boolean): void {
+        RxCore.usePanToMarkup(onoff);
+    }
+    
+
 
     public static textSelect(onoff: boolean): void {
         RxCore.textSelect(onoff);
@@ -624,6 +665,9 @@ export class RXCore {
         RxCore.GUI_Markup.connect(callback);
     }
 
+    public static onGuiMarkupIndex(callback: Function): void {
+        RxCore.GUI_MarkupIndex.connect(callback);
+    }
     public static onGuiMarkupList(callback: (list: Array<IMarkup>) => void): void {
         RxCore.GUI_Markuplist.connect(callback);
     }
@@ -735,5 +779,12 @@ export class RXCore {
     public static onGuiPanUpdated(callback: (sx: number, sy: number, pagerect: any) => void): void {
         RxCore.GUI_PanUpdated.connect(callback);
     }
+
+    public static onGuiZoomUpdate(callback: (zoomparams : any, type : number) => void): void {
+        RxCore.GUI_ZoomUpdate.connect(callback);
+    }
+
+
+    
 
 }

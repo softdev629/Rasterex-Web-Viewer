@@ -24,7 +24,7 @@ export const MARKUP_TYPES = {
         },
         POLYGON: {
             type: 1,
-            subtype: 2,
+            subType: 2,
         },
         CLOUD: {
             type: 5,

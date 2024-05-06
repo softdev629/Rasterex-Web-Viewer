@@ -199,6 +199,11 @@ export class ContextEditorComponent implements OnInit {
     this.rxCoreService.guiTextInput$.subscribe(({rectangle, operation}) => {
       if (operation === -1) return;
 
+      if (operation.start) {
+        this._setDefaults();
+      }
+      
+
       this.rectangle = { ...rectangle };
 
       this.showContextEditor('0%', '-103%', '-30%', '-25%');
@@ -246,6 +251,10 @@ export class ContextEditorComponent implements OnInit {
 
         this.isBottom = this.style['bottom.px'] === this.rectangle?.h + 20;
       }
+
+      //console.log(this.style);
+      //console.log(this.rectangle);
+
     }
   }
 

@@ -27,7 +27,13 @@ export class BlocksComponent implements OnInit {
   }
 
   onVectorBlockClick(block: IVectorBlock): void {
-    block.state = !block?.state;
+
+    if(block.state == 1){
+      block.state = 0;
+    }else{
+      block.state = 1;
+    }
+    //block.state = !block?.state;
     RXCore.changeVectorBlock(block?.index);
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { AnnotationToolsService } from '../annotation-tools.service';
 import { RXCore } from 'src/rxcore';
 import { IMarkup } from 'src/rxcore/models/IMarkup';
@@ -35,13 +35,22 @@ export class NotePanelComponent implements OnInit {
   activeMarkupNumber: number = -1;
   markupNoteList: number[] = [];
   noteIndex: number;
- /*added for comment list panel */
+  pageNumber: number = -1;
+  isHideAnnotation: boolean = false;
+  pageNumbers: any[] = [];
+  //sortByField: 'created' | 'author' = 'created';
+  sortByField: 'created' | 'position' | 'author' = 'created';
 
-  sortByField: 'created' | 'author' = 'created';
   sortOptions = [
     { value: "created", label: "Created day" },
-    { value: "author", label: "Author" }
+    { value: "author", label: "Author" },
+    { value: "pagenumber", label: "Page" },
+    { value: "position", label: "Position" }
   ];
+
+ /*added for comment list panel */
+
+
   sortOrder = (a, b): number => 0;
   filterVisible: boolean = false;
   createdByFilterOptions: Array<any> = [];
@@ -128,7 +137,8 @@ export class NotePanelComponent implements OnInit {
         this.connectorLine.hide();
         let searchQuery = this.search.toLocaleLowerCase();
         let comments: any = i.comments.map((i: any) => { return i.value.toLocaleLowerCase(); });
-        if (comments.find((x:string) => x.indexOf(searchQuery) > -1) || i.author.toLocaleLowerCase().includes(searchQuery) || i.getMarkupType().label.toLocaleLowerCase().includes(searchQuery)) {
+
+        /* if (comments.find((x:string) => x.indexOf(searchQuery) > -1) || i.author.toLocaleLowerCase().includes(searchQuery) || i.getMarkupType().label.toLocaleLowerCase().includes(searchQuery)) {
           return (this.dateFilter.startDate ? dayjs(i.timestamp).isSameOrAfter(this.dateFilter.startDate) : true)
             && (this.dateFilter.endDate ? dayjs(i.timestamp).isSameOrBefore(this.dateFilter.endDate.endOf('day')) : true) && !i.bisTextArrow
         }
@@ -138,27 +148,48 @@ export class NotePanelComponent implements OnInit {
           && (this.dateFilter.endDate ? dayjs(i.timestamp).isSameOrBefore(this.dateFilter.endDate.endOf('day')) : true) && !i.bisTextArrow
       }
      }
-    )/*modified for comment list panel */
-    /*.filter((i: any) =>
-      i.type == MARKUP_TYPES.NOTE.type
-      && (!this.search || i.text?.includes(this.search))
-      && (this.createdByFilter.has(i.signature)
-      && (this.dateFilter.startDate ? dayjs(i.timestamp).isSameOrAfter(this.dateFilter.startDate) : true)
-      && (this.dateFilter.endDate ? dayjs(i.timestamp).isSameOrBefore(this.dateFilter.endDate.endOf('day')) : true))
-    )*/
+    ) */
+    /*modified for comment list panel */
+        if (this.pageNumber > 0) {
+          if (comments.find((x: string) => x.indexOf(searchQuery) > -1) || i.author.toLocaleLowerCase().includes(searchQuery) || i.getMarkupType().label.toLocaleLowerCase().includes(searchQuery)) {
+            return (this.dateFilter.startDate ? dayjs(i.timestamp).isSameOrAfter(this.dateFilter.startDate) : true)
+              && (this.dateFilter.endDate ? dayjs(i.timestamp).isSameOrBefore(this.dateFilter.endDate.endOf('day')) : true) && !i.bisTextArrow && i.pagenumber === (this.pageNumber - 1)
+          }
+        } else {
+          if (comments.find((x: string) => x.indexOf(searchQuery) > -1) || i.author.toLocaleLowerCase().includes(searchQuery) || i.getMarkupType().label.toLocaleLowerCase().includes(searchQuery)) {
+            return (this.dateFilter.startDate ? dayjs(i.timestamp).isSameOrAfter(this.dateFilter.startDate) : true)
+              && (this.dateFilter.endDate ? dayjs(i.timestamp).isSameOrBefore(this.dateFilter.endDate.endOf('day')) : true) && !i.bisTextArrow
+          }
+        }
+        return;
+      } else {
+        if (this.pageNumber > 0) {
+          return (this.dateFilter.startDate ? dayjs(i.timestamp).isSameOrAfter(this.dateFilter.startDate) : true)
+            && (this.dateFilter.endDate ? dayjs(i.timestamp).isSameOrBefore(this.dateFilter.endDate.endOf('day')) : true) && !i.bisTextArrow && i.pagenumber === (this.pageNumber - 1)
+        }
+        else {
+          return (this.dateFilter.startDate ? dayjs(i.timestamp).isSameOrAfter(this.dateFilter.startDate) : true)
+            && (this.dateFilter.endDate ? dayjs(i.timestamp).isSameOrBefore(this.dateFilter.endDate.endOf('day')) : true) && !i.bisTextArrow
+        }
+      }
+    }
+    )
     .map((item: any) => {
       item.author = RXCore.getDisplayName(item.signature);
       item.createdStr = dayjs(item.timestamp).format(`MMM D,${dayjs().year() != dayjs(item.timestamp).year() ? 'YYYY ': ''} h:mm A`);
-      item.IsExpanded = item?.IsExpanded;
+      //item.IsExpanded = item?.IsExpanded;
+      item.IsExpanded = this.activeMarkupNumber > 0 ? item?.IsExpanded : false;
       return item;
     })
     .sort((a, b) => {
       switch(this.sortByField) {
         case 'created':
           return b.timestamp - a.timestamp;
-
         case 'author':
           return a.author.localeCompare(b.author);
+        case 'position':
+            return a.y - b.y;
+
       }
     });
 
@@ -193,6 +224,13 @@ export class NotePanelComponent implements OnInit {
           setTimeout(() => {
             markupList.filter((i: any) => {
               if (i.markupnumber === this.activeMarkupNumber) {
+                let page = i.pagenumber + 1;
+                this.pageNumbers = [];
+                this.pageNumbers.push({ value: -1, label: 'Select' });
+                for (let itm = 1; page >= itm; itm++) {
+                  this.pageNumbers.push({ value: itm, label: itm });
+                }
+
                 this.onSelectAnnotation(i);
                 this._setPosition(i);
               }
@@ -205,9 +243,10 @@ export class NotePanelComponent implements OnInit {
       
       this.visible = state?.visible;
       if(this.visible){
-        //RXCore.setlayout(setLayout)
+        RXCore.setLayout(this.panelwidth, 0, false);
         RXCore.doResize(false,this.panelwidth, 0);/*added for comment list panel */
       }else{
+        RXCore.setLayout(0, 0, false);
         RXCore.doResize(false,0, 0);/*added for comment list panel */
       }
 
@@ -216,7 +255,7 @@ export class NotePanelComponent implements OnInit {
 
     this.rxCoreService.guiMarkupList$.subscribe((list = []) => {
       this.createdByFilter = new Set();
-      if (this.activeMarkupNumber > 0)
+      if (this.activeMarkupNumber > 0){
         //this.createdByFilterOptions = Object.values(list.filter(i => i.text.length > 0).reduce((options, item) => {
         this.createdByFilterOptions = Object.values(list.filter((i: any) => i.text.length > 0).reduce((options, item: any) => {
           if (!options[item.signature]) {
@@ -228,45 +267,58 @@ export class NotePanelComponent implements OnInit {
             this.createdByFilter.add(item.signature);
           }
           return options;
-        }, {})
-        );
+        }, {}));
+        
         
         if (list.length > 0){
-          this._processList(list);
+          
+          //this._processList(list);
+          setTimeout(() => {
+            list.filter((itm: any) => {
+              if (itm.markupnumber === this.activeMarkupNumber) {
+                this.pageNumbers = [];
+                this.pageNumbers.push({ value: -1, label: 'Select' });
+                let page = itm.pagenumber + 1;
+                for (let i = 1; page >= i; i++) {
+                  this.pageNumbers.push({ value: i, label: i });
+                }
+              }
+            });
+          }, 400);
+
+
         }else{
           this._processList(list);
-        }
+        } 
 
-      
-
-      /*this.createdByFilterOptions = Object.values(list.filter(i => i.type == MARKUP_TYPES.NOTE.type).reduce((options, item) => {
-        if(!options[item.signature]) {
-          options[item.signature] = {
-            value: item.signature,
-            label: RXCore.getDisplayName(item.signature),
-            selected: true
-          };
-          this.createdByFilter.add(item.signature);
-        }
-        return options;
-        }, {})
-      );*/
-
-      //this._processList(list);
-
-      /*if (this.visible && Object.values(this.list).length > 0) {
+      }
+      if (list.length > 0 && !this.isHideAnnotation){
         setTimeout(() => {
-          list.filter((i: any) => {
-            if (i.selected) {
-              this.activeMarkupNumber = i.markupnumber;
-              this._setPosition(i);
-            }
-          });
-        }, 200);
-      }*/
+          if (list.find(itm => itm.selected) === undefined)
+            this.activeMarkupNumber = -1;
+          this._processList(list);
+        }, 250);
+      }
+        
+
+    });
+
+
+    this.rxCoreService.guiMarkupIndex$.subscribe(({markup, operation}) => {
+      this._hideLeaderLine();
+
+      if(operation.modified || operation.created){
+        this.SetActiveCommentSelect(markup);
+      }
+
+      if(operation.created){
+       
+        this.addTextNote(markup);
+      }
 
 
     });
+
 
     this.rxCoreService.guiMarkup$.subscribe(({markup, operation}) => {
       this._hideLeaderLine();
@@ -285,12 +337,22 @@ export class NotePanelComponent implements OnInit {
 
     this.guiOnPanUpdatedSubscription = this.rxCoreService.guiOnPanUpdated$.subscribe(({ sx, sy, pagerect }) => {
       if (this.connectorLine) {
-        RXCore.unSelectAllMarkup();
+        //RXCore.unSelectAllMarkup();
         this.annotationToolsService.hideQuickActionsMenu();
         this.connectorLine.hide();
         this._hideLeaderLine();
       }
     });
+
+    this.guiOnPanUpdatedSubscription = this.rxCoreService.resetLeaderLine$.subscribe((response: boolean) => {
+      if (this.connectorLine) {
+        //RXCore.unSelectAllMarkup();
+        this.annotationToolsService.hideQuickActionsMenu();
+        this.connectorLine.hide();
+        this._hideLeaderLine();
+      }
+    });
+
 
     this.rxCoreService.guiOnMarkupChanged.subscribe(({annotation, operation}) => {
       //this.visible = false;
@@ -312,10 +374,10 @@ export class NotePanelComponent implements OnInit {
   }
 
   onNoteClick(markup: IMarkup): void {
-    RXCore.unSelectAllMarkup();
+    //RXCore.unSelectAllMarkup();
     RXCore.selectMarkUpByIndex(markup.markupnumber);
-    this.rxCoreService.setGuiMarkup(markup, {});
-    this._showLeaderLine(markup);
+    this.rxCoreService.setGuiMarkupIndex(markup, {});
+    //this._showLeaderLine(markup);
   }
 
   onSearch(event): void {
@@ -335,6 +397,12 @@ export class NotePanelComponent implements OnInit {
     this.dateFilter = dateRange;
   }
 
+  onPageChange(event): void {
+    this.pageNumber = event.value;
+    this._processList(this.rxCoreService.getGuiMarkupList());
+  }
+
+
   onFilterApply(): void {
     this._processList(this.rxCoreService.getGuiMarkupList());
     this.filterVisible = false;
@@ -343,7 +411,7 @@ export class NotePanelComponent implements OnInit {
   onClose(): void {
     this.visible = false;
     this._hideLeaderLine();
-
+    RXCore.setLayout(0, 0, false);
     RXCore.doResize(false, 0, 0);/*added for comment list panel */
     this.rxCoreService.setCommentSelected(false);
   }
@@ -440,6 +508,10 @@ export class NotePanelComponent implements OnInit {
 
   SetActiveCommentSelect(markup: any){
 
+    if (markup.bisTextArrow && markup.textBoxConnected != null) {
+      markup = markup.textBoxConnected;
+    }
+
     let markupNo = markup.markupnumber;
 
     if (markupNo) {
@@ -475,7 +547,8 @@ export class NotePanelComponent implements OnInit {
       Object.values(this.list || {}).forEach(comments => {
         comments.forEach((comment: any) => {
           if (comment.markupnumber === markupNo) {
-            comment.IsExpanded = true;
+            //comment.IsExpanded = true;
+            comment.IsExpanded = !comment.IsExpanded;
           }
         });
       });
@@ -504,11 +577,11 @@ export class NotePanelComponent implements OnInit {
   }
 
   onSelectAnnotation(markup: any): void {
-    RXCore.unSelectAllMarkup();
-    RXCore.selectMarkUp(true);
+    //RXCore.unSelectAllMarkup();
+    //RXCore.selectMarkUp(true);
     RXCore.selectMarkUpByIndex(markup.markupnumber);
-    markup.selected = true;
-    this.rxCoreService.setGuiMarkup(markup, {});
+    //markup.selected = true;
+    this.rxCoreService.setGuiMarkupIndex(markup, {});
 
   }
 
@@ -520,11 +593,29 @@ export class NotePanelComponent implements OnInit {
     //this.lineConnectorNativElement.style.left = (markup.xscaled + markup.wscaled - 5) + 'px';
     //this.DrawConnectorLine(document.getElementById('note-panel-' + this.activeMarkupNumber), this.lineConnectorNativElement);
 
+    if (markup.bisTextArrow && markup.textBoxConnected != null) {
+      markup = markup.textBoxConnected;
+    }
+
     if (markup.type !== MARKUP_TYPES.COUNT.type) {
       const wscaled = (markup.wscaled || markup.w) / window.devicePixelRatio;
       const hscaled = (markup.hscaled || markup.h) / window.devicePixelRatio;
       const xscaled = (markup.xscaled || markup.x) / window.devicePixelRatio;
       const yscaled = (markup.yscaled || markup.y) / window.devicePixelRatio;
+      let rely = yscaled + (hscaled  * 0.5);
+      let absy = yscaled + ((hscaled - yscaled) * 0.5);
+
+      let sidepointabs = {
+        x : wscaled,
+        y : absy
+      }
+      
+      let sidepointrel = {
+        x : xscaled + wscaled,
+        y : rely
+      }
+      
+
 
 
       let _dx = window == top ? 0 : - 82;
@@ -534,6 +625,7 @@ export class NotePanelComponent implements OnInit {
       let dy = -10 + _dy;
 
       switch (markup.type) {
+        case MARKUP_TYPES.ERASE.type:
         case MARKUP_TYPES.SHAPE.POLYGON.type:
         case MARKUP_TYPES.PAINT.POLYLINE.type:
         case MARKUP_TYPES.MEASURE.PATH.type:
@@ -545,9 +637,12 @@ export class NotePanelComponent implements OnInit {
             }
           }
           this.rectangle = {
-            x: (p.x / window.devicePixelRatio) - (markup.subtype == MARKUP_TYPES.SHAPE.POLYGON.subtype ? 26 : 4),
-            y: (p.y / window.devicePixelRatio) - 16,
-            x_1: xscaled + wscaled - 20,
+            //x: (p.x / window.devicePixelRatio) - (markup.subtype == MARKUP_TYPES.SHAPE.POLYGON.subType ? 26 : 4),
+            //y: (p.y / window.devicePixelRatio) - 16,
+            x : sidepointabs.x,
+            y : sidepointabs.y,
+            //x_1: xscaled + wscaled - 20,
+            x_1: wscaled - 20,
             y_1: yscaled - 20,
           };
           break;
@@ -556,13 +651,15 @@ export class NotePanelComponent implements OnInit {
           dx = (wscaled / 2) - 5 + _dx;
           dy = -10 + _dy;
           this.rectangle = {
-            x: xscaled + dx,
-            y: yscaled + dy,
+            //x: xscaled + dx,
+            //y: yscaled + dy,
+            x : sidepointrel.x,
+            y:  sidepointrel.y,
             x_1: xscaled + wscaled - 20,
             y_1: yscaled - 20,
           };
           break;
-        case MARKUP_TYPES.ERASE.type:
+        /*case MARKUP_TYPES.ERASE.type:
           dx = ((wscaled - xscaled) / 2) - 5 + _dx;
           this.rectangle = {
             x: xscaled + dx,
@@ -570,7 +667,7 @@ export class NotePanelComponent implements OnInit {
             x_1: xscaled + wscaled - 20,
             y_1: yscaled - 20,
           };
-          break;
+          break;*/
         case MARKUP_TYPES.ARROW.type:
           dx = -26 + _dx;
           this.rectangle = {
@@ -643,6 +740,8 @@ export class NotePanelComponent implements OnInit {
   }
 
   onHideComment(event: any, markupNo: number): void {
+    this.isHideAnnotation = true;
+    event.preventDefault();
     Object.values(this.list || {}).forEach(comments => {
       comments.forEach((comment: any) => {
         if (comment.markupnumber === markupNo) {
@@ -659,4 +758,19 @@ export class NotePanelComponent implements OnInit {
     event.stopPropagation();
   }
   
+  @HostListener('scroll', ['$event'])
+  scrollHandler(event) {
+    if(event.type == 'scroll'){
+      event.preventDefault();
+      if (this.connectorLine) {
+        //RXCore.unSelectAllMarkup();
+        this.annotationToolsService.hideQuickActionsMenu();
+        this.connectorLine.hide();
+        this._hideLeaderLine();
+        event.stopPropagation();
+      }
+  
+    }
+  }
+
 }

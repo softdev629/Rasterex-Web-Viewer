@@ -49,9 +49,21 @@ export class BottomToolbarComponent implements OnInit, AfterViewInit {
       /* todo BIRDSEYE
         turn off all actions except BIRDSEYE
         if(action != 'BIRDSEYE'){
+          
       }*/
 
-      if(key !== "BIRDSEYE"){
+      //these should be state on until turned off.
+
+      let skipstate = (
+      key == "BIRDSEYE" || 
+      key == "HIDE_MARKUPS" || 
+      key == "MONOCHROME" || 
+      key == "MAGNIFY" || 
+      key == "SEARCH_TEXT" || 
+      key == "SELECT_TEXT"
+      )
+
+      if(!skipstate){
         this.state.isActionSelected[key] = false;
       }
 
@@ -89,6 +101,17 @@ export class BottomToolbarComponent implements OnInit, AfterViewInit {
       this.searchNumMatches = nummatches;
       this.searchCurrentMatch = this.searchNumMatches > 0 ? 1 : 0;
     });
+
+    RXCore.onGuiZoomUpdate((zoomparams, type) => {
+
+      if(type == 2){
+        this.state.isActionSelected["ZOOM_WINDOW"] = false;
+        RXCore.restoreDefault();
+      }
+
+    });
+
+
   }
 
   onPreviousPage() {
@@ -160,6 +183,8 @@ export class BottomToolbarComponent implements OnInit, AfterViewInit {
         break;
       case 'BACKGROUND':
         RXCore.toggleBackground();
+        this.state.isActionSelected[action] = false;
+
         break;
       case 'MONOCHROME':
         RXCore.setMonoChrome(this.state.isActionSelected[action]);

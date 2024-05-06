@@ -26,6 +26,12 @@ export class QuickActionsMenuComponent implements OnInit, OnDestroy {
   operation: any = undefined;
   rectangle: any;
   confirmDeleteOpened: boolean = false;
+  menuwidth: number = 126;
+  menucenter : number = 0;
+  buttongap : number = 10;
+  buttonsize : number = 28;
+  numbuttons : number = 4;
+  topgap : number = 16;
   addLink: boolean = false;
   followLink: boolean = false;
   message: string = 'Add link';
@@ -80,16 +86,37 @@ export class QuickActionsMenuComponent implements OnInit, OnDestroy {
             p = point;
           }
         }
+
+        let topcenterx = xscaled + ((wscaled - xscaled) * 0.5);
+        let topcentery = yscaled;
+        
+        this.numbuttons = (markup.subtype == MARKUP_TYPES.SHAPE.POLYGON.subType ? 4 : 3);
+        this.menuwidth = (this.buttonsize * this.numbuttons) + (this.buttongap * (this.numbuttons + 1));
+        this.menucenter = this.menuwidth * 0.5; 
+
+        //buttongap : number = 10;
+        //buttonsize : number = 28;
+
         this.rectangle = {
-          x: (p.x / window.devicePixelRatio) - (markup.subtype == MARKUP_TYPES.SHAPE.POLYGON.subtype ? 26 : 4),
-          y: (p.y / window.devicePixelRatio) - 16,
+          //x: (p.x / window.devicePixelRatio) - (markup.subtype == MARKUP_TYPES.SHAPE.POLYGON.subType ? 26 : 4),
+          x : topcenterx - this.menucenter,
+          //y: (p.y / window.devicePixelRatio) - 16,
+          y: topcentery - this.topgap,
           x_1: xscaled + wscaled - 20,
           y_1: yscaled - yoffset,
         };
         break;
       }
       case MARKUP_TYPES.NOTE.type:
-        dx = (wscaled / 2) - 5 + _dx;
+
+      this.numbuttons = 3;
+      this.menuwidth = (this.buttonsize * this.numbuttons) + (this.buttongap * (this.numbuttons + 1));
+      this.menucenter = this.menuwidth * 0.5; 
+
+        //dx = (wscaled / 2) - 5 + _dx;
+
+        dx = (wscaled / 2) - this.menucenter;
+
         dy = -10 + _dy;
         this.rectangle = {
           x: xscaled + dx,
@@ -125,7 +152,15 @@ export class QuickActionsMenuComponent implements OnInit, OnDestroy {
         };
         break;
       default:
-        dx = (wscaled / 2) - 24 + _dx;
+
+      this.numbuttons = 4;
+      this.menuwidth = (this.buttonsize * this.numbuttons) + (this.buttongap * (this.numbuttons + 1));
+      this.menucenter = this.menuwidth * 0.5;
+
+
+        //dx = (wscaled / 2) - 24 + _dx;
+        dx = (wscaled / 2) - this.menucenter;
+        
         this.rectangle = {
           x: xscaled + dx,
           y: (yscaled + dy) + rotoffset,
@@ -228,25 +263,30 @@ export class QuickActionsMenuComponent implements OnInit, OnDestroy {
         break;
       case MARKUP_TYPES.ARROW.type:
         if(this.annotation.subType != MARKUP_TYPES.CALLOUT.subType) {
-          this.annotationToolsService.setContextPopoverState({ visible : true });
+          //this.annotationToolsService.setContextPopoverState({ visible : true });
+          this.annotationToolsService.setPropertiesPanelState({ visible : true });
         }
         break;
       case MARKUP_TYPES.MEASURE.LENGTH.type:
-        this.annotationToolsService.setMeasurePanelState({ visible : true });
+        this.annotationToolsService.setPropertiesPanelState({ visible : true });
         break;
       case MARKUP_TYPES.MEASURE.AREA.type:
         if (this.annotation.subtype == MARKUP_TYPES.MEASURE.AREA.subType) {
-          this.annotationToolsService.setMeasurePanelState({ visible : true });
+          this.annotationToolsService.setPropertiesPanelState({ visible : true });
         }
         break;
       case MARKUP_TYPES.MEASURE.PATH.type:
       case MARKUP_TYPES.PAINT.POLYLINE.type:
         if (this.annotation.subtype == MARKUP_TYPES.MEASURE.PATH.subType) {
-          this.annotationToolsService.setMeasurePanelState({ visible : true });
+          this.annotationToolsService.setPropertiesPanelState({ visible : true });
         }
         if (this.annotation.subtype == MARKUP_TYPES.PAINT.POLYLINE.subType) {
           this.annotationToolsService.setPropertiesPanelState({ visible: true, readonly: false });
         }
+        if (this.annotation.subtype == MARKUP_TYPES.SHAPE.POLYGON.subType) {
+          this.annotationToolsService.setPropertiesPanelState({ visible: true, readonly: false });
+        }
+
         break;
       default:
         this.annotationToolsService.setPropertiesPanelState({ visible: true, readonly: false });

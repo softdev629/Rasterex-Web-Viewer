@@ -94,6 +94,17 @@ export class AnnotationToolsComponent implements OnInit {
       this.service.setMeasurePanelState({ visible: false });
     });
 
+    this.rxCoreService.guiTextInput$.subscribe(({rectangle, operation}) => {
+      if (operation === -1) return;
+
+      if (operation.start) {
+        this._deselectAllActions();
+      }
+      
+
+      
+    });
+
     this.rxCoreService.guiMarkup$.subscribe(({markup, operation}) => {
       if (markup !== -1) {
         if (markup.type == MARKUP_TYPES.COUNT.type) return;
@@ -122,7 +133,15 @@ export class AnnotationToolsComponent implements OnInit {
 
   private _deselectAllActions(): void {
     Object.entries(this.isActionSelected).forEach(([key, value]) => {
-      this.isActionSelected[key] = false;
+
+      if (key != 'MARKUP_LOCK') {
+        this.isActionSelected[key] = false;
+      }
+      
+      /*case 'MARKUP_LOCK' :
+        RXCore.lockMarkup(this.isActionSelected[actionName]);
+        break;*/
+
 
       /*if (key == 'NOTE') {
         RXCore.markUpNote(false);
@@ -139,8 +158,12 @@ export class AnnotationToolsComponent implements OnInit {
 
   onActionSelect(actionName: string) {
     const selected = this.isActionSelected[actionName];
-    //this._deselectAllActions();
+    this._deselectAllActions();
     this.isActionSelected[actionName] = !selected;
+    if (actionName) {
+      this.rxCoreService.resetLeaderLine(true);
+    }
+
 
     switch(actionName) {
       case 'TEXT':
@@ -233,17 +256,20 @@ export class AnnotationToolsComponent implements OnInit {
         break;
 
       case 'MEASURE_LENGTH':
-        this.service.setMeasurePanelState({ visible: this.isActionSelected[actionName], type: MARKUP_TYPES.MEASURE.LENGTH.type, created: true });
+        //this.service.setMeasurePanelState({ visible: this.isActionSelected[actionName], type: MARKUP_TYPES.MEASURE.LENGTH.type, created: true });
+        this.service.setPropertiesPanelState({ visible: this.isActionSelected[actionName], markup: MARKUP_TYPES.MEASURE.LENGTH,  readonly: false });
         RXCore.markUpDimension(this.isActionSelected[actionName], 0);
         break;
 
       case 'MEASURE_AREA':
-        this.service.setMeasurePanelState({ visible: this.isActionSelected[actionName], type: MARKUP_TYPES.MEASURE.AREA.type, created: true });
+        //this.service.setMeasurePanelState({ visible: this.isActionSelected[actionName], type: MARKUP_TYPES.MEASURE.AREA.type, created: true });
+        this.service.setPropertiesPanelState({ visible: this.isActionSelected[actionName], markup: MARKUP_TYPES.MEASURE.AREA, readonly: false });
         RXCore.markUpArea(this.isActionSelected[actionName]);
         break;
 
       case 'MEASURE_PATH':
-        this.service.setMeasurePanelState({ visible: this.isActionSelected[actionName], type:  MARKUP_TYPES.MEASURE.PATH.type, created: true });
+        //this.service.setMeasurePanelState({ visible: this.isActionSelected[actionName], type:  MARKUP_TYPES.MEASURE.PATH.type, created: true });
+        this.service.setPropertiesPanelState({ visible: this.isActionSelected[actionName], markup:  MARKUP_TYPES.MEASURE.PATH, readonly: false });
         RXCore.markupMeasurePath(this.isActionSelected[actionName]);
         break;
       case 'COUNT':

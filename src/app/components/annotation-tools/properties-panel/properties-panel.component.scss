@@ -4,6 +4,32 @@
     background-color: #FFFFFF;
     border-radius: 0 0 4px 4px;
 
+    .snap-section {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 12px;
+        font-weight: 600;
+        padding-top: 16px;
+        padding-bottom: 16px;
+
+        position: relative;
+        span {
+            color: #A4ABAE;
+            flex-grow: 1;
+        }
+
+        &::before {
+            content: '';
+            display: block;
+            width: calc(100% + 24px);
+            border-top: 1px solid #EDF1F2;
+            position: absolute;
+            left: -12px;
+            top: 0;
+        }
+    }
     .main-content {
         width: 274px;
         box-sizing: border-box;

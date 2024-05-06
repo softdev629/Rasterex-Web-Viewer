@@ -11,7 +11,7 @@ import { RxCoreService } from 'src/app/services/rxcore.service';
 export class FileInfoComponent {
   fileInfo: {};
   infoPanelVisible: boolean = false;
-  groups = [ {"name": "Attribute"}, {"name": "Font"} ];
+  groups = [ {"name": "Properties"}, {"name": "Fonts"}, {"name": "Xrefs"}];
   selected = this.groups[0];
 
   constructor(private printService: PrintService, private readonly rxCoreService: RxCoreService) {
