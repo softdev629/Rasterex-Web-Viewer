@@ -46,7 +46,7 @@
 
                     <div class="list-item">
                         <h4 class="date">{{group.key}}</h4>
-                        <div *ngFor="let item of group.value" class="note" [class.selected]="item.selected"
+                        <div *ngFor="let item of group.value" class="note" [class.selected]="item.getselected()"
                             
                             [ngClass]="{'is-active': item.IsExpanded}"
                             (click)="SetActiveCommentThread($event, item.markupnumber, item);">
@@ -58,7 +58,7 @@
                             <div [id]="'note-panel-' + item.markupnumber">
                                 <div *ngIf="item.GetComments().length === 0">
                                     <div class="note-comment-list">
-                                        <div class="note-comment">
+                                        <div class="note-comment" >
                                             <div class="item-note">
                                                 <div class="item-comment-left">
                                                     <div class="comment-img">
@@ -107,15 +107,15 @@
                                                         [subtype]="item.subtype"></rx-annotation-shape-icon>
                                                 </div>
                                                 <div>
-                                                    <div class="author">{{item.author}}</div>
-                                                    <div class="comments-date-count">
+                                                    <div class="author" (click)="$event.stopPropagation()">{{item.author}}</div>
+                                                    <div class="comments-date-count" (click)="$event.stopPropagation()">
                                                         <div class="date-and-time">{{item.createdStr}} </div>
                                                         <div class="comments-count"
                                                             *ngIf="item.markupnumber !== activeMarkupNumber"><img
                                                                 src="/assets/images/comment-ico.svg" />{{item.GetComments().length}}
                                                         </div>
                                                     </div>
-                                                    <p>{{item.text}}</p>
+                                                    <p (click)="$event.stopPropagation()">{{item.text}}</p>
                                                 </div>
                                             </div>
                                             <div *ngIf="item.IsExpanded" class="close-list">
@@ -196,9 +196,9 @@
 
                                             <div class="comments-controls">
                                                 <img src="/assets/images/pen-ico.svg" role="button"
-                                                    (click)="OnEditComment(item.markupnumber, itemNote)" />
+                                                    (click)="OnEditComment($event,item.markupnumber, itemNote)" />
                                                 <img src="/assets/images/trash-ico.svg" role="button"
-                                                    (click)="OnRemoveComment(item, itemNote.id, i)" />
+                                                    (click)="OnRemoveComment($event,item, itemNote.id, i)" />
                                             </div>
                                         </div>
                                     </div>

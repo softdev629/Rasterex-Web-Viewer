@@ -62,4 +62,11 @@ export class AnnotationToolsService {
     this._measurePanelState.next(any);
   }
 
+  private _measurePanelDetailState: BehaviorSubject<any> = new BehaviorSubject<any>({});
+  public measurePanelDetailState$: Observable<any> = this._measurePanelDetailState.asObservable();
+  public setMeasurePanelDetailState(any): void {
+    this._measurePanelDetailState.next(any);
+  }
+
+
 }

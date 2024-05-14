@@ -42,6 +42,20 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     
+    
+
+    let JSNObj = [
+      {
+          Command: "GetConfig",
+          UserName: "Demo",
+          DisplayName : "Demo User"
+          
+      }
+    ];
+
+
+    RXCore.setJSONConfiguration(JSNObj);
+
     RXCore.usePanToMarkup(true);
     RXCore.disablewelcome(true);
     RXCore.forceUniqueMarkup(true);
@@ -52,7 +66,9 @@ export class AppComponent implements AfterViewInit {
     RXCore.setGlobalStyle(true);
     RXCore.setLineWidth(4);
     RXCore.setGlobalStyle(false);
-    
+
+
+
     RXCore.initialize({ offsetWidth: 0, offsetHeight: 0});
 
 
@@ -135,8 +151,17 @@ export class AppComponent implements AfterViewInit {
       console.log('RxCore GUI_Markup index:', annotation, operation);
       if (annotation !== -1 || this.rxCoreService.lastGuiMarkup.markup !== -1) {
         this.rxCoreService.setGuiMarkupIndex(annotation, operation);
+        this.rxCoreService.setGuiMarkupMeasureRealTimeData(annotation);
       }
     });
+
+    RXCore.onGuiMarkupMeasureRealTimeData((annotation: any) => {
+      //console.log('RxCore GUI_MarkupMeasureRealTimeData:', annotation);
+      if (annotation !== -1) {
+        this.rxCoreService.setGuiMarkupMeasureRealTimeData(annotation);
+      }
+    });
+
 
     RXCore.onGuiMarkupHover((markup, x, y) => {
       this.rxCoreService.setGuiMarkupHover(markup, x, y);
@@ -221,6 +246,10 @@ export class AppComponent implements AfterViewInit {
 
   handleChoiceFileClick() {
     this.fileGaleryService.openModal();
+  }
+
+  handleLoginClick(){
+    console.log("log in pressed");
   }
 
   onMouseDown(event): void {

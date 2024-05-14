@@ -115,9 +115,9 @@ export class ContextEditorComponent implements OnInit {
     this._setDefaults();
 
     this.rxCoreService.guiMarkup$.subscribe(({markup, operation}) => {
-      this._setDefaults();
-      this.annotation = markup;
 
+
+      
       if (markup === -1 || operation.created || operation.deleted) return;
       if (markup.type == MARKUP_TYPES.ERASE.type && markup.subtype == MARKUP_TYPES.ERASE.subType) return;
       if (markup.type == MARKUP_TYPES.COUNT.type) return;
@@ -126,7 +126,9 @@ export class ContextEditorComponent implements OnInit {
       if (markup.type == MARKUP_TYPES.MEASURE.AREA.type && markup.subtype == MARKUP_TYPES.MEASURE.AREA.subType) return;
       if (markup.type == MARKUP_TYPES.MEASURE.PATH.type && markup.subtype == MARKUP_TYPES.MEASURE.PATH.subType) return;
       if (markup.type == MARKUP_TYPES.SHAPE.CLOUD.type && markup.subtype == MARKUP_TYPES.SHAPE.CLOUD.subtype) return;
+      if (markup.type == MARKUP_TYPES.CALLOUT.type && markup.subtype == MARKUP_TYPES.CALLOUT.subType) return;
 
+      this._setDefaults();
       this._setPosition();
       this._setVisibility();
 
@@ -227,6 +229,9 @@ export class ContextEditorComponent implements OnInit {
   }
 
   showContextEditor(right, left, bottom, top, isArrow: boolean = false) {
+
+    isArrow = false;
+
     const container = document.getElementById('rxcanvas')?.getBoundingClientRect();
     const menu = document.getElementsByClassName('bottom-toolbar-container')[0]?.getBoundingClientRect();
     const block = this.rectangle.y + this.rectangle.h + 360;
@@ -235,7 +240,8 @@ export class ContextEditorComponent implements OnInit {
       const containerVerify = container.width < 1300 && this.rectangle.x < menu.x;
 
       if (isArrow) {
-        this.style = this.rectangle.y + 400 > menu.y 
+        //this.style = this.rectangle.y + 400 > menu.y 
+        this.style = this.rectangle.y - this.rectangle.h - 360 > 0 || block < menu.y 
           ? containerVerify ? { 'transform': `translateX(${bottom})`, 'bottom.px': 10 } : { 'bottom.px': 10 }
           : containerVerify ? { 'transform': `translateX(${top})`,'top.px': 7 } : { 'top.px': 7 };
 

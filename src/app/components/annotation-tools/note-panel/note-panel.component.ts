@@ -294,14 +294,31 @@ export class NotePanelComponent implements OnInit {
       }
       if (list.length > 0 && !this.isHideAnnotation){
         setTimeout(() => {
-          if (list.find(itm => itm.selected) === undefined)
+          if (list.find(itm => itm.getselected()) === undefined)
             this.activeMarkupNumber = -1;
+              //console.log(itm.selected);
+
           this._processList(list);
         }, 250);
+      }else{
+        this._processList(list);
       }
         
 
     });
+
+
+    this.rxCoreService.guiPage$.subscribe((state) => {
+      //this.currentPage = state.currentpage;
+      if (this.connectorLine) {
+        //RXCore.unSelectAllMarkup();
+        this.annotationToolsService.hideQuickActionsMenu();
+        this.connectorLine.hide();
+        this._hideLeaderLine();
+      }
+
+    });
+
 
 
     this.rxCoreService.guiMarkupIndex$.subscribe(({markup, operation}) => {
@@ -465,13 +482,17 @@ export class NotePanelComponent implements OnInit {
   }
 
 
-  OnEditComment(markupNo: any, itemNote: any): void {
+  OnEditComment(event, markupNo: any, itemNote: any): void {
+    event.stopPropagation();
+
     this.noteIndex = itemNote.id;
     this.note[markupNo] = itemNote.value;
   }
 
 
-  OnRemoveComment(markup: any, id: number, index: number): void {
+  OnRemoveComment(event, markup: any, id: number, index: number): void {
+    event.stopPropagation();
+    
     markup.deleteComment(id);
     if (markup.comments.length === 0) {
       if (this.connectorLine)
@@ -481,8 +502,12 @@ export class NotePanelComponent implements OnInit {
     }
     if (index === 0) {
       markup.comments = [];
-      markup.selected = true;
-      RXCore.deleteMarkUp();
+      //markup.selected = true;
+
+      markup.deleteComment(id);
+      //RXCore.deleteMarkUp();
+
+
     }
   }
 
@@ -522,6 +547,12 @@ export class NotePanelComponent implements OnInit {
 
   }
 
+  ItemNoteClick(event, markupNo: number, markup: any): void {
+
+    console.log(markupNo);
+
+  }
+
   SetActiveCommentThread(event, markupNo: number, markup: any): void {
 
 
@@ -532,10 +563,10 @@ export class NotePanelComponent implements OnInit {
       const frame: any = document.getElementById('foxitframe')
 
 
-      if (frame && frame.contentWindow) {
+      /*if (frame && frame.contentWindow) {
         if (markup.yscaled && Number(markup.yscaled) < 0)
           frame.contentWindow?.scrollTo(0, markup.yscaled);
-      }
+      }*/
 
       setTimeout(() => {
 

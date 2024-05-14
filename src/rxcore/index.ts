@@ -29,6 +29,11 @@ export class RXCore {
         RxCore.overrideLinewidth(onoff, thickness);
     }
 
+    public static scale(scale: string): void {
+        RxCore.scale(scale);
+    }
+
+
     public static scaleOnResize(onoff: boolean): void {
         RxCore.scaleOnResize(onoff);
     }
@@ -628,6 +633,11 @@ export class RXCore {
         RxCore.setrxprintdiv(divelement);
     }
 
+    public static setJSONConfiguration(userobj: any): void {
+        RxCore.setJSONConfiguration(userobj);
+    }
+
+
     public static redrawPage(pagenum: number): void {
         RxCore.redrawPage(pagenum);
     }
@@ -784,7 +794,38 @@ export class RXCore {
         RxCore.GUI_ZoomUpdate.connect(callback);
     }
 
-
+    public static onGuiMarkupMeasureRealTimeData(callback: Function): void {
+        RxCore.GUI_MarkupMeasureRealTimeData.connect(callback);
+    }
     
+    public static setUnit(unit: number): void {
+        RxCore.setUnit(unit);
+    }
+
+    public static metricUnit(val: string): void {
+        RxCore.metricUnit(val)
+    }
+
+    public static imperialUnit(unit: string): void {
+        RxCore.imperialUnit(unit);
+    }
+
+    public static calibrate(selected: boolean): void {
+        RxCore.calibrate(selected);
+    }
+    
+    public static onGuiCalibratediag(callback: Function): void {
+        // RxCore.GUI_MarkupIndex.connect(callback);
+        RxCore.GUI_Calibratediag.connect(callback);
+    }
+
+    public static getCalibrateGUI(): any {        
+        return RxCore.GUI_Calibratediag;
+    }
+
+    public static setdimPrecision(value): any {        
+        RxCore.setdimPrecision(value);
+    }
+
 
 }

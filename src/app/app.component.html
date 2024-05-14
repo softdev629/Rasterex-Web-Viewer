@@ -11,6 +11,7 @@
   <div id="mainContent" class="main-content" [class.overflow-hidden]="!(numOpenFiles$ | async)">
     <div *ngIf="!(numOpenFiles$ | async)" class="welcome-content">
       <img [src]="(guiConfig$ | async).logoUrl" />
+      <!-- <div class="btn-choice-file" (click)="handleLoginClick()">Log In</div> -->
       <div *ngIf="!eventUploadFile" class="main-text">
         <div class="background"></div>
         <h1>Welcome to First class Reader</h1>

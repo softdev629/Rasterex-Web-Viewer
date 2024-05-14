@@ -32,4 +32,5 @@ export interface IMarkup {
     updateAttribute: (name: string, value: any) => void;
     GetAttributes: () => Array<any>;
     ClearAttributes: () => void;
+    getselected : () => boolean;
 }

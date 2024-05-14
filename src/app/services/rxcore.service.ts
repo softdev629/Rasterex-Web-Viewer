@@ -221,6 +221,23 @@ export class RxCoreService {
   }
   /*bugfix 2 commentlist*/
 
+  private _guiMarkupMeasureRealTimeData: Subject<{markup: IMarkup | -1}> = new Subject<{markup: IMarkup | -1}>();
+  guiMarkupMeasureRealTimeData$: Observable<{markup: IMarkup | -1}> = this._guiMarkupMeasureRealTimeData.asObservable();
+  public setGuiMarkupMeasureRealTimeData(markup): void {  
+    this._lastGuiMarkupMeasureRealTimeData = {markup};
+    this._guiMarkupMeasureRealTimeData.next({markup});
+  }
+  private _lastGuiMarkupMeasureRealTimeData: {markup: IMarkup | -1} = { markup: -1 };
+  public getMarkupMeasureRealTimeData(): {markup: IMarkup | -1} {
+    return this._lastGuiMarkupMeasureRealTimeData;
+  }
+
+
+  private _guiOnCalibrateFinished: BehaviorSubject<{isFinished: boolean, data: string}> = new BehaviorSubject<{isFinished: boolean, data: string}>({isFinished:false, data:''});
+  guiCalibrateFinished$: Observable<{isFinished: boolean, data: string}> = this._guiOnCalibrateFinished.asObservable();
+  public setCalibrateFinished(isFinished: boolean, data: string): void {
+    this._guiOnCalibrateFinished.next({isFinished: isFinished, data: data});
+  }
 
 
 }

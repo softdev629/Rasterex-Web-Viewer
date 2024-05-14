@@ -115,8 +115,18 @@ export class TopNavMenuComponent implements OnInit {
     })
 
     this.guiOnNoteSelected = this.rxCoreService.guiOnCommentSelect$.subscribe((value: boolean) => {
-      this.isActionSelected = value;
+
+      if (value !== undefined){
+        this.isActionSelected = value;
+      }
+     
     });
+
+    this.annotationToolsService.notePanelState$.subscribe(state => {
+      if(state?.markupnumber !== undefined)
+      this.isActionSelected = state?.markupnumber;
+    });
+
 
   }
 
@@ -257,6 +267,8 @@ export class TopNavMenuComponent implements OnInit {
               disableMarkupCountButton: false,
               disableMarkupMeasureButton: false
             });
+            this.annotationToolsService.setMeasurePanelState({ visible: true }); 
+            
   
           } else if(option.value === 'annotate'){
             this.rxCoreService.setGuiConfig({
@@ -327,9 +339,21 @@ export class TopNavMenuComponent implements OnInit {
   }
 
   onActionSelect(): void {
-    this.isActionSelected = true;
-    this.rxCoreService.setCommentSelected(this.isActionSelected);
-    this.annotationToolsService.setNotePanelState({ visible: this.isActionSelected });
+
+    if (this.isActionSelected) {
+      this.isActionSelected = false;
+      this.annotationToolsService.setNotePanelState({ visible: false });
+
+    }else{
+      this.isActionSelected = true;
+      this.rxCoreService.setCommentSelected(this.isActionSelected);
+      this.annotationToolsService.setNotePanelState({ visible: this.isActionSelected });
+
+    }
+
+    //this.isActionSelected = true;
+    //this.rxCoreService.setCommentSelected(this.isActionSelected);
+    //this.annotationToolsService.setNotePanelState({ visible: this.isActionSelected });
 
 
     setTimeout(() => {

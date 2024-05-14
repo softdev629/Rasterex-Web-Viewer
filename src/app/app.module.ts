@@ -66,6 +66,9 @@ import { SignaturePanelComponent } from './components/side-nav-menu/signature-pa
 import { DropdownMenuComponent } from './components/common/dropdown-menu/dropdown-menu.component';
 import { BlocksComponent } from './components/side-nav-menu/blocks/blocks.component';
 import { AnnotationShapeIconComponent } from './components/annotation-tools/annotation-shape-icon/annotation-shape-icon.component';
+import { MeasureDetailPanelComponent } from './components/annotation-tools/measure-detail-panel/measure-detail-panel.component';
+import { ToastrModule } from 'ngx-toastr';
+
 
 @NgModule({
   declarations: [
@@ -123,6 +126,8 @@ import { AnnotationShapeIconComponent } from './components/annotation-tools/anno
     DropdownMenuComponent,
     BlocksComponent,
     AnnotationShapeIconComponent,
+    MeasureDetailPanelComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -133,7 +138,8 @@ import { AnnotationShapeIconComponent } from './components/annotation-tools/anno
     NgxSliderModule,
     ColorChromeModule,
     AngularDraggableModule,
-    TreeviewModule.forRoot()
+    TreeviewModule.forRoot(),
+    ToastrModule.forRoot(), // ToastrModule added
   ],
   providers: [ColorHelper],
   bootstrap: [AppComponent]

@@ -36,6 +36,8 @@ export class AnnotationToolsComponent implements OnInit {
     "PAINT_POLYLINE": false,
     "COUNT": false,
     "STAMP": false,
+    "SCALE_SETTING": false,
+    "CALIBRATE": false,
     "MEASURE_LENGTH": false,
     "MEASURE_AREA": false,
     "MEASURE_PATH": false,
@@ -128,7 +130,17 @@ export class AnnotationToolsComponent implements OnInit {
           this.onActionSelect(selectedAction[0]);
         }
       }
+
     });
+
+    this.service.measurePanelState$.subscribe(state => {
+      if(state.visible && this.isActionSelected['SCALE_SETTING'] === false){
+        // this.onActionSelect('SCALE_SETTING');    
+        this.isActionSelected['SCALE_SETTING'] = true;
+      }  
+    });
+
+
   }
 
   private _deselectAllActions(): void {
@@ -154,6 +166,8 @@ export class AnnotationToolsComponent implements OnInit {
     //this.service.setNotePanelState({ visible: false });
     this.service.setPropertiesPanelState({ visible: false });
     this.service.setMeasurePanelState({ visible: false });
+    this.service.setMeasurePanelDetailState({ visible: false });
+    
   }
 
   onActionSelect(actionName: string) {
@@ -255,21 +269,33 @@ export class AnnotationToolsComponent implements OnInit {
       case 'STAMP':
         break;
 
+      case 'SCALE_SETTING':
+          this.service.setMeasurePanelState({ visible: true });
+          break;
+  
+      case 'CALIBRATE':
+          //RXCore.calibrate(true);
+          this.calibrate(true);
+          break;
+  
       case 'MEASURE_LENGTH':
-        //this.service.setMeasurePanelState({ visible: this.isActionSelected[actionName], type: MARKUP_TYPES.MEASURE.LENGTH.type, created: true });
-        this.service.setPropertiesPanelState({ visible: this.isActionSelected[actionName], markup: MARKUP_TYPES.MEASURE.LENGTH,  readonly: false });
+
+      //MeasureDetailPanelComponent
+        this.service.setMeasurePanelDetailState({ visible: this.isActionSelected[actionName], type: MARKUP_TYPES.MEASURE.LENGTH.type, created: true });
+        //this.annotationToolsService.setMeasurePanelState({ visible: true }); 
+        //this.service.setPropertiesPanelState({ visible: this.isActionSelected[actionName], markup: MARKUP_TYPES.MEASURE.LENGTH,  readonly: false });
         RXCore.markUpDimension(this.isActionSelected[actionName], 0);
         break;
 
       case 'MEASURE_AREA':
-        //this.service.setMeasurePanelState({ visible: this.isActionSelected[actionName], type: MARKUP_TYPES.MEASURE.AREA.type, created: true });
-        this.service.setPropertiesPanelState({ visible: this.isActionSelected[actionName], markup: MARKUP_TYPES.MEASURE.AREA, readonly: false });
+        this.service.setMeasurePanelDetailState({ visible: this.isActionSelected[actionName], type: MARKUP_TYPES.MEASURE.AREA.type, created: true });
+        //this.service.setPropertiesPanelState({ visible: this.isActionSelected[actionName], markup: MARKUP_TYPES.MEASURE.AREA, readonly: false });
         RXCore.markUpArea(this.isActionSelected[actionName]);
         break;
 
       case 'MEASURE_PATH':
-        //this.service.setMeasurePanelState({ visible: this.isActionSelected[actionName], type:  MARKUP_TYPES.MEASURE.PATH.type, created: true });
-        this.service.setPropertiesPanelState({ visible: this.isActionSelected[actionName], markup:  MARKUP_TYPES.MEASURE.PATH, readonly: false });
+        this.service.setMeasurePanelDetailState({ visible: this.isActionSelected[actionName], type:  MARKUP_TYPES.MEASURE.PATH.type, created: true });
+        //this.service.setPropertiesPanelState({ visible: this.isActionSelected[actionName], markup:  MARKUP_TYPES.MEASURE.PATH, readonly: false });
         RXCore.markupMeasurePath(this.isActionSelected[actionName]);
         break;
       case 'COUNT':
@@ -294,4 +320,19 @@ export class AnnotationToolsComponent implements OnInit {
     if (undo) RXCore.markUpUndo();
     else RXCore.markUpRedo();
   }
+  calibrate(selected) {
+
+    RXCore.onGuiCalibratediag(onCalibrateFinished);
+
+    let rxCoreSvc = this.rxCoreService;
+
+    function onCalibrateFinished(data) {
+      console.log("data app", data);
+        //$rootScope.$broadcast(RXCORE_EVENTS.CALIBRATE_FINISHED, data);
+        rxCoreSvc.setCalibrateFinished(true, data)
+    }
+
+    RXCore.calibrate(selected);
+  }
+
 }
