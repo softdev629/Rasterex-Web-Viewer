@@ -24,9 +24,8 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
   panelHeading: string = '';
   measurementText: string = 'Distance'
   visible: boolean = false;
-  measureData: any = 0.0;
+  measureData: any = {};
   markup: any;
-  snap: boolean = false;
 
   constructor(
     private readonly rxCoreService: RxCoreService,
@@ -70,7 +69,7 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
 
     this.guiMarkupMeasureRealTimeDataSubscription = this.rxCoreService.guiMarkupMeasureRealTimeData$.subscribe(({markup}) => {
       this.measureData = markup;//this.rxCoreService.getGuiMarkupList();
-      console.log("measureData", this.measureData);
+      
       if(markup !== -1) {
 
         if(markup.type === 13){
@@ -107,11 +106,6 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
     if (this.guiMarkupSubscription) this.guiMarkupSubscription.unsubscribe();
     if (this.guiMarkupMeasureRealTimeDataSubscription) this.guiMarkupMeasureRealTimeDataSubscription.unsubscribe();
   }
-
    
-  onSnapChange(onoff: boolean): void {
-    RXCore.changeSnapState(onoff);
-  }
-
 
 }

@@ -91,7 +91,7 @@
                     let-onCollapseExpand="onCollapseExpand">
                     <div class="row-item" [ngStyle]="{'padding-left.px': 10*level }">
                         <ng-container [ngSwitch]="item.children?.length > 0">
-                            <img *ngSwitchCase="true" [class.collapsed]="item.collapsed" src="assets/images/arrow-down.svg" (click)="onCollapseExpand()" />
+                            <img *ngSwitchCase="true" [class.collapsed]="item.collapsed" src="/assets/images/arrow-down.svg" (click)="onCollapseExpand()" />
                             <span *ngSwitchCase="false" style="width: 10px;"></span>
                         </ng-container>
                         <div class="row-item-block">

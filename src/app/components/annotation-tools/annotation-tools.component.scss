@@ -138,6 +138,13 @@
                 height: 28px;
                 background-color: #EDF1F2;
             }
+            li.snap-section.selected {
+                
+                img{
+                    filter: brightness(0) invert(1);
+                }
+            }
+
         }
     }
 

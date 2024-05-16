@@ -107,6 +107,16 @@
                                 </rx-switch>
                             </div>
                         </section>
+                        <section>
+                            <div class="snap-section">
+                                <span>Lock</span>
+                                <rx-switch
+                                    [checked]="locked"
+                                    (change)="onLockChange($event)">
+                                </rx-switch>
+                            </div>
+                        </section>
+                        
 
                     </ng-container>
                     <ng-container *ngSwitchCase="2">
@@ -155,6 +165,16 @@
                                 </rx-switch>
                             </div>
                         </section>
+                        <section>
+                            <div class="snap-section">
+                                <span>Lock</span>
+                                <rx-switch
+                                    [checked]="locked"
+                                    (change)="onLockChange($event)">
+                                </rx-switch>
+                            </div>
+                        </section>
+
                     </ng-container>
                 </div>
             </ng-container>

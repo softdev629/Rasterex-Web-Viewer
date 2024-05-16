@@ -345,12 +345,12 @@
                     <span>{{searchNumMatches}} matches found</span>
                     <div>
                         <img
-                            src="assets/images/arrow-down.svg"
+                            src="/assets/images/arrow-down.svg"
                             style="rotate: 90deg;"
                             [class.disabled]="searchCurrentMatch < 2"
                             (click)="onTextSearchNavigate(false)" />
                         <img
-                            src="assets/images/arrow-down.svg"
+                            src="/assets/images/arrow-down.svg"
                             style="rotate: -90deg;"
                             [class.disabled]="searchCurrentMatch == searchNumMatches"
                             (click)="onTextSearchNavigate(true)"/>

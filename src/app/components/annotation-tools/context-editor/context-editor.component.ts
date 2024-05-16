@@ -196,6 +196,7 @@ export class ContextEditorComponent implements OnInit {
 
     this.rxCoreService.guiMarkupUnselect$.subscribe(markup => {
       this.visible = false;
+      
     });
 
     this.rxCoreService.guiTextInput$.subscribe(({rectangle, operation}) => {

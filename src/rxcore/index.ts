@@ -802,6 +802,13 @@ export class RXCore {
         RxCore.setUnit(unit);
     }
 
+    public static getUnit(): any {
+        return RxCore.getUnit();
+    }
+
+
+    
+
     public static metricUnit(val: string): void {
         RxCore.metricUnit(val)
     }

@@ -41,6 +41,7 @@ export class AnnotationToolsComponent implements OnInit {
     "MEASURE_LENGTH": false,
     "MEASURE_AREA": false,
     "MEASURE_PATH": false,
+    "SNAP": false,
     "MARKUP_LOCK" : false
   };
 
@@ -134,10 +135,13 @@ export class AnnotationToolsComponent implements OnInit {
     });
 
     this.service.measurePanelState$.subscribe(state => {
-      if(state.visible && this.isActionSelected['SCALE_SETTING'] === false){
+
+      this.isActionSelected['SCALE_SETTING'] = state.visible;
+
+      /*if(state.visible && this.isActionSelected['SCALE_SETTING'] === false){
         // this.onActionSelect('SCALE_SETTING');    
         this.isActionSelected['SCALE_SETTING'] = true;
-      }  
+      }*/  
     });
 
 
@@ -146,9 +150,11 @@ export class AnnotationToolsComponent implements OnInit {
   private _deselectAllActions(): void {
     Object.entries(this.isActionSelected).forEach(([key, value]) => {
 
-      if (key != 'MARKUP_LOCK') {
+      if (key !== 'MARKUP_LOCK' && key !== 'SNAP') {
         this.isActionSelected[key] = false;
       }
+
+      
       
       /*case 'MARKUP_LOCK' :
         RXCore.lockMarkup(this.isActionSelected[actionName]);
@@ -270,7 +276,7 @@ export class AnnotationToolsComponent implements OnInit {
         break;
 
       case 'SCALE_SETTING':
-          this.service.setMeasurePanelState({ visible: true });
+          this.service.setMeasurePanelState({ visible: this.isActionSelected[actionName] });
           break;
   
       case 'CALIBRATE':
@@ -298,6 +304,9 @@ export class AnnotationToolsComponent implements OnInit {
         //this.service.setPropertiesPanelState({ visible: this.isActionSelected[actionName], markup:  MARKUP_TYPES.MEASURE.PATH, readonly: false });
         RXCore.markupMeasurePath(this.isActionSelected[actionName]);
         break;
+      case 'SNAP':
+          RXCore.changeSnapState(this.isActionSelected[actionName]);
+          break;
       case 'COUNT':
         if(!this.isActionSelected[actionName]){
           RXCore.markupCount(this.isActionSelected[actionName]);

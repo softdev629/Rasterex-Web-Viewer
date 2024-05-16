@@ -22,6 +22,7 @@ export class PropertiesPanelComponent implements OnInit {
   color: string;
   strokeColor: string;
   snap: boolean = false;
+  locked : boolean = false;
 
   //strokeOpacity: number = 100;
   strokeThickness: number = 1;
@@ -211,7 +212,10 @@ export class PropertiesPanelComponent implements OnInit {
         this.visible = false;
         return;
       }
+      
       this.currentType = markup.type;
+      this.locked = markup.locked;
+
 
       //|| markup.type == MARKUP_TYPES.MEASURE.AREA.type && markup.subtype == MARKUP_TYPES.MEASURE.AREA.subType
 
@@ -358,6 +362,15 @@ export class PropertiesPanelComponent implements OnInit {
   onSnapChange(onoff: boolean): void {
     RXCore.changeSnapState(onoff);
   }
+
+  onLockChange(onoff: boolean): void {
+    //RXCore.changeSnapState(onoff);
+    let mrkUp = RXCore.getSelectedMarkup();
+    mrkUp.locked = onoff;
+  }
+
+  
+
   onClose(): void {
     this.visible = false;
     RXCore.selectMarkUp(false);

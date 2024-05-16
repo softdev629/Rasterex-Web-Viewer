@@ -13,6 +13,7 @@ export interface IMarkup {
     strokecolor: string;
     fillcolor: string;
     font: any;
+    locked: boolean;
     transparency: number;
     x: number;
     y: number;

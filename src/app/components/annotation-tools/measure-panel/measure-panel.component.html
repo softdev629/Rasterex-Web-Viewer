@@ -14,9 +14,7 @@
                 Current Scale
             </div>
             <div class="scale-value">
-                <!-- <div class="calibrate-scale-data"> -->
-                    <input type="text" [(ngModel)]="currentScale" readonly />
-                <!-- </div> -->
+                <input type="text" [(ngModel)]="currentScale" readonly />
             </div>
         </div>  
         
@@ -65,6 +63,9 @@
                                     >
                                 </rx-dropdown>
                             </div>
+                            <div>
+                                <button (click)="setScale()" class="btn btn-primary">Set Scale</button>
+                            </div>
                         </div>
                         <div class="btn-section">
                             <button (click)="onCloseClick()" class="btn btn-light">CANCEL</button>
@@ -100,7 +101,7 @@
                                 </div>                 
                             </div>                           
                             
-                            <ng-container *ngIf="isSelectedCalibrate && isCalibrateFinished">
+                            <ng-container *ngIf="isSelectedCalibrate">
                                 <div>
                                     <p>Please adjust the calibration length by entering the desired value in the text field provided.</p>
                                 </div>
@@ -110,14 +111,7 @@
                                         <input type="text" placeholder="Calibrate Length" [(ngModel)]="calibrateLength" />
                                     </div>
                                     <div>                
-                                        <rx-dropdown
-                                            class="select-matric-unit"
-                                            [placeholder]="'Select matric unit...'"
-                                            [options]="metricUnitsOptions"
-                                            [value]="selectedMetricUnit"
-                                            [disabled]="true"
-                                            >
-                                        </rx-dropdown>
+                                        {{selectedMetricUnit?.label}}
                                     </div>
                                 </div>
                                 <div class="grid precision-section"> 
@@ -125,18 +119,12 @@
                                         Precision
                                     </div>           
                                     <div>
-                                        <rx-dropdown
-                                            class="select-precision"
-                                            [placeholder]="'Select precision...'"
-                                            [options]="precisionOptions"
-                                            [value]="selectedPrecision"
-                                            (valueChange)="onPrecisionChanged($event)">
-                                        </rx-dropdown>
+                                        {{selectedScalePrecision?.label}}
                                     </div>
-                                </div>
-                                <div class="calibrate-scale-data">
-                                    <input type="text" [(ngModel)]="calibrateScale" readonly />
-                                </div>
+                                    <div>
+                                        <button (click)="setCalibrateScale()" class="btn btn-primary">Set Scale</button>
+                                    </div>
+                                </div>                                
                                 
                                 <div class="btn-section">
                                     <button (click)="cancelCalibrate()" class="btn btn-light">CANCEL</button>

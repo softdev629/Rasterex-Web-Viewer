@@ -131,6 +131,11 @@
     <div class="top-nav-item pages">
         <rx-opened-files-tabs></rx-opened-files-tabs>
     </div>
+
+    <div class="top-nav-item current-scale">
+        <span>{{currentScaleValue}}</span>
+    </div>
+
     <div class="top-nav-item dropdown">
         <rx-dropdown [options]="options" [value]="selectedValue" [align]="'right'" [transparent]="false" (valueChange)="onModeChange($event)"></rx-dropdown>
     </div>

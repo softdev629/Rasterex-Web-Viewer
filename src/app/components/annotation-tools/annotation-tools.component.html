@@ -305,6 +305,14 @@
         </li>            
 
             <li
+                *ngIf="!(guiConfig$ | async).disableMarkupMeasureButton"
+                class="tooltip snap-section"
+                [class.selected]="isActionSelected['SNAP']"
+                (click)="onActionSelect('SNAP')">
+                <img src="/assets/images/snap-ico.svg" />
+                <span class="tooltip-text tooltip-top">Snap</span>
+            </li>
+            <li
                 *ngIf="!(guiConfig$ | async).disableMarkupCountButton"
                 class="tooltip"
                 [class.selected]="isActionSelected['COUNT']"
