@@ -34,6 +34,7 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
+
     this.stateSubscription = this.annotationToolsService.measurePanelDetailState$.subscribe(state => {
       this.visible = state.visible;
       if(!this.visible){
@@ -72,13 +73,40 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
       
       if(markup !== -1) {
 
-        if(markup.type === 13){
-          this.measurementText = "Count";
-          this.panelHeading = "Count";
+        switch(markup.type){
+          case MARKUP_TYPES.MEASURE.LENGTH.type :
+            this.panelHeading = "Distance Measurement";
+            this.measurementText = "Distance";
+            this.visible = true;
+            
+          break;
+          case MARKUP_TYPES.MEASURE.AREA.type :
+            this.panelHeading = "Area Measurement";  
+            this.measurementText = "Area";
+            this.visible = true;
+          break;
+          case MARKUP_TYPES.MEASURE.PATH.type :
+            this.panelHeading = "Perimeter Measurement";
+            this.measurementText = "Distance";
+            this.visible = true;
+          break;
+
+          case 13 :
+            this.measurementText = "Count";
+            this.panelHeading = "Count";
+            this.visible = true;
+  
+            break;
+          default :
+            this.visible = false;
+            break;
+  
+  
         }
-          
+  
+
         
-        this.visible = true;
+        
       }
       
       //this.annotationToolsService.setPropertiesPanelState({ visible: false, markup: this.markup,  readonly: false });
@@ -99,6 +127,61 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
       }
       
     });
+
+    this.rxCoreService.guiMarkupIndex$.subscribe(({markup, operation}) => {
+      
+      this.measureData = markup;//this.rxCoreService.getGuiMarkupList();
+      
+      if(markup !== -1) {
+
+        switch(markup.type){
+          case MARKUP_TYPES.MEASURE.LENGTH.type :
+            this.panelHeading = "Distance Measurement";
+            this.measurementText = "Distance";
+            this.visible = true;
+            
+          break;
+          case MARKUP_TYPES.MEASURE.AREA.type :
+            this.panelHeading = "Area Measurement";  
+            this.measurementText = "Area";
+            this.visible = true;
+          break;
+          case MARKUP_TYPES.MEASURE.PATH.type :
+            this.panelHeading = "Perimeter Measurement";
+            this.measurementText = "Distance";
+            this.visible = true;
+          break;
+
+          case 13 :
+            this.measurementText = "Count";
+            this.panelHeading = "Count";
+            this.visible = true;
+  
+            break;
+          default :
+            this.visible = false;
+            break;
+  
+  
+        }
+        
+      }
+      
+    });
+
+
+    this.rxCoreService.guiMarkup$.subscribe(({markup, operation}) => {
+      
+
+      //Hide real time box when one of measure tool deleted
+      if(operation.deleted) {
+        this.visible = false;
+      }
+      
+
+    });
+
+
   }
 
   ngOnDestroy(): void {

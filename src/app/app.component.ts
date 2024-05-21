@@ -4,6 +4,7 @@ import { RxCoreService } from './services/rxcore.service';
 import { RXCore } from 'src/rxcore';
 import { NotificationService } from './components/notification/notification.service';
 import { MARKUP_TYPES } from 'src/rxcore/constants';
+import { AnnotationToolsService } from './components/annotation-tools/annotation-tools.service';
 
 @Component({
   selector: 'app-root',
@@ -145,13 +146,14 @@ export class AppComponent implements AfterViewInit {
       if (annotation !== -1 || this.rxCoreService.lastGuiMarkup.markup !== -1) {
         this.rxCoreService.setGuiMarkup(annotation, operation);
       }
+
     });
 
     RXCore.onGuiMarkupIndex((annotation: any, operation: any) => {
       console.log('RxCore GUI_Markup index:', annotation, operation);
       if (annotation !== -1 || this.rxCoreService.lastGuiMarkup.markup !== -1) {
         this.rxCoreService.setGuiMarkupIndex(annotation, operation);
-        this.rxCoreService.setGuiMarkupMeasureRealTimeData(annotation);
+        //this.rxCoreService.setGuiMarkupMeasureRealTimeData(annotation);
       }
     });
 
