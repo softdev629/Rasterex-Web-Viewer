@@ -33,6 +33,10 @@ export class RXCore {
         RxCore.scale(scale);
     }
 
+    public static setThumbnailSize(w:number, h:number): void {
+        RxCore.setThumbnailSize(w,h);
+    }
+    
 
     public static scaleOnResize(onoff: boolean): void {
         RxCore.scaleOnResize(onoff);

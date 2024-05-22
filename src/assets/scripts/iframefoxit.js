@@ -959,7 +959,7 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
         if (foxview.pdfViewer) {
             foxview.pdfViewer.getCurrentPDFDoc().getPageByIndex(pagenum).then(function (page) {
                 var pgindex = page.info.index;
-                page.getThumb().then(function (thumbnail) {
+                page.getThumb(0, 1.5).then(function (thumbnail) {
                     pgindex = page.info.index;
                     RxCore.setThumbnailFoxit(thumbnail, pagenum);
                     foxview.pagestates[pagenum].thumbadded = false;
@@ -983,7 +983,22 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
         if (nrotation == 180){nfoxrot = 2;}
         if (nrotation == 270){nfoxrot = 3;}
 
+
+
         if (foxview.pdfViewer) {
+
+            /*foxview.pdfViewer.rotateTo(nrotation).then(function(){
+                foxview.pagestates[pagenum].rendered = false;
+            }).catch(function (error) {
+                console.log(error);
+            });*/
+
+                /*page.getThumb().then(function (thumbnail) {
+                    pgindex = page.info.index;
+                    RxCore.setThumbnailFoxit(thumbnail, pagenum);
+                    foxview.pagestates[pagenum].thumbadded = false;
+                });*/
+
             foxview.pdfViewer.getCurrentPDFDoc().getPageByIndex(pagenum).then(function (page) {
                 //var pgindex = page.info.index;
                 
@@ -993,11 +1008,6 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
                         foxview.pagestates[pagenum].rendered = false;
                 });
                 
-                /*page.getThumb().then(function (thumbnail) {
-                    pgindex = page.info.index;
-                    RxCore.setThumbnailFoxit(thumbnail, pagenum);
-                    foxview.pagestates[pagenum].thumbadded = false;
-                });*/
             });
         }
 

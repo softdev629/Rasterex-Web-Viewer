@@ -279,10 +279,10 @@ export class AnnotationToolsComponent implements OnInit {
           this.service.setMeasurePanelState({ visible: this.isActionSelected[actionName] });
           break;
   
-      case 'CALIBRATE':
+      /*case 'CALIBRATE':
           //RXCore.calibrate(true);
           this.calibrate(true);
-          break;
+          break;*/
   
       case 'MEASURE_LENGTH':
 
@@ -329,7 +329,7 @@ export class AnnotationToolsComponent implements OnInit {
     if (undo) RXCore.markUpUndo();
     else RXCore.markUpRedo();
   }
-  calibrate(selected) {
+  /*calibrate(selected) {
 
     RXCore.onGuiCalibratediag(onCalibrateFinished);
 
@@ -342,6 +342,6 @@ export class AnnotationToolsComponent implements OnInit {
     }
 
     RXCore.calibrate(selected);
-  }
+  }*/
 
 }

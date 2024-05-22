@@ -64,6 +64,9 @@ export class AppComponent implements AfterViewInit {
     RXCore.restrictPan(false);
     RXCore.overrideLinewidth(true, 1.0);
 
+
+    //RXCore.setThumbnailSize(240,334);
+
     RXCore.setGlobalStyle(true);
     RXCore.setLineWidth(4);
     RXCore.setGlobalStyle(false);

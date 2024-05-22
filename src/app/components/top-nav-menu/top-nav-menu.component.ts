@@ -10,7 +10,7 @@ import { TopNavMenuService } from './top-nav-menu.service';
 import { GuiMode } from 'src/rxcore/enums/GuiMode';
 import { Subscription } from 'rxjs';
 import { SideNavMenuService } from '../side-nav-menu/side-nav-menu.service';
-//import { MeasurePanelService } from '../annotation-tools/measure-panel/measure-panel.service';
+import { MeasurePanelService } from '../annotation-tools/measure-panel/measure-panel.service';
 
 
 @Component({
@@ -58,11 +58,12 @@ export class TopNavMenuComponent implements OnInit {
     private readonly printService: PrintService,
     private readonly compareService: CompareService,
     private readonly service: TopNavMenuService,
-    private readonly sideNavMenuService: SideNavMenuService
+    private readonly sideNavMenuService: SideNavMenuService,
+    private readonly measurePanelService: MeasurePanelService
     ) {
   }
 
-  //private readonly measurePanelService: MeasurePanelService
+  
 
   private _setOptions(option: any = undefined): void {
     this.options = [
@@ -132,11 +133,11 @@ export class TopNavMenuComponent implements OnInit {
       this.isActionSelected = state?.markupnumber;
     });
 
-    /*this.measurePanelService.measureScaleState$.subscribe((state) => {
+    this.measurePanelService.measureScaleState$.subscribe((state) => {
       if(state.visible && state.value) {
         this.currentScaleValue = state.value;
       }      
-    });*/
+    });
 
   }
 
