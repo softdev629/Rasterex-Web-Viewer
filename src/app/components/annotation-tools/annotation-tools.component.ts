@@ -145,6 +145,12 @@ export class AnnotationToolsComponent implements OnInit {
     });
 
 
+    this.service.snapState$.subscribe(state => {
+      if(state) {
+        this.isActionSelected['SNAP'] = state;
+      }
+    });
+
   }
 
   private _deselectAllActions(): void {

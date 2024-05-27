@@ -1,4 +1,4 @@
-<div *ngIf="visible" class="rx-measure-panel-container"
+<div *ngIf="visible && isActivefile" class="rx-measure-panel-container"
     [ngDraggable]="draggable"
     [bounds]="bounds"
     [inBounds]="true"
@@ -28,7 +28,7 @@
                                     class="select-metric-type"
                                     [placeholder]="'Select metric type...'"
                                     [options]="metricTitlesOptions"
-                                    [value]="metricTitlesOptions[0]"
+                                    [value]="selectedMetricOptionObj"
                                     (valueChange)="selectMetric($event)">
                                 </rx-dropdown>                
             

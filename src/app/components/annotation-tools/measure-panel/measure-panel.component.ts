@@ -54,6 +54,9 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
   currentScale: string;
   selectedScalePrecision: any;
   isDoubleClicked: boolean;
+  selectedMetricOptionObj: any;
+  activeScale: string;
+  isActivefile: boolean;
 
   private _setDefaults(): void {
     this.created = false;
@@ -89,6 +92,7 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
       this.metricTitlesOptions.push(obj);
     }); 
     this.selectedMetric = '0';
+    this.selectedMetricOptionObj = this.metricTitlesOptions[0];
     
     let precisionOptionsArr = [1, 0.1, 0.01, 0.001, 0.0001];
     precisionOptionsArr.forEach(item => {
@@ -110,8 +114,14 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
     
     this.stateSubscription = this.annotationToolsService.measurePanelState$.subscribe(state => {
       this.visible = state.visible;
-      this.service.setMeasureScaleState({visible: state.visible, value: this.currentScale});
+      this.service.setMeasureScaleState({ visible: state.visible });
+
+      if(this.visible && !this.currentScale) {
+        this.currentScale = '1 Millimeter : 1 Millimeter';
+      }
     });
+
+
 
     this.rxCoreService.guiCalibrateFinished$.subscribe(state => {
       this.calibrateLength = parseFloat(state.data || "0").toFixed(this.countDecimals(this.selectedScalePrecision?.value));
@@ -136,6 +146,17 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
     //   this.strokeLineStyle = markup.linestyle;
     //   this.lengthMeasureType = markup.subtype;
     // });
+    this.rxCoreService.guiConfig$.subscribe(config => {
+      if(config.disableMarkupMeasureButton === true) {
+        this.visible = false;
+      }
+    });
+
+    this.rxCoreService.guiState$.subscribe(state => {
+      if(state?.activefile) {
+        this.isActivefile = true;
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -172,28 +193,29 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
   }
 
   selectMetric(event): void {
-    console.log("selectMetric", event);
     let metric = event.value;
-    if (this.selectedMetric !== metric) {
-        this.updateMetricDropDowns(metric);
-        switch (metric){
-         case '0' :
-          RXCore.setUnit(1);
-          break;
-         case '1' :
-          RXCore.setUnit(2);
-          break;
-        } 
-        
-        this.notifyMetricChanged('0');
-    }
+    this.updateMetricDropDowns(metric);
+  }
+
+  updateMetric(): void {
+    switch (this.selectedMetric){
+      case '0' :
+        RXCore.setUnit(1);
+        break;
+      case '1' :
+        RXCore.setUnit(2);
+        break;
+    } 
   };
 
   selectMetricUnit(event): void {
-      let val = event.label;
-      let obj = this.metricUnitsOptions.find(item => item.value === event.value);
-      this.selectedMetricUnit = obj;
-      this.notifyMetricChanged(val);      
+    let obj = this.metricUnitsOptions.find(item => item.value === event.value);
+    this.selectedMetricUnit = obj;
+  };
+
+  updateMetricUnit(): void {
+    let val = this.selectedMetricUnit.label;
+    this.notifyMetricChanged(val);      
   };
 
   notifyMetricChanged(val): void {
@@ -213,9 +235,10 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
 
   updateMetricDropDowns(metric): void {
       this.selectedMetric = metric;
+      this.selectedMetricOptionObj = this.metricTitlesOptions.find(item=>item.value === this.selectedMetric);
       this.selectedMetricTitle = this.metricTitles[this.selectedMetric];
       var units =  this.metricUnitsForMetric(this.selectedMetric);
-      console.log("units", units);
+      // console.log("units", units);
 
       this.metricUnitsOptions = [];
       Object.entries(units).forEach(([key, value]) => {
@@ -262,6 +285,7 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
 
 
   onCloseClick(): void {
+    this.currentScale = this.activeScale; 
     this.visible = false;
     this.annotationToolsService.setMeasurePanelState({ visible: false });
     this.onClose.emit();    
@@ -275,6 +299,7 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
     }
 
     RXCore.calibrate(selected);
+    this.annotationToolsService.setSnapState(true);
   }
 
   onCalibrateCheckedChange() {
@@ -300,6 +325,8 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
   }
 
   applyScale() {    
+    this.updateMetric();
+    this.updateMetricUnit();
     RXCore.setdimPrecision(this.countDecimals(this.selectedScalePrecision?.value));
     RXCore.scale(this.selectedScale?.value);
     
@@ -310,6 +337,7 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
       this.isCalibrateFinished = false;
     }
 
+    this.activeScale = this.currentScale;
     this.showSuccess();
     this.onCloseClick();
   }
@@ -318,15 +346,30 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
     var calibrateconn = RXCore.getCalibrateGUI(); 
     calibrateconn.SetTempCal(this.calibrateLength);
     calibrateconn.setCalibrateScaleByLength();
+
+    if(!Number.isFinite(calibrateconn.getMeasureScale())) {
+      return;
+    }
+
     let measureScale = parseFloat(calibrateconn.getMeasureScale());
     let measureSc = measureScale.toFixed(2);    
     this.currentScale = `1 ${this.selectedMetricUnit?.label} : ${measureSc} ${this.selectedMetricUnit?.label}`;
   }
 
   applyCalibrate() {    
+
+    this.updateMetric();
+    this.updateMetricUnit();
+
     this.calibrateLength = this.calibrateLength.trim();
     var calibrateconn = RXCore.getCalibrateGUI();
     calibrateconn.SetTempCal(this.calibrateLength);
+    calibrateconn.setCalibrateScaleByLength();
+
+    if(!Number.isFinite(calibrateconn.getMeasureScale())) {
+      return;
+    }
+
     calibrateconn.setCalibration(true);
 
     RXCore.setdimPrecision(this.countDecimals(this.selectedScalePrecision?.value));
@@ -335,16 +378,25 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
     this.calibrateScaleWithPrecision();
     this.service.setMeasureScaleState({visible: true, value: this.currentScale});
     RXCore.calibrate(false);
+    this.activeScale = this.currentScale;
+
     this.showSuccess();
     this.onCloseClick();
   }
 
   cancelCalibrate(): void {
+    let snap = RXCore.getSnapState();
     RXCore.calibrate(false);
-    RXCore.scale(this.selectedScale?.value);
+    
     this.isSelectedCalibrate = false;
     this.isCalibrateFinished = false;
+
     this.calibrateLength = "0";
+    this.currentScale = `1 Millimeter : 1 Millimeter`;
+    
+    if(snap === false) {
+      RXCore.changeSnapState(false);
+    }
   }
 
   showSuccess() {

@@ -68,5 +68,10 @@ export class AnnotationToolsService {
     this._measurePanelDetailState.next(any);
   }
 
+  private _snapState: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public snapState$: Observable<boolean> = this._snapState.asObservable();
+  public setSnapState(any): void {
+    this._snapState.next(any);
+  }
 
 }
