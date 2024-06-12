@@ -14,6 +14,13 @@
                   <div class="col">{{measurementText}}</div>
                   <div class="col">{{measureData?.dimtext}}</div>
                 </div>
+
+                <div class="row" 
+                  *ngIf="measureData?.dimtextWithHole && (measureData.type === MARKUP_TYPES.MEASURE.AREA.type ||
+                  measureData.type === MARKUP_TYPES.SHAPE.RECTANGLE.type)">
+                  <div class="col">Area total</div>
+                  <div class="col">{{measureData?.dimtextWithHole}}</div>
+                </div>
                                 
                 <div class="row" 
                   *ngIf="measureData.type === MARKUP_TYPES.MEASURE.AREA.type ||

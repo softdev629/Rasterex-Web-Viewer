@@ -171,9 +171,38 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
       }
   }
 
+  /*calculateArea(markup: any) {
+    this.measureData = markup;
+    this.setDistanceOnArea(this.measureData); 
+  }*/
+
   calculateArea(markup: any) {
     this.measureData = markup;
     this.setDistanceOnArea(this.measureData); 
+
+    let szmtxt =  this.measureData.dimtext.split(" ")[1];
+
+    let dimValue = this.measureData.dimarea;
+
+
+    for(let idx = 0; idx < this.measureData.holes.length; idx++) {
+
+      //let markupObj = RXCore.getmarkupbyNumber();
+
+      dimValue = this.measureData.holes[idx].dimarea;
+
+      dimValue = dimValue + this.measureData.dimarea;
+
+
+    }
+ 
+    //this.measureData.dimtextWithHole = dimValue;//.toFixed(2) + " " + this.measureData.dimtext.split(" ")[1];
+
+    if(this.measureData.dimarea < dimValue) {
+      this.measureData.dimtextWithHole = dimValue.toFixed(2) + " " + szmtxt;
+    } else {
+      this.measureData.dimtextWithHole = 0;
+    }
   }
 
   setDistanceOnArea(markup: any) {

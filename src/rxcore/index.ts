@@ -466,8 +466,16 @@ export class RXCore {
         RxCore.markUpDimension(onoff, type);
     }
 
-    public static markUpArea(onoff: boolean): void {
+    /*public static markUpArea(onoff: boolean): void {
         RxCore.markUpArea(onoff);
+    }*/
+
+    public static markUpArea(onoff: boolean, parentmarkupnumber = 0): void {
+        RxCore.markUpArea(onoff, parentmarkupnumber);
+    }
+
+    public static markUpAreaHole(onoff: boolean): void {
+        RxCore.markUpAreaHole(onoff);
     }
 
     public static markupMeasurePath(onoff: boolean): void {
@@ -530,6 +538,11 @@ export class RXCore {
     public static getmarkupobjByGUID(guid: string): -1 | IMarkup {
         return RxCore.getmarkupobjByGUID(guid);
     }
+
+    public static getmarkupbyNumber(no: number): -1 | IMarkup {
+        return RxCore.getmarkupbyNumber(no);
+    }
+
 
     public static restoreDefault(): void{
         RxCore.restoreDefault();
@@ -856,6 +869,7 @@ export class RXCore {
     public static markupRectToAreaSwitch(markup: IMarkup): void {
         RxCore.markupRectToAreaSwitch(markup);
     } 
+
 
 
 }

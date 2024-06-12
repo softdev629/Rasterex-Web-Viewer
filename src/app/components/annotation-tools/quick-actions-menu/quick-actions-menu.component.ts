@@ -343,4 +343,25 @@ export class QuickActionsMenuComponent implements OnInit, OnDestroy {
     this.visible = false;
   }
 
+  onShowHideLabelClick(): void {    
+    if (this.operation?.created) { RXCore.selectMarkUp(true); }
+    if(!this.annotation.hidevaluelabel) {
+      this.annotation.hidelabelmarkupobj();
+    }
+    else {
+      this.annotation.showlabelmarkupobj();
+    }
+    RXCore.markUpRedraw();
+    this.visible = false;
+  }
+ 
+  onHoleClick(): void {    
+    if (this.operation?.created) { RXCore.selectMarkUp(true); }
+    this.annotationToolsService.setMeasurePanelDetailState({ visible: true, type: MARKUP_TYPES.MEASURE.AREA.type, created: true });
+    //RXCore.markUpArea(true, this.annotation.markupnumber);
+    RXCore.markUpAreaHole(true);
+
+    this.visible = false;
+  }
+
 }

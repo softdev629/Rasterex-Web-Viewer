@@ -42,7 +42,8 @@ export class AnnotationToolsComponent implements OnInit {
     "MEASURE_AREA": false,
     "MEASURE_PATH": false,
     "SNAP": false,
-    "MARKUP_LOCK" : false
+    "MARKUP_LOCK" : false,
+    "NO_SCALE": true
   };
 
   get isPaintSelected(): boolean {
@@ -156,12 +157,12 @@ export class AnnotationToolsComponent implements OnInit {
   private _deselectAllActions(): void {
     Object.entries(this.isActionSelected).forEach(([key, value]) => {
 
-      if (key !== 'MARKUP_LOCK' && key !== 'SNAP') {
+
+      if (key !== 'MARKUP_LOCK' && key !== 'SNAP' && key !== 'NO_SCALE') {
         this.isActionSelected[key] = false;
       }
+      
 
-      
-      
       /*case 'MARKUP_LOCK' :
         RXCore.lockMarkup(this.isActionSelected[actionName]);
         break;*/
@@ -325,6 +326,13 @@ export class AnnotationToolsComponent implements OnInit {
       case 'MARKUP_LOCK' :
         RXCore.lockMarkup(this.isActionSelected[actionName]);
         break;
+
+      case 'NO_SCALE':
+        RXCore.useNoScale(this.isActionSelected[actionName]);
+        RXCore.markUpRedraw();
+       break;
+
+        
 
     }
   }

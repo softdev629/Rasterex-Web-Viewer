@@ -46,6 +46,17 @@
             (click)="onInsertClick()">
                 <img id="quickActionsMenuInsertPoint" src="/assets/images/insert-point.svg" height="48" />
         </li>
+        <li
+            *ngIf="(annotation.type === 8 || annotation.type === 3) && annotation.parentmarkupnumber === 0"
+            (click)="onHoleClick()">
+            <img id="quickActionsHole" src="/assets/images/insert-area-hole.svg" height="28" />
+        </li>
+        
+        <li
+            *ngIf="annotation.type === 1 || annotation.type === 3 || annotation.type === 7 || annotation.type === 8"
+            (click)="onShowHideLabelClick()">
+            <img id="quickActionsMenuShowHideLabel" src="/assets/images/label-remove.svg" height="23" />
+        </li>        
 
     </ul>
 </div>
