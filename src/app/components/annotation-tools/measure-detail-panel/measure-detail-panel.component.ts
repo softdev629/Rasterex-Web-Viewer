@@ -3,7 +3,7 @@ import { RXCore } from 'src/rxcore';
 import { AnnotationToolsService } from '../annotation-tools.service';
 import { Subscription } from 'rxjs';
 import { ColorHelper } from 'src/app/helpers/color.helper';
-import { MARKUP_TYPES } from 'src/rxcore/constants';
+import { MARKUP_TYPES, METRIC } from 'src/rxcore/constants';
 import { RxCoreService } from 'src/app/services/rxcore.service';
 
 @Component({
@@ -26,6 +26,13 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
   visible: boolean = false;
   measureData: any = {};
   markup: any;
+  scalesOptions: any = [];
+  selectedScale: any;
+
+  private _setDefaults(): void {    
+    this.updateScaleList();
+    this.selectedScale = this.scalesOptions[0];
+  }
 
   constructor(
     private readonly rxCoreService: RxCoreService,
@@ -33,7 +40,7 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
     private readonly colorHelper: ColorHelper) {}
 
   ngOnInit(): void {
-
+    this._setDefaults();
 
     this.stateSubscription = this.annotationToolsService.measurePanelDetailState$.subscribe(state => {
       this.visible = state.visible;
@@ -135,11 +142,20 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
       
       if(markup !== -1) {
 
+        if(markup.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
+          markup.type === MARKUP_TYPES.SHAPE.RECTANGLE.type ||
+          markup.type === MARKUP_TYPES.MEASURE.AREA.type ||
+          markup.type === MARKUP_TYPES.MEASURE.PATH.type
+        ) {
+          this.updateScaleList();
+          this.selectCurrentScale(markup);
+        }
+
         switch(markup.type){
           case MARKUP_TYPES.MEASURE.LENGTH.type :
             this.panelHeading = "Distance Measurement";
             this.measurementText = "Distance";
-            this.visible = true;
+            this.visible = true;            
             this.setMeasurementOnLength(markup);
           break;
           case MARKUP_TYPES.SHAPE.RECTANGLE.type :
@@ -175,6 +191,26 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
     this.measureData = markup;
     this.setDistanceOnArea(this.measureData); 
   }*/
+
+  updateScaleList() {
+    const retrievedString = localStorage.getItem('scalesOptions');
+    if(retrievedString) {      
+      const retrievedArray = JSON.parse(retrievedString);
+      this.scalesOptions = retrievedArray;
+    }    
+  }
+
+  selectCurrentScale(markup) {
+    //element scale
+    if(markup.hasScale) {
+      this.selectedScale = this.scalesOptions.find(item=>item.value === markup.scaleObject.getScaleValue());
+    } 
+    else {
+      //page scale
+      const scaleValue = RXCore.getCurrentPageScaleValue();
+      this.selectedScale = this.scalesOptions.find(item=>item.value === scaleValue);      
+    }
+  }
 
   calculateArea(markup: any) {
     this.measureData = markup;
@@ -255,6 +291,44 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
     //this.measureData.yLength = Math.abs(yData[0]) + " " + yData[1];
 
     this.measureData.yLength = this.measureData.dimtexty;
+  }
+
+  onScaleChanged(event): void {
+    this.selectedScale = this.scalesOptions.find(item=>item.value === event.value);
+    this.applyScale(this.selectedScale);
+  }
+
+  updateMetric(selectedMetric: string): void {
+    switch (selectedMetric){
+      case '0' :
+        RXCore.setElementUnit(1);
+        break;
+      case '1' :
+        RXCore.setElementUnit(2);
+        break;
+    } 
+  };
+
+  updateMetricUnitNew2(selectedMetric, selectedMetricUnitForDisplay): void {    
+    if (selectedMetric === METRIC.UNIT_TYPES.METRIC ) {          
+        RXCore.elementMetricUnit(selectedMetricUnitForDisplay.label); 
+
+    } else if (selectedMetric === METRIC.UNIT_TYPES.IMPERIAL ) {          
+        RXCore.elementImperialUnit(selectedMetricUnitForDisplay.label);
+    }      
+  };
+
+  countDecimals(value) {
+    return value % 1?value.toString().split(".")[1].length:0;     
+  };
+
+  applyScale(selectedScaleObj: any) {    
+    this.updateMetric(selectedScaleObj.selectedMetric);
+    this.updateMetricUnitNew2(selectedScaleObj.selectedMetric, selectedScaleObj.selectedMetricUnitForDisplay);
+    RXCore.setElementDimPrecision(selectedScaleObj.dimPrecision);
+    RXCore.elementScale(selectedScaleObj.value);
+    RXCore.markUpRedraw();
+    this.manageRealTimeBox(this.measureData);
   }
 
   ngOnDestroy(): void {

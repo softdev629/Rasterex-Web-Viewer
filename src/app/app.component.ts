@@ -24,6 +24,7 @@ export class AppComponent implements AfterViewInit {
   state: any;
   bfoxitreadycalled : boolean = true;
   bguireadycalled : boolean = false;
+  binitfileopened : boolean = false;
   timeoutId: any;
   pasteStyle: { [key: string]: string } = { display: 'none' };
 
@@ -78,37 +79,41 @@ export class AppComponent implements AfterViewInit {
     RXCore.initialize({ offsetWidth: 0, offsetHeight: 0});
 
 
-    RXCore.onGuiReady(() => {
+    RXCore.onGuiReady((initialDoc: any) => {
 
-      this.bguireadycalled = true;
       console.log('RxCore GUI_Ready.');
       console.log(`Read Only Mode - ${RXCore.getReadOnly()}.`);
       RXCore.setdisplayBackground(document.documentElement.style.getPropertyValue("--background") || '#D6DADC');
       RXCore.setrxprintdiv(document.getElementById('printdiv'));
-    });
 
-    RXCore.onGuiFoxitReady(() => {
 
-      /*if(!this.bguireadycalled){
+      /*if(this.bguireadycalled){
         return;
       }*/
 
+      this.bguireadycalled = true;
+
+    });
+
+    RXCore.onGuiFoxitReady((initialDoc: any) => {
+
+
+      if(initialDoc.open && !this.binitfileopened){
+
+
+        if(initialDoc.openfileobj != null){
+
+          this.binitfileopened = true;
+          RXCore.openFile(initialDoc.openfileobj);
+
+        }
+
+
+      }
+
+
       this.rxCoreService.guiFoxitReady.next();
 
-
-      /*if(this.bfoxitreadycalled){
-
-        this.bfoxitreadycalled = false;
-
-        let drawing : string = "C:\\\\Rasterex\\\\Upload\\\\2TOUR - Original.pdf";
-        let filename : string = "2TOUR - Original.pdf";
-
-        let drawingobj : any = {filepath : drawing, mime : null, cacheid : filename, displayname : null};
-
-        
-        RXCore.openFile(drawingobj);
-        
-      }*/
 
 
     });

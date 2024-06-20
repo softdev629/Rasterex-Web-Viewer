@@ -827,8 +827,33 @@ export class RXCore {
         return RxCore.getUnit();
     }
 
+    public static elementScale(scale: string): void {
+        RxCore.elementScale(scale);
+    }
+	public static elementMetricUnit(val: string): void {
+        RxCore.elementMetricUnit(val)
+    }
+	public static elementImperialUnit(unit: string): void {
+        RxCore.elementImperialUnit(unit);
+    }
+	public static setDimPrecisionForPage(value : number ): any {        
+        RxCore.setDimPrecisionForPage(value);
+    }
+ 
+    public static setElementDimPrecision(value: number): any {        
+        RxCore.setElementDimPrecision(value);
+    } 
+	public static getCurrentPageScaleValue(): any {
+        return RxCore.getCurrentPageScaleValue();
+    }
 
     
+    public static setElementUnit(value: number): void {
+        return RxCore.setElementUnit(value);
+    }
+
+    
+
 
     public static metricUnit(val: string): void {
         RxCore.metricUnit(val)
