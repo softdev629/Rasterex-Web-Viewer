@@ -37,6 +37,16 @@ export class RXCore {
         RxCore.useNoScale(onoff);
     }
 
+    public static setinitFile(fileUrl: any): void {
+        RxCore.setinitFile(fileUrl);
+    }
+
+    /*public static openFile(fileUrl: any): void {
+        RxCore.openFile(fileUrl);
+    }*/
+
+    
+
     public static setThumbnailSize(w:number, h:number): void {
         RxCore.setThumbnailSize(w,h);
     }

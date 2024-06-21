@@ -22,7 +22,7 @@ export class AppComponent implements AfterViewInit {
   eventUploadFile: boolean = false;
   lists: any[] = [];
   state: any;
-  bfoxitreadycalled : boolean = true;
+  bfoxitreadycalled : boolean = false;
   bguireadycalled : boolean = false;
   binitfileopened : boolean = false;
   timeoutId: any;
@@ -55,7 +55,7 @@ export class AppComponent implements AfterViewInit {
       }
     ];
 
-
+    
     RXCore.setJSONConfiguration(JSNObj);
 
     RXCore.usePanToMarkup(true);
@@ -81,35 +81,35 @@ export class AppComponent implements AfterViewInit {
 
     RXCore.onGuiReady((initialDoc: any) => {
 
+      this.bguireadycalled = true;
+
       console.log('RxCore GUI_Ready.');
       console.log(`Read Only Mode - ${RXCore.getReadOnly()}.`);
       RXCore.setdisplayBackground(document.documentElement.style.getPropertyValue("--background") || '#D6DADC');
       RXCore.setrxprintdiv(document.getElementById('printdiv'));
 
 
+      if(this.bfoxitreadycalled){
+        this.openInitFile(initialDoc);
+      }
       /*if(this.bguireadycalled){
         return;
       }*/
 
-      this.bguireadycalled = true;
+      
 
     });
 
     RXCore.onGuiFoxitReady((initialDoc: any) => {
 
 
-      if(initialDoc.open && !this.binitfileopened){
+      this.bfoxitreadycalled = true;
 
-
-        if(initialDoc.openfileobj != null){
-
-          this.binitfileopened = true;
-          RXCore.openFile(initialDoc.openfileobj);
-
-        }
-
-
+      
+      if(this.bguireadycalled){
+        this.openInitFile(initialDoc);
       }
+
 
 
       this.rxCoreService.guiFoxitReady.next();
@@ -254,6 +254,21 @@ export class AppComponent implements AfterViewInit {
     });
 
 
+  }
+
+  openInitFile(initialDoc){
+    if(initialDoc.open && !this.binitfileopened){
+
+
+      if(initialDoc.openfileobj != null){
+
+        this.binitfileopened = true;
+        RXCore.openFile(initialDoc.openfileobj);
+
+      }
+
+
+    }
   }
 
   handleChoiceFileClick() {
