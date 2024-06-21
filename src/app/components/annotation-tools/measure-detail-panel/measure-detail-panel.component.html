@@ -8,6 +8,22 @@
         <!-- <span class="btn-close" (click)="onCloseClick()">&times;</span> -->
     </div>
     <div class="panel-body" [ngStyle]="{'max-height.px': maxHeight, 'overflow-y': 'auto'}">
+          
+            <div class="scale-list">
+              <div>
+                  Scale
+              </div>
+              <div class="scale-dropdown-section">
+                  <rx-dropdown
+                      class="select-scale"
+                      [placeholder]="'Select scale...'"
+                      [options]="scalesOptions"
+                      [value]="selectedScale"
+                      (valueChange)="onScaleChanged($event)">
+                  </rx-dropdown>
+              </div>
+          </div>  
+          
           <div class="measure-detail-section">           
             <section>               
                 <div class="row">
