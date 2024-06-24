@@ -10,7 +10,7 @@
     </div>
     <div class="panel-body" [ngStyle]="{'max-height.px': maxHeight, 'overflow-y': 'auto'}">
         
-        <div class="scale-list">
+        <div class="scale-list" *ngIf="scalesOptions.length">
             <div>
                 Scale
             </div>
@@ -24,7 +24,8 @@
                 </rx-dropdown>
             </div>
             <div class="btn-section">
-                <button (click)="deleteScale()" [disabled]="selectedScale.value === scalesOptions[0].value" class="btn btn-primary">Delete</button>
+                <!-- <button (click)="deleteScale()" [disabled]="selectedScale.label === scalesOptions[0].label" class="btn btn-primary">Delete</button> -->
+                <button (click)="deleteScale()" [disabled]="scalesOptions.length === 1" class="btn btn-primary">Delete</button>
             </div>
         </div>  
 
