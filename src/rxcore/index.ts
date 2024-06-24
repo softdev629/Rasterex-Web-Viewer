@@ -713,6 +713,11 @@ export class RXCore {
         RxCore.GUI_Markuplist.connect(callback);
     }
 
+    /*public static onGuiMarkupPaths(callback: (list: Array<any>) => void): void {
+        RxCore.GUI_MarkupPaths.connect(callback);
+    }*/
+
+
     public static onGuiMarkupHover(callback: (markup: IMarkup, x: number, y: number) => void): void {
         RxCore.GUI_MarkupHover.connect(callback);
     }

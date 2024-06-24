@@ -184,6 +184,7 @@ export class AppComponent implements AfterViewInit {
     });
 
     RXCore.onGuiMarkupList(list => {
+      
       this.rxCoreService.setGuiMarkupList(list);
       this.lists = list?.filter(markup => markup.type != MARKUP_TYPES.SIGNATURE.type && markup.subtype != MARKUP_TYPES.SIGNATURE.subType);
       this.lists?.forEach(list => {
@@ -192,6 +193,15 @@ export class AppComponent implements AfterViewInit {
         }, 100);
       });
     });
+
+    /*RXCore.onGuiMarkupPaths((pathlist) => {
+
+      for(var pi = 0;  pi < pathlist.length; pi++)[
+        //get each markup url here.
+      ]
+
+
+    });*/
 
     RXCore.onGuiTextInput((rectangle: any, operation: any) => {
       this.rxCoreService.setGuiTextInput(rectangle, operation);
