@@ -910,6 +910,24 @@ export class RXCore {
         RxCore.markupRectToAreaSwitch(markup);
     } 
 
+    public static getCurrentPageScaleLabel(): string {
+        return RxCore.getCurrentPageScaleLabel();
+    }
 
+    public static setScaleLabel(label: string): void {
+        RxCore.setScaleLabel(label);
+    } 
+    
+    public static setElementScaleLabel(label: string): void {
+        RxCore.setElementScaleLabel(label);
+    } 
+    
+    public static resetToDefaultScaleValueForMarkup(scaleLabel: string): void {
+        RxCore.resetToDefaultScaleValueForMarkup(scaleLabel);
+    } 
+
+    public static printDoc(): any {
+        return RxCore.printDoc();
+    }
 
 }

@@ -203,12 +203,12 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
   selectCurrentScale(markup) {
     //element scale
     if(markup.hasScale) {
-      this.selectedScale = this.scalesOptions.find(item=>item.value === markup.scaleObject.getScaleValue());
+      this.selectedScale = this.scalesOptions.find(item=>item.label === markup.scaleObject.getScaleLabel());
     } 
     else {
       //page scale
-      const scaleValue = RXCore.getCurrentPageScaleValue();
-      this.selectedScale = this.scalesOptions.find(item=>item.value === scaleValue);      
+      const scaleLabel = RXCore.getCurrentPageScaleLabel();
+      this.selectedScale = this.scalesOptions.find(item=>item.label === scaleLabel);      
     }
   }
 
@@ -294,12 +294,12 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
   }
 
   onScaleChanged(event): void {
-    this.selectedScale = this.scalesOptions.find(item=>item.value === event.value);
-    this.applyScale(this.selectedScale);
+    this.selectedScale = this.scalesOptions.find(item=>item.label === event.label);
+    this.applyScale(this.selectedScale);    
   }
 
-  updateMetric(selectedMetric: string): void {
-    switch (selectedMetric){
+  updateMetric(metric: string): void {
+    switch (metric){
       case '0' :
         RXCore.setElementUnit(1);
         break;
@@ -309,12 +309,12 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
     } 
   };
 
-  updateMetricUnitNew2(selectedMetric, selectedMetricUnitForDisplay): void {    
-    if (selectedMetric === METRIC.UNIT_TYPES.METRIC ) {          
-        RXCore.elementMetricUnit(selectedMetricUnitForDisplay.label); 
+  updateMetricUnit(metric, metricUnit): void {    
+    if (metric === METRIC.UNIT_TYPES.METRIC ) {          
+        RXCore.elementMetricUnit(metricUnit); 
 
-    } else if (selectedMetric === METRIC.UNIT_TYPES.IMPERIAL ) {          
-        RXCore.elementImperialUnit(selectedMetricUnitForDisplay.label);
+    } else if (metric === METRIC.UNIT_TYPES.IMPERIAL ) {          
+        RXCore.elementImperialUnit(metricUnit);
     }      
   };
 
@@ -323,10 +323,12 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
   };
 
   applyScale(selectedScaleObj: any) {    
-    this.updateMetric(selectedScaleObj.selectedMetric);
-    this.updateMetricUnitNew2(selectedScaleObj.selectedMetric, selectedScaleObj.selectedMetricUnitForDisplay);
+    this.updateMetric(selectedScaleObj.metric);
+    this.updateMetricUnit(selectedScaleObj.metric, selectedScaleObj.metricUnit);
     RXCore.setElementDimPrecision(selectedScaleObj.dimPrecision);
     RXCore.elementScale(selectedScaleObj.value);
+    RXCore.setElementScaleLabel(selectedScaleObj.label);
+
     RXCore.markUpRedraw();
     this.manageRealTimeBox(this.measureData);
   }
