@@ -580,7 +580,7 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
 
   loadScaleList() {        
     const scales: any = this.getScaleList();
-    if(scales) {
+    if(scales && scales.length) {
       for (let i = 0; i < scales.length; i++) {        
         this.scalesOptions.push(scales[i]);        
       }
@@ -590,9 +590,13 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
         label: "1 Millimeter : 1 Millimeter",
         metric: "0",
         metricUnit: "Millimeter",
-        dimPrecision: 3
+        dimPrecision: 2
       };
       this.scalesOptions.push(obj);
+      this.selectedScale = this.scalesOptions[0];
+      this.saveScaleToLocalStorage();
+      this.currentScale = this.selectedScale.label;
+      this.service.setMeasureScaleState({visible: true, value: this.currentScale});
     }    
   }
 
