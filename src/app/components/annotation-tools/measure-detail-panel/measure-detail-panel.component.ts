@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { ColorHelper } from 'src/app/helpers/color.helper';
 import { MARKUP_TYPES, METRIC } from 'src/rxcore/constants';
 import { RxCoreService } from 'src/app/services/rxcore.service';
+import { MeasurePanelService } from '../measure-panel/measure-panel.service';
 
 @Component({
   selector: 'rx-measure-detail-panel',
@@ -28,16 +29,19 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
   markup: any;
   scalesOptions: any = [];
   selectedScale: any;
+  showScaleDropdownOnStartDrawing: boolean = false;
 
   private _setDefaults(): void {    
     this.updateScaleList();
-    this.selectedScale = this.scalesOptions[0];
+    if(this.scalesOptions.length)
+      this.selectedScale = this.scalesOptions[0];
   }
 
   constructor(
     private readonly rxCoreService: RxCoreService,
     private readonly annotationToolsService: AnnotationToolsService,
-    private readonly colorHelper: ColorHelper) {}
+    private readonly colorHelper: ColorHelper,
+    private readonly measurePanelService: MeasurePanelService) {}
 
   ngOnInit(): void {
     this._setDefaults();
@@ -71,7 +75,13 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
 
       }
 
-      
+      if(state.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
+        state.type === MARKUP_TYPES.SHAPE.RECTANGLE.type ||
+        state.type === MARKUP_TYPES.MEASURE.AREA.type ||
+        state.type === MARKUP_TYPES.MEASURE.PATH.type
+      ) {
+        this.showScaleDropdownOnStartDrawing = true;
+      }      
 
       // this.created = Boolean(state.created);
       // if (this.created) {
@@ -104,12 +114,24 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
       this.manageRealTimeBox(markup);
     });
 
-    this.rxCoreService.guiMarkup$.subscribe(({markup, operation}) => {
+    this.rxCoreService.guiMarkup$.subscribe(({markup, operation} : any) => {
       //Hide real time box when one of measure tool deleted
       if(operation.deleted || markup === -1) {
         this.visible = false;
       }
-      
+
+      //save page scale to markup scale once created
+      if(operation.created &&
+        (markup.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
+        markup.type === MARKUP_TYPES.SHAPE.RECTANGLE.type ||
+        markup.type === MARKUP_TYPES.MEASURE.AREA.type ||
+        markup.type === MARKUP_TYPES.MEASURE.PATH.type)) {        
+          RXCore.unSelectAllMarkup();
+          RXCore.selectMarkUpByIndex((markup as any).markupnumber);
+          if(this.selectedScale)
+            this.applyScale(this.selectedScale); 
+      }
+
       if(operation.modified) {
         this.manageRealTimeBox(markup);
       }
@@ -133,7 +155,36 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
           break;
       }
 
-    });   
+    });  
+    
+    this.measurePanelService.scaleState$.subscribe(state => {
+
+      if(state.created) {
+        this.updateScaleList();
+
+        if(this.measureData.dimtext === "0.0") {
+          this.selectedScale = this.scalesOptions.find(item=>item.label === state.scaleLabel);
+        } else {
+          if(this.measureData.hasScale === false)
+            this.selectedScale = this.scalesOptions.find(item=>item.label === state.scaleLabel);
+        }
+
+      }
+      
+      if(state.deleted) {
+        this.updateScaleList();
+        if(!this.scalesOptions.length) {
+          this.selectedScale = null;
+          return;
+        }
+
+        let mrkUp:any = RXCore.getSelectedMarkup();
+        if(!mrkUp.isempty) {
+          RXCore.unSelectAllMarkup();
+          RXCore.selectMarkUpByIndex(mrkUp.markupnumber);
+        }
+      } 
+    });
 
   }
 
@@ -201,6 +252,8 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
   }
 
   selectCurrentScale(markup) {
+    if(!this.scalesOptions.length)
+      return;
     //element scale
     if(markup.hasScale) {
       this.selectedScale = this.scalesOptions.find(item=>item.label === markup.scaleObject.getScaleLabel());
@@ -295,7 +348,11 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
 
   onScaleChanged(event): void {
     this.selectedScale = this.scalesOptions.find(item=>item.label === event.label);
-    this.applyScale(this.selectedScale);    
+    if(this.measureData.dimtext === "0.0") {
+      this.applyScaleToPage(this.selectedScale);  
+    } else {
+      this.applyScale(this.selectedScale);    
+    }
   }
 
   updateMetric(metric: string): void {
@@ -331,6 +388,34 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
 
     RXCore.markUpRedraw();
     this.manageRealTimeBox(this.measureData);
+  }
+
+  updateMetricToPage(selectedMetric: string): void {
+    switch (selectedMetric){
+      case '0' :
+        RXCore.setUnit(1);
+        break;
+      case '1' :
+        RXCore.setUnit(2);
+        break;
+    } 
+  };
+
+  updateMetricUnitToPage(metric, metricUnit): void { 
+    if (metric === METRIC.UNIT_TYPES.METRIC ) {          
+        RXCore.metricUnit(metricUnit);          
+    } else if (metric === METRIC.UNIT_TYPES.IMPERIAL ) {          
+        RXCore.imperialUnit(metricUnit);
+    }      
+  };
+
+  applyScaleToPage(selectedScaleObj: any) {  
+    this.updateMetricToPage(selectedScaleObj.metric);
+    this.updateMetricUnitToPage(selectedScaleObj.metric, selectedScaleObj.metricUnit);
+    RXCore.setDimPrecisionForPage(selectedScaleObj.dimPrecision);
+    RXCore.scale(selectedScaleObj.value);
+    RXCore.setScaleLabel(selectedScaleObj.label);
+    this.measurePanelService.setMeasureScaleState({visible: true, value: selectedScaleObj.label});
   }
 
   ngOnDestroy(): void {

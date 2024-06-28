@@ -72,8 +72,8 @@ export class AppComponent implements AfterViewInit {
     RXCore.setLineWidth(4);
     RXCore.setGlobalStyle(false);
 
-    RXCore.useNoScale(true);
-
+    RXCore.useNoScale(false);
+    RXCore.useFixedScale(false);
 
 
     RXCore.initialize({ offsetWidth: 0, offsetHeight: 0});

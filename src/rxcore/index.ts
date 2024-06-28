@@ -930,4 +930,8 @@ export class RXCore {
         return RxCore.printDoc();
     }
 
+    public static useFixedScale(onoff: boolean): void {
+        RxCore.useFixedScale(onoff);
+    }
+    
 }

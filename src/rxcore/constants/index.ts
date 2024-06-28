@@ -13,7 +13,7 @@ export const MARKUP_TYPES = {
     SHAPE: {
         RECTANGLE: {
             type: 3,
-            subType: 0,
+            subType: 6,
         },
         ROUNDED_RECTANGLE: {
             type: 3,

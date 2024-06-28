@@ -9,24 +9,33 @@
         <span class="btn-close" (click)="onCloseClick()">&times;</span>
     </div>
     <div class="panel-body" [ngStyle]="{'max-height.px': maxHeight, 'overflow-y': 'auto'}">
-        
-        <div class="scale-list" *ngIf="scalesOptions.length">
+        <div class="scale-list">
             <div>
                 Scale
             </div>
-            <div class="scale-dropdown-section">
-                <rx-dropdown
+            <div *ngIf="!scalesOptions.length"
+                class="unscaled">Unscaled</div>
+            <div class="scale-dropdown-section" *ngIf="scalesOptions.length">
+                <!-- <rx-dropdown
                     class="select-scale"
                     [placeholder]="'Select scale...'"
                     [options]="scalesOptions"
                     [value]="selectedScale"
                     (valueChange)="onScaleChanged($event)">
-                </rx-dropdown>
+                </rx-dropdown> -->
+                <rx-scale-dropdown *ngIf="scalesOptions.length"
+                    class="select-scale"
+                    [placeholder]="'Select scale...'"
+                    [options]="scalesOptions"
+                    [value]="selectedScale"
+                    [showDelete]="true"
+                    (valueChange)="onScaleChanged($event)"
+                    (valueDelete)="onScaleDeleted($event)">
+                </rx-scale-dropdown>
             </div>
-            <div class="btn-section">
-                <!-- <button (click)="deleteScale()" [disabled]="selectedScale.label === scalesOptions[0].label" class="btn btn-primary">Delete</button> -->
-                <button (click)="deleteScale()" [disabled]="scalesOptions.length === 1" class="btn btn-primary">Delete</button>
-            </div>
+            <!-- <div class="btn-section">
+                <button (click)="deleteScale()" class="btn btn-primary">Delete</button>
+            </div> -->
         </div>  
 
         <section>
@@ -79,7 +88,7 @@
                                 (ngModelChange)="onCalibrateCheckedChange()" />
                             <label
                                 class="form-check-label"
-                                (click)="isSelectedCalibrate = !isSelectedCalibrate; onCalibrateCheckedChange()">
+                                (click)="onCalibrateCheckedChange()">
                                 Start Calibrate
                             </label>
                         </div>   
