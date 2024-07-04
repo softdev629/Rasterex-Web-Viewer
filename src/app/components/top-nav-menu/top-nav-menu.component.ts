@@ -278,7 +278,9 @@ export class TopNavMenuComponent implements OnInit {
               disableMarkupCountButton: false,
               disableMarkupMeasureButton: false
             });
-            this.annotationToolsService.setMeasurePanelState({ visible: true }); 
+            const docObj = RXCore.printDoc();
+            if(docObj && docObj.scalesOptions && docObj.scalesOptions.length === 0) 
+              this.annotationToolsService.setMeasurePanelState({ visible: true }); 
             
   
           } else if(option.value === 'annotate'){

@@ -930,4 +930,15 @@ export class RXCore {
         return RxCore.printDoc();
     }
 
+    public static useFixedScale(onoff: boolean): void {
+        RxCore.useFixedScale(onoff);
+    }
+
+    public static updateScaleList(scalesOptions: any[]): void {
+        RxCore.updateScaleList(scalesOptions);
+    }    
+    
+    public static onGuiScaleListLoadComplete(callback: Function): void {
+        RxCore.GUI_scaleListLoadComplete.connect(callback);
+    }
 }

@@ -435,8 +435,7 @@
         <rx-erase-panel></rx-erase-panel>
         <rx-count-panel *ngIf="isActionSelected['COUNT']"></rx-count-panel>
         <rx-stamp-panel *ngIf="isActionSelected['STAMP']" (onClose)="onActionSelect('STAMP')"></rx-stamp-panel>
-        <rx-measure-panel></rx-measure-panel>
-        <rx-measure-detail-panel></rx-measure-detail-panel>
+        <rx-measure-panel></rx-measure-panel>        
     </div>
 </div>
 
@@ -444,3 +443,4 @@
 <rx-quick-actions-menu></rx-quick-actions-menu>
 <rx-note-popover></rx-note-popover>
 <rx-note-popover [mode]="'tooltip'"></rx-note-popover>
+<rx-measure-detail-panel *ngIf="!(guiConfig$ | async).disableMarkupMeasureButton"></rx-measure-detail-panel>

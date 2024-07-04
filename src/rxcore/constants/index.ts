@@ -87,6 +87,10 @@ export const MARKUP_TYPES = {
             type: 1,
             subType: 3,
         },
+        RECTANGLE: {
+            type: 3,
+            subType: 6,
+        },
     },
     SIGNATURE: {
         type: 11,

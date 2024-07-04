@@ -72,8 +72,8 @@ export class AppComponent implements AfterViewInit {
     RXCore.setLineWidth(4);
     RXCore.setGlobalStyle(false);
 
-    RXCore.useNoScale(true);
-
+    RXCore.useNoScale(false);
+    RXCore.useFixedScale(false);
 
 
     RXCore.initialize({ offsetWidth: 0, offsetHeight: 0});
@@ -152,6 +152,10 @@ export class AppComponent implements AfterViewInit {
 
     RXCore.onGuiFileLoadComplete(() => {
       this.rxCoreService.guiFileLoadComplete.next();
+    });
+    
+    RXCore.onGuiScaleListLoadComplete(() => {
+      this.rxCoreService.guiScaleListLoadComplete.next();
     });
 
     RXCore.onGuiMarkup((annotation: any, operation: any) => {

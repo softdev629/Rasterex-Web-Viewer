@@ -43,7 +43,7 @@ export class AnnotationToolsComponent implements OnInit {
     "MEASURE_PATH": false,
     "SNAP": false,
     "MARKUP_LOCK" : false,
-    "NO_SCALE": true
+    "NO_SCALE": false
   };
 
   get isPaintSelected(): boolean {

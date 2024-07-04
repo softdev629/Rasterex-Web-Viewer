@@ -67,6 +67,7 @@ import { DropdownMenuComponent } from './components/common/dropdown-menu/dropdow
 import { BlocksComponent } from './components/side-nav-menu/blocks/blocks.component';
 import { AnnotationShapeIconComponent } from './components/annotation-tools/annotation-shape-icon/annotation-shape-icon.component';
 import { MeasureDetailPanelComponent } from './components/annotation-tools/measure-detail-panel/measure-detail-panel.component';
+import { ScaleDropdownComponent } from './components/annotation-tools/scale-dropdown/scale-dropdown.component';
 import { ToastrModule } from 'ngx-toastr';
 
 
@@ -127,7 +128,7 @@ import { ToastrModule } from 'ngx-toastr';
     BlocksComponent,
     AnnotationShapeIconComponent,
     MeasureDetailPanelComponent,
-
+    ScaleDropdownComponent,
   ],
   imports: [
     BrowserModule,
