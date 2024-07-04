@@ -150,6 +150,10 @@ export class AppComponent implements AfterViewInit {
     RXCore.onGuiFileLoadComplete(() => {
       this.rxCoreService.guiFileLoadComplete.next();
     });
+    
+    RXCore.onGuiScaleListLoadComplete(() => {
+      this.rxCoreService.guiScaleListLoadComplete.next();
+    });
 
     RXCore.onGuiMarkup((annotation: any, operation: any) => {
       console.log('RxCore GUI_Markup:', annotation, operation);

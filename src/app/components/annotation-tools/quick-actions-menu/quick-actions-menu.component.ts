@@ -355,7 +355,10 @@ export class QuickActionsMenuComponent implements OnInit, OnDestroy {
     this.visible = false;
   }
  
-  onHoleClick(): void {    
+  onHoleClick(): void { 
+    if(this.annotation.type === MARKUP_TYPES.SHAPE.RECTANGLE.type) {
+      RXCore.markupRectToAreaSwitch(this.annotation);
+    }   
     if (this.operation?.created) { RXCore.selectMarkUp(true); }
     this.annotationToolsService.setMeasurePanelDetailState({ visible: true, type: MARKUP_TYPES.MEASURE.AREA.type, created: true });
     //RXCore.markUpArea(true, this.annotation.markupnumber);

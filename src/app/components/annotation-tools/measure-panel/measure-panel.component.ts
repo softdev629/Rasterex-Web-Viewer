@@ -70,6 +70,7 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
   selectedMetricUnitForDisplay: any;
   isLoadedScales: boolean;
   currentPageMetricUnitCalibrate: string;
+  docObj: any;
 
   private _setDefaults(): void {
     this.created = false;
@@ -86,12 +87,13 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
     this.isCalibrateFinished = false;
     this.isPrecisionChanged = false;
     this.defaultScaleLabel = "1 Millimeter : 1 Millimeter";
-    this.currentScale = this.defaultScaleLabel;
+    // this.currentScale = this.defaultScaleLabel;
     this.isDoubleClicked = false;
     this.scaleOrCalibrate = 0;
     this.customPageScaleValue = 1;
     this.customDisplayScaleValue = 1;
     this.isLoadedScales = false;
+    this.docObj = RXCore.printDoc();
 
     let allMetricUnits = {...this.metricUnits['0'], ...this.metricUnits[1]};
     Object.entries(allMetricUnits).forEach(([key, value]) => {
@@ -135,13 +137,20 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
       this.visible = state.visible;
       this.service.setMeasureScaleState({ visible: state.visible });
 
-      if(this.visible && !this.currentScale) {
-        this.currentScale = this.defaultScaleLabel;
-      }
+      // if(this.visible && !this.currentScale) {
+      //   this.currentScale = this.defaultScaleLabel;
+      // }
 
       if(this.visible) {
         this.setCurrentPageScale();
+      } 
+
+      //set page scale when calibrate cancelled
+      if(!this.visible && this.isSelectedCalibrate) {
+        this.cancelCalibrate();
+        this.applyScale(this.selectedScale);
       }
+      
     });
 
 
@@ -182,21 +191,14 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.rxCoreService.guiPage$.subscribe((state) => {      
-      this.setCurrentPageScale();
+    this.rxCoreService.guiPage$.subscribe((state) => {   
+      this.loadAndSetPageScale();
     }); 
-    
-    this.rxCoreService.guiFileLoadComplete$.subscribe(() => {
-      if(!this.isLoadedScales) {
-        
-        setTimeout(() => {
-          this.loadScaleList();
-          this.setCurrentPageScale();
-        }, 1000);
-        this.isLoadedScales = true;
-      }
 
+    this.rxCoreService.guiScaleListLoadComplete$.subscribe(() => {
+      this.loadAndSetPageScale();
     });
+
   }
 
   ngOnDestroy(): void {
@@ -230,6 +232,15 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
 
   onSnapChange(onoff: boolean): void {
     RXCore.changeSnapState(onoff);
+  }
+
+  loadAndSetPageScale () : void{
+    this.docObj = RXCore.printDoc();
+    if(this.docObj && this.docObj.scalesOptions) {
+      this.scalesOptions = [];
+      this.loadScaleList();
+      this.setCurrentPageScale();
+    }
   }
 
   setCurrentPageScale (): void{
@@ -308,11 +319,13 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
     this.isCalibrateFinished = false;
 
     this.calibrateLength = "0";
-    this.currentScale = this.defaultScaleLabel;
+    // this.currentScale = this.defaultScaleLabel;
     
     if(snap === false) {
       RXCore.changeSnapState(false);
     }
+
+    this.setCurrentPageScale();
   }
 
   onScaleChanged(event): void {
@@ -451,6 +464,10 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
     RXCore.scale(selectedScaleObj.value);
     RXCore.setScaleLabel(selectedScaleObj.label);
 
+    this.scalesOptions = this.setPropertySelected(this.scalesOptions, 'isSelected', 'label', selectedScaleObj.label);
+
+    RXCore.updateScaleList(this.scalesOptions);
+
     this.currentScale = selectedScaleObj.label;
     this.service.setMeasureScaleState({visible: true, value: this.currentScale});
 
@@ -467,20 +484,25 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
     let scaleLabel = `${this.customPageScaleValue} ${this.selectedMetricUnitForPage.label} : ${this.customDisplayScaleValue} ${this.selectedMetricUnitForDisplay.label}`
     const scaleObj = this.scalesOptions.find(item => item.label === scaleLabel);
     if(scaleObj) {
+      this.selectedScale = scaleObj;
+      this.applyScale(this.selectedScale);
+      this.onCloseClick();
       return;
     }
+
     let scale = this.calculateScale();
     let obj = { 
       value: scale, 
       label: scaleLabel,
       metric: this.selectedMetric,
       metricUnit: this.selectedMetricUnitForDisplay.label,
-      dimPrecision: this.countDecimals(this.selectedScalePrecision?.value)
+      dimPrecision: this.countDecimals(this.selectedScalePrecision?.value),
+      isSelected: true
     };
     this.scalesOptions.push(obj);
     this.selectedScale = obj;
     this.applyScale(this.selectedScale);
-    this.saveScaleToLocalStorage();
+    
     this.currentScale = this.selectedScale.label;
     
     this.service.setMeasureScaleState({visible: true, value: this.currentScale});
@@ -496,23 +518,6 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
 
     //this.showSuccess();
     this.onCloseClick();
-  }
-
-  deleteScale(): void {
-    const tempObj = this.selectedScale;
-    this.scalesOptions = this.scalesOptions.filter(item=>item.label !== this.selectedScale.label);
-    this.selectedScale = this.scalesOptions[0];
-    this.applyScale(this.selectedScale);
-    this.saveScaleToLocalStorage();
-    this.currentScale = this.selectedScale.label;
-    this.service.setMeasureScaleState({visible: true, value: this.currentScale});
-  
-    RXCore.resetToDefaultScaleValueForMarkup(tempObj.label);
-    let mrkUp:any = RXCore.getSelectedMarkup();
-    if(!mrkUp.isempty) {
-      RXCore.unSelectAllMarkup();
-      RXCore.selectMarkUpByIndex(mrkUp.markupnumber);
-    }
   }
 
   applyScaleToDefault(rerenderMeasurePanel = false) {  
@@ -540,7 +545,7 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
 
     this.scalesOptions = this.scalesOptions.filter(item=>item.label !== scaleObj.label);
     
-    this.saveScaleToLocalStorage();
+    RXCore.updateScaleList(this.scalesOptions);
     
     if(tempObj && this.scalesOptions.length) {
       this.selectedScale = this.scalesOptions[0];
@@ -624,7 +629,7 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
     RXCore.setScaleLabel(scaleLabel);    
 
     RXCore.calibrate(false);
-    this.cancelCalibrate();
+    // this.cancelCalibrate();
     this.scaleOrCalibrate = 0;
     RXCore.scale(scaleVaue);
 
@@ -633,11 +638,15 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
       label: scaleLabel,
       metric: this.selectedMetric,
       metricUnit: this.selectedMetricUnit.label,
-      dimPrecision: this.countDecimals(this.selectedScalePrecision?.value)
+      dimPrecision: this.countDecimals(this.selectedScalePrecision?.value),
+      isSelected: true
     };
     this.scalesOptions.push(obj);
     this.selectedScale = obj;    
-    this.saveScaleToLocalStorage();
+    this.scalesOptions = this.setPropertySelected(this.scalesOptions, 'isSelected', 'label', this.selectedScale.label);
+
+    RXCore.updateScaleList(this.scalesOptions);
+
     this.currentScale = this.selectedScale.label;
     
     this.service.setMeasureScaleState({visible: true, value: this.currentScale});
@@ -647,52 +656,33 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
     this.onCloseClick();
   }
 
-  saveScaleToLocalStorage(): void {
-    const jsonString = JSON.stringify(this.scalesOptions);
-    localStorage.setItem("scalesOptions", jsonString);
-  }
-
-  getScaleList() {
-    let scales = [];
-    const retrievedString = localStorage.getItem('scalesOptions');
-    if(retrievedString) {      
-      const retrievedArray = JSON.parse(retrievedString);
-      scales = retrievedArray;
-    }
-    return scales;    
-  }
-
   loadScaleList() {        
-    const scales: any = this.getScaleList();
+    const scales: any = this.docObj.scalesOptions;
     if(scales && scales.length) {
+      this.scalesOptions = [];
       for (let i = 0; i < scales.length; i++) {        
         this.scalesOptions.push(scales[i]);        
       }
     } else {
-        // this.insertDefaultScale();
         this.insertUnscaled();
       }    
-  }
-
-  insertDefaultScale() {
-    let obj = { 
-      value: "1:1", 
-      label: this.defaultScaleLabel,
-      metric: "0",
-      metricUnit: "Millimeter",
-      dimPrecision: 2
-    };
-    // this.scalesOptions.push(obj);
-    this.scalesOptions.unshift(obj);
-    this.selectedScale = this.scalesOptions[0];
-    this.saveScaleToLocalStorage();
-    this.currentScale = this.selectedScale.label;
-    this.service.setMeasureScaleState({visible: true, value: this.currentScale});
   }
 
   insertUnscaled() {
     this.currentScale = 'Unscaled';
     this.service.setMeasureScaleState({visible: true, value: this.currentScale});
+  }
+
+  setPropertySelected(array, property, conditionKey, conditionValue) {
+    array.forEach(obj => {
+        if (obj[conditionKey] === conditionValue) {
+            obj[property] = true;
+        } else {
+            obj[property] = false;
+        }
+    });
+
+    return array;
   }
 
   showSuccess() {

@@ -13,7 +13,7 @@ export const MARKUP_TYPES = {
     SHAPE: {
         RECTANGLE: {
             type: 3,
-            subType: 6,
+            subType: 0,
         },
         ROUNDED_RECTANGLE: {
             type: 3,
@@ -86,6 +86,10 @@ export const MARKUP_TYPES = {
         PATH: {
             type: 1,
             subType: 3,
+        },
+        RECTANGLE: {
+            type: 3,
+            subType: 6,
         },
     },
     SIGNATURE: {
