@@ -82,6 +82,7 @@ export class AppComponent implements AfterViewInit {
     RXCore.onGuiReady((initialDoc: any) => {
 
       this.bguireadycalled = true;
+      this.bfoxitreadycalled = true;
 
       console.log('RxCore GUI_Ready.');
       console.log(`Read Only Mode - ${RXCore.getReadOnly()}.`);
@@ -89,8 +90,10 @@ export class AppComponent implements AfterViewInit {
       RXCore.setrxprintdiv(document.getElementById('printdiv'));
 
 
+      
+
       if(this.bfoxitreadycalled){
-        this.openInitFile(initialDoc);
+        this.openInitFile(initialDoc);  
       }
       /*if(this.bguireadycalled){
         return;
