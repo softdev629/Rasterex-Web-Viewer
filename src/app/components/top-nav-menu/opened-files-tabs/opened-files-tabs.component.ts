@@ -6,6 +6,7 @@ import { FileGaleryService } from '../../file-galery/file-galery.service';
 import { BottomToolbarService } from '../../bottom-toolbar/bottom-toolbar.service';
 import { TopNavMenuService } from '../top-nav-menu.service';
 import { GuiMode } from 'src/rxcore/enums/GuiMode';
+import { MeasurePanelService } from '../../annotation-tools/measure-panel/measure-panel.service';
 
 declare var bringIframeToFront;
 declare var hideAllIframes;
@@ -27,7 +28,8 @@ export class OpenedFilesTabsComponent implements OnInit {
     private readonly topNavMenuService: TopNavMenuService,
     private readonly fileGaleryService: FileGaleryService,
     private readonly bottomToolbarService: BottomToolbarService,
-    private readonly compareService: CompareService) {}
+    private readonly compareService: CompareService,
+    private readonly measurePanelService: MeasurePanelService) {}
 
   private _getOpenFilesList(): Array<any> {
     const hidden = new Set<number>();
@@ -84,6 +86,7 @@ export class OpenedFilesTabsComponent implements OnInit {
       hideAllIframes();
       RXCore.hidedisplayCanvas(false);
       this.bottomToolbarService.nextState();
+      this.measurePanelService.setMeasureScaleState({visible: false});
     }
   }
 

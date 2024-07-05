@@ -135,7 +135,8 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
     
     this.stateSubscription = this.annotationToolsService.measurePanelState$.subscribe(state => {
       this.visible = state.visible;
-      this.service.setMeasureScaleState({ visible: state.visible });
+      // this.service.setMeasureScaleState({ visible: state.visible });
+      this.service.setMeasureScaleState({ visible: true });
 
       // if(this.visible && !this.currentScale) {
       //   this.currentScale = this.defaultScaleLabel;
@@ -148,7 +149,10 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
       //set page scale when calibrate cancelled
       if(!this.visible && this.isSelectedCalibrate) {
         this.cancelCalibrate();
-        this.applyScale(this.selectedScale);
+        if(this.selectedScale) {
+          this.applyScale(this.selectedScale);
+        }
+        this.measuredCalibrateLength = '0';
       }
       
     });
@@ -632,7 +636,8 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
     // this.cancelCalibrate();
     this.scaleOrCalibrate = 0;
     RXCore.scale(scaleVaue);
-
+    //set measuredCalibrateLength to 0 once calibration complete
+    this.measuredCalibrateLength = '0';
     let obj = { 
       value: scaleVaue,
       label: scaleLabel,

@@ -136,7 +136,11 @@ export class TopNavMenuComponent implements OnInit {
     this.measurePanelService.measureScaleState$.subscribe((state) => {
       if(state.visible && state.value) {
         this.currentScaleValue = state.value;
-      }      
+      }
+      
+      if(state.visible === false) {
+        this.currentScaleValue = '';
+      }
     });
 
   }

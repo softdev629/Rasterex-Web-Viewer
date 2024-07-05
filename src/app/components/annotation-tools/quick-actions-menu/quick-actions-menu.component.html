@@ -42,18 +42,18 @@
         </li>
 
         <li
-            *ngIf="(guiMode$ | async) == 'measure' && (annotation.type === 8 || annotation.type === 3)"
+            *ngIf="(guiMode$ | async) == 'measure' && (annotation.type === 8 || (annotation.type === 3 && annotation.subtype === 6))"
             (click)="onInsertClick()">
                 <img id="quickActionsMenuInsertPoint" src="/assets/images/insert-point.svg" height="48" />
         </li>
         <li
-            *ngIf="(guiMode$ | async) == 'measure' && (annotation.type === 8 || annotation.type === 3) && annotation.parentmarkupnumber === 0"
+            *ngIf="(guiMode$ | async) == 'measure' && (annotation.type === 8 || (annotation.type === 3 && annotation.subtype === 6)) && annotation.parentmarkupnumber === 0"
             (click)="onHoleClick()">
             <img id="quickActionsHole" src="/assets/images/insert-area-hole.svg" height="28" />
         </li>
         
         <li
-            *ngIf="(guiMode$ | async) == 'measure' && (annotation.type === 1 || annotation.type === 3 || annotation.type === 7 || annotation.type === 8)"
+            *ngIf="(guiMode$ | async) == 'measure' && ((annotation.type === 1 && annotation.subtype === 3) || (annotation.type === 3 && annotation.subtype === 6) || annotation.type === 7 || annotation.type === 8)"
             (click)="onShowHideLabelClick()">
             <img id="quickActionsMenuShowHideLabel" src="/assets/images/label-remove.svg" height="23" />
             <!-- <span class="tooltip-text tooltip-top">Hide Label</span> -->
