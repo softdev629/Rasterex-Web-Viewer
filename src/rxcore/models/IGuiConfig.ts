@@ -62,3 +62,4 @@ export interface IGuiConfig {
     /*  */
     logoUrl?: string;
 }
+

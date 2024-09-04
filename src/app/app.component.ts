@@ -40,6 +40,7 @@ export class AppComponent implements AfterViewInit {
         this.eventUploadFile = false;
       }
     });
+    
   }
 
   ngAfterViewInit(): void {
@@ -272,6 +273,8 @@ export class AppComponent implements AfterViewInit {
 
 
   }
+
+
 
   openInitFile(initialDoc){
     if(initialDoc.open && !this.binitfileopened){

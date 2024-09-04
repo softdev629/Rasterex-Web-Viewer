@@ -35,7 +35,7 @@
         &.logo {
             margin-left: 16px;
             margin-right: 16px;
-            height: auto;
+            height: var(--logo-height);
             cursor: pointer;
         }
 

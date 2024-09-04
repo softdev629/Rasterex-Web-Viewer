@@ -7,6 +7,8 @@ import { IMarkup } from 'src/rxcore/models/IMarkup';
 import { IPageThumb } from 'src/rxcore/models/IPageThumb';
 import { IVectorBlock } from 'src/rxcore/models/IVectorBlock';
 import { IVectorLayer } from 'src/rxcore/models/IVectorLayer';
+import UIConfigData from 'src/assets/config/config.json';
+
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +27,13 @@ export class RxCoreService {
       canConsolidate: true,
       logoUrl: "/assets/images/logo.svg"
     };
+
+    this._defaultGuiConfig = UIConfigData.UIConfig;
+
     this.setGuiConfig(this._defaultGuiConfig);
+
+    this.setUIStyles(UIConfigData.UIStyles);
+
   }
 
   private _defaultGuiConfig: IGuiConfig;
@@ -40,6 +48,14 @@ export class RxCoreService {
   }
   public resetGuiConfig(): void {
     this._guiConfig.next(this._defaultGuiConfig);
+  }
+
+  public setUIStyles(styledata : any){
+
+    styledata.forEach(data => {
+      document.documentElement.style.setProperty(`--${data.name}`, data.value);
+    });
+
   }
 
   public guiFoxitReady: Subject<void> = new Subject<void>();
