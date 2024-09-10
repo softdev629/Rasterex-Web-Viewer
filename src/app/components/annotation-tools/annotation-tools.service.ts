@@ -5,6 +5,8 @@ import { Subject, BehaviorSubject, Observable } from "rxjs";
   providedIn: 'root'
 })
 export class AnnotationToolsService {
+  
+
   constructor() { }
 
   private _opened: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -35,8 +37,16 @@ export class AnnotationToolsService {
   private _notePanelState: BehaviorSubject<any> = new BehaviorSubject<any>({});
   public notePanelState$: Observable<any> = this._notePanelState.asObservable();
   public setNotePanelState(any): void {
+
     this._notePanelState.next(any);
   }
+
+  private _searchPanelState: BehaviorSubject<any> = new BehaviorSubject<any>({});
+  public searchPanelState$: Observable<any> = this._searchPanelState.asObservable();
+  public setSearchPanelState(any): void {
+    this._searchPanelState.next(any);
+  }
+
 
   private _notePopoverState: Subject<any> = new Subject<any>();
   public notePopoverState$: Observable<any> = this._notePopoverState.asObservable();
@@ -73,5 +83,6 @@ export class AnnotationToolsService {
   public setSnapState(any): void {
     this._snapState.next(any);
   }
+
 
 }

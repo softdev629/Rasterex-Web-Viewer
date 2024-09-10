@@ -11,6 +11,7 @@ import { GuiMode } from 'src/rxcore/enums/GuiMode';
 import { Subscription } from 'rxjs';
 import { SideNavMenuService } from '../side-nav-menu/side-nav-menu.service';
 import { MeasurePanelService } from '../annotation-tools/measure-panel/measure-panel.service';
+import { ActionType } from './type';
 
 
 @Component({
@@ -48,6 +49,7 @@ export class TopNavMenuComponent implements OnInit {
   containLayers: boolean = false;
   containBlocks: boolean = false;
   isActionSelected: boolean = false;
+  actionType: ActionType = "None";
   private guiOnNoteSelected: Subscription;
   currentScaleValue: string;
 
@@ -355,7 +357,46 @@ export class TopNavMenuComponent implements OnInit {
     }
   }
 
-  onActionSelect(): void {
+
+  onSearchPanelSelect (): void {
+    this.onActionSelect("Search")
+  }
+
+  onCommentPanelSelect (): void {
+    this.onActionSelect("Comment")
+  }
+
+
+  onActionSelect(actionType: ActionType): void {
+    
+    if(this.actionType.includes(actionType)) {
+      this.isActionSelected = !this.isActionSelected
+    } else {
+      this.actionType = actionType;
+      this.isActionSelected = true
+    }
+
+    console.log(actionType, this.isActionSelected)
+
+    if(actionType === "Comment"){
+      this.annotationToolsService.setNotePanelState({ visible: this.isActionSelected && actionType === "Comment" });
+    }
+
+    if(actionType === "Search"){
+      this.annotationToolsService.setSearchPanelState({ visible: this.isActionSelected && actionType === "Search" });
+    }
+
+    
+    
+
+    setTimeout(() => {
+      //RXCore.doResize(false, 0, 0);      
+    }, 100);
+    
+  }
+
+
+  /* onActionSelect(): void {
 
     if (this.isActionSelected) {
       this.isActionSelected = false;
@@ -377,7 +418,7 @@ export class TopNavMenuComponent implements OnInit {
       //RXCore.doResize(false, 0, 0);      
     }, 100);
     
-  }
+  } */
 
 
   handleOpenSidebarMenu() {

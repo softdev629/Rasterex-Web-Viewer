@@ -1,7 +1,11 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+//import { FormsModule } from '@angular/forms';
+
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DragDropModule } from '@angular/cdk/drag-drop'
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
@@ -70,6 +74,18 @@ import { MeasureDetailPanelComponent } from './components/annotation-tools/measu
 import { ScaleDropdownComponent } from './components/annotation-tools/scale-dropdown/scale-dropdown.component';
 import { ToastrModule } from 'ngx-toastr';
 
+import { SearchPanelComponent } from './components/annotation-tools/search-panel/search-panel.component';
+import { HighlightPipe } from './components/annotation-tools/search-panel/highligth.pipe';
+import { ContextMenuComponent } from './components/side-nav-menu/context-menu/context-menu.component';
+import { ExtractModalComponent } from './components/side-nav-menu/extract-modal/extract-modal.component';
+import { RadioButtonComponent } from './components/common/radio-button/radio-button.component';
+import { InsertModalComponent } from './components/side-nav-menu/insert-modal/insert-modal.component';
+import { SelectComponent } from './components/common/select/select.component';
+import { ThumbnailDirective } from './components/side-nav-menu/insert-modal/thumbnail.directive';
+import { RecentFilesComponent } from './components/recent-files/recent-files.component';
+import { SizeModalComponent } from './components/size-modal/size-modal.component';
+
+
 
 @NgModule({
   declarations: [
@@ -90,12 +106,14 @@ import { ToastrModule } from 'ngx-toastr';
     PropertiesPanelComponent,
     TextStyleSelectComponent,
     LineStyleSelectComponent,
+    SelectComponent,
     PanelComponent,
     SwitchComponent,
     VectorLayersComponent,
     ConfirmationModalComponent,
     ThreedPartsComponent,
     NotePanelComponent,
+    SearchPanelComponent,
     NotePopoverComponent,
     MultiSelectComponent,
     DatePickerComponent,
@@ -106,6 +124,7 @@ import { ToastrModule } from 'ngx-toastr';
     PagesComponent,
     ThreedPartInfoComponent,
     PageThumbnailDirective,
+    ThumbnailDirective,
     CountPanelComponent,
     CountTypeSelectComponent,
     NotificationComponent,
@@ -129,6 +148,13 @@ import { ToastrModule } from 'ngx-toastr';
     AnnotationShapeIconComponent,
     MeasureDetailPanelComponent,
     ScaleDropdownComponent,
+    ContextMenuComponent,
+    ExtractModalComponent,
+    RadioButtonComponent,
+    InsertModalComponent,
+    RecentFilesComponent,
+    HighlightPipe,
+    SizeModalComponent
   ],
   imports: [
     BrowserModule,
@@ -136,6 +162,8 @@ import { ToastrModule } from 'ngx-toastr';
     FormsModule,
     BrowserAnimationsModule,
     AccordionModule,
+    DragDropModule,
+    BrowserAnimationsModule,
     NgxSliderModule,
     ColorChromeModule,
     AngularDraggableModule,

@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { RXCore } from 'src/rxcore';
 import { FileGaleryService } from './file-galery.service';
+import { random } from 'lodash-es';
 
 @Component({
   selector: 'rx-file-galery',
@@ -116,6 +117,20 @@ export class FileGaleryComponent implements OnInit {
       }
     }
   }
+
+  onSelectRecentFile(file) {
+    const newFile = {
+      "id": Math.ceil(random() * 10000),
+      "name": file.name,
+      "file": file.name,
+      "type": "PDF",
+      "size": 1024
+    }
+    this.uploadFile(newFile);
+    this.fileType = newFile.type;
+    this.onSelect.emit(newFile);
+  }
+
 
   uploadFile(fileSelect) {
     if (this.file || fileSelect) {

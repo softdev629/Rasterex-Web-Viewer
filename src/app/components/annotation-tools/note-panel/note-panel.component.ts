@@ -23,6 +23,7 @@ declare var LeaderLine: any;
 })
 export class NotePanelComponent implements OnInit {
   visible: boolean = false;
+  
   list: { [key: string]: Array<IMarkup> };
   search: string;
   panelwidth : number = 300;

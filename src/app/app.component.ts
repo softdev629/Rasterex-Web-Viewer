@@ -5,6 +5,7 @@ import { RXCore } from 'src/rxcore';
 import { NotificationService } from './components/notification/notification.service';
 import { MARKUP_TYPES } from 'src/rxcore/constants';
 import { AnnotationToolsService } from './components/annotation-tools/annotation-tools.service';
+import { RecentFilesService } from './components/recent-files/recent-files.service';
 
 @Component({
   selector: 'app-root',
@@ -29,6 +30,7 @@ export class AppComponent implements AfterViewInit {
   pasteStyle: { [key: string]: string } = { display: 'none' };
 
   constructor(
+    private readonly recentfilesService: RecentFilesService,
     private readonly rxCoreService: RxCoreService,
     private readonly fileGaleryService: FileGaleryService,
     private readonly notificationService: NotificationService) { }
@@ -55,6 +57,8 @@ export class AppComponent implements AfterViewInit {
           
       }
     ];
+
+
 
     
     RXCore.setJSONConfiguration(JSNObj);
@@ -123,8 +127,8 @@ export class AppComponent implements AfterViewInit {
     });
 
     RXCore.onGuiState((state: any) => {
-      console.log('RxCore GUI_State:', state);
-      console.log('RxCore GUI_State:', state.source);
+      //console.log('RxCore GUI_State:', state);
+      //console.log('RxCore GUI_State:', state.source);
 
       this.state = state;
       this.rxCoreService.setNumOpenFiles(state?.numOpenFiles);
@@ -152,7 +156,13 @@ export class AppComponent implements AfterViewInit {
     });
 
     RXCore.onGuiFileLoadComplete(() => {
+      
+      RXCore.getCurrentFileInfo().then(info => {
+        this.recentfilesService.addRecentFile(info)
+      });
+      
       this.rxCoreService.guiFileLoadComplete.next();
+
     });
     
     RXCore.onGuiScaleListLoadComplete(() => {

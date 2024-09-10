@@ -31,8 +31,18 @@ export class PageThumbnailDirective implements OnInit {
 
         this.pageThumbnail.thumbnailobj.draw(ctx);
         RXCore.markUpRedraw();
-        if (this.subscription) this.subscription.unsubscribe();
+        //if (this.subscription) this.subscription.unsubscribe();
       }
     });
+    RXCore.onRotatePage((degree: number, pageIndex: number) => {
+      console.log("ROTATED")
+        var ctx = this.element.nativeElement.getContext('2d');
+
+        this.element.nativeElement.width = this.pageThumbnail.thumbnailobj.thumbnail.width;
+        this.element.nativeElement.height = this.pageThumbnail.thumbnailobj.thumbnail.height;
+
+        this.pageThumbnail.thumbnailobj.draw(ctx);
+        RXCore.markUpRedraw();
+    })
   }
 }

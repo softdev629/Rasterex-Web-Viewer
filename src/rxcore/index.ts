@@ -120,6 +120,19 @@ export class RXCore {
         RxCore.rotate(cycle, szrotatetool);
     }
 
+    public static setPageSize(pageRange: number[][], width: number, height: number) {
+        RxCore.setPageSize(pageRange, width, height);
+    }
+
+    public static getAllThumbnailsFromFile(file: File): any {
+        return RxCore.getAllThumbnailsFromFile(file)
+    }
+
+    public static importPages(file: File, pageRange: number[][], pageArray: number[][], isReplace: boolean, count: number): Promise<any> {
+        return RxCore.importPages(file, pageRange, pageArray, isReplace, count)
+    }
+
+
     public static magnifyGlass(onoff: boolean): void {
         RxCore.magnifyGlass(onoff);
     }
@@ -292,6 +305,78 @@ export class RXCore {
 
     public static textSearch(text: string | undefined, direction: boolean = true, casesens: boolean = false): void {
         RxCore.textSearch(text, direction, casesens);
+    }
+
+    public static markupSearchResult(): void {
+        RxCore.forcetextsearchmarker()
+    }
+
+    public static documentTextSearch(text: string | undefined, casesens: boolean = false, wholetext: boolean = false): void {
+        RxCore.documentTextSearch(text, casesens, wholetext)
+    }
+
+    public static clearDocumentTextSearch() {
+        RxCore.clearDocumentTextSearch();
+    }
+
+
+    //rotateClockwise
+
+    public static rotatePage(pageRange: number[][], clockwise: boolean) {
+        //RxCore.rotatePage(pageRange, clockwise)
+        RxCore.rotateClockwise(pageRange, clockwise)
+    }
+
+    public static onRotatePage(callback: Function): void {
+        RxCore.GUI_RotatePage.connect(callback)
+    }
+
+    public static copyPage(pageRange: number[][]): void {
+        RxCore.copyPage(pageRange)
+    }
+
+    public static pastePage(pasteId: number): void {
+        RxCore.pastePage(pasteId)
+    }
+
+    public static refreshThumbnails(): void {
+        RxCore.refreshThumbnails()
+    }
+
+    public static movePageTo (pageRange: number[][], destIndex: number): void {
+        RxCore.movePageTo(pageRange, destIndex)
+    }
+
+    public static removePage(pageRange: number[][]) {
+        RxCore.removePage(pageRange)
+    }
+
+    public static extractPage(pageRange: number[][], remove: boolean) {
+        RxCore.extractPage(pageRange, remove)
+    }
+
+    public static insertBlankPages(pageRange: number[][], count: number, width: number, height: number) {
+        RxCore.insertBlankPages(pageRange, count, width, height)
+    }
+
+    public static getDPI() {
+        return RxCore.getDPI()
+    }
+
+    public static onGuiRemovePage(callback: Function): void {
+        RxCore.GUI_RemovePage.connect(callback)
+    }
+
+    public static toggleShowHighlightMarkups(value: boolean): void {
+        RxCore.toggleShowHighlightMarkups(value)
+    }
+
+    public static markupTextWithOrange(item) {
+        RxCore.markupTextWithOrange(item)
+    }
+
+    public static onGuiDocumentSearch(callback: Function): void {
+        RxCore.GUI_DocumentSearch.connect(callback);
     }
 
     public static vectorLayersAll(onoff: boolean): void {
@@ -702,6 +787,10 @@ export class RXCore {
         RxCore.GUI_Page.connect(callback);
     }
 
+    public static getCurrentFileInfo() {
+        return RxCore.getCurrentFileInfo();
+    }
+
     public static onGuiMarkup(callback: Function): void {
         RxCore.GUI_Markup.connect(callback);
     }
@@ -797,6 +886,11 @@ export class RXCore {
     public static onGuiMarkupLink(callback: Function): void {
         RxCore.GUI_MarkupLink.connect(callback);
     }
+
+    public static onGuiPageCountChanged(callback: Function): void {
+        RxCore.GUI_PageCountChanged.connect(callback);
+    }
+
 
     public static onGuiExportComplete(callback: Function): void {
         RxCore.GUI_exportComplete.connect(callback);
