@@ -96,6 +96,10 @@ export const MARKUP_TYPES = {
         type: 11,
         subType: 3,
     },
+    LINK: {
+        type: 20
+    },
+
 }
 export const METRIC = {
     UNIT_TYPES: {

@@ -553,6 +553,11 @@ export class RXCore {
         RxCore.markupSymbol(onoff);
     }
 
+    public static markupLink(onoff: boolean): void {
+        RxCore.markupLink(onoff);
+    }
+
+
     public static getSymbolLibPNGData(num,sname): void {
         RxCore.getSymbolLibPNGData(num,sname);
     }

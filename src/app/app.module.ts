@@ -74,6 +74,13 @@ import { MeasureDetailPanelComponent } from './components/annotation-tools/measu
 import { ScaleDropdownComponent } from './components/annotation-tools/scale-dropdown/scale-dropdown.component';
 import { ToastrModule } from 'ngx-toastr';
 
+import { ImageLibraryComponent } from './components/image-library/image-library.component';
+import { ImageDragDropDirective } from './components/image-library/image-draggable.directive';
+import { SymbolsLibraryComponent } from './components/annotation-tools/symbols-library/symbols-library.component';
+import { LinksLibraryComponent } from './components/annotation-tools/links-library/links-library.component';
+import { LinkDragDropDirective } from './components/annotation-tools/links-library/link-draggable.directive';
+import { InteractiveStampTemplateDirective } from './components/annotation-tools/stamp-panel/interactive-stamp-template.directive ';
+
 import { SearchPanelComponent } from './components/annotation-tools/search-panel/search-panel.component';
 import { HighlightPipe } from './components/annotation-tools/search-panel/highligth.pipe';
 import { ContextMenuComponent } from './components/side-nav-menu/context-menu/context-menu.component';
@@ -130,6 +137,7 @@ import { SizeModalComponent } from './components/size-modal/size-modal.component
     NotificationComponent,
     StampPanelComponent,
     StampTemplateDirective,
+    InteractiveStampTemplateDirective,
     MeasurePanelComponent,
     SignatureComponent,
     CheckboxComponent,
@@ -148,6 +156,11 @@ import { SizeModalComponent } from './components/size-modal/size-modal.component
     AnnotationShapeIconComponent,
     MeasureDetailPanelComponent,
     ScaleDropdownComponent,
+    ImageLibraryComponent,
+    ImageDragDropDirective,
+    SymbolsLibraryComponent,
+    LinksLibraryComponent,
+    LinkDragDropDirective,
     ContextMenuComponent,
     ExtractModalComponent,
     RadioButtonComponent,

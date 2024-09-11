@@ -157,9 +157,10 @@ export class AppComponent implements AfterViewInit {
 
     RXCore.onGuiFileLoadComplete(() => {
       
-      RXCore.getCurrentFileInfo().then(info => {
-        this.recentfilesService.addRecentFile(info)
-      });
+
+      let FileInfo = RXCore.getCurrentFileInfo();
+
+      this.recentfilesService.addRecentFile(FileInfo);
       
       this.rxCoreService.guiFileLoadComplete.next();
 
