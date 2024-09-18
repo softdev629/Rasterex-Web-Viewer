@@ -400,9 +400,11 @@ export class TopNavMenuComponent implements OnInit {
 
     if(actionType === "Comment"){
       this.annotationToolsService.setNotePanelState({ visible: this.isActionSelected && actionType === "Comment" });
+      this.annotationToolsService.setSearchPanelState({ visible: false });
     }
 
     if(actionType === "Search"){
+      this.annotationToolsService.setNotePanelState({ visible: false });
       this.annotationToolsService.setSearchPanelState({ visible: this.isActionSelected && actionType === "Search" });
     }
 

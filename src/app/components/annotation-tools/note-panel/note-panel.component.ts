@@ -40,13 +40,16 @@ export class NotePanelComponent implements OnInit {
   isHideAnnotation: boolean = false;
   pageNumbers: any[] = [];
   //sortByField: 'created' | 'author' = 'created';
-  sortByField: 'created' | 'position' | 'author' = 'created';
+  //sortByField: 'created' | 'position' | 'author' = 'created';
+  sortByField: 'created' | 'position' | 'author' | 'pagenumber' | 'annotation' = 'created';
+
 
   sortOptions = [
     { value: "created", label: "Created day" },
     { value: "author", label: "Author" },
     { value: "pagenumber", label: "Page" },
-    { value: "position", label: "Position" }
+    { value: "position", label: "Position" },
+    { value: 'annotation', label: 'Annotation Type' },
   ];
 
  /*added for comment list panel */
@@ -151,6 +154,8 @@ export class NotePanelComponent implements OnInit {
      }
     ) */
     /*modified for comment list panel */
+
+
         if (this.pageNumber > 0) {
           if (comments.find((x: string) => x.indexOf(searchQuery) > -1) || i.author.toLocaleLowerCase().includes(searchQuery) || i.getMarkupType().label.toLocaleLowerCase().includes(searchQuery)) {
             return (this.dateFilter.startDate ? dayjs(i.timestamp).isSameOrAfter(this.dateFilter.startDate) : true)
@@ -183,13 +188,20 @@ export class NotePanelComponent implements OnInit {
       return item;
     })
     .sort((a, b) => {
+
       switch(this.sortByField) {
+
         case 'created':
           return b.timestamp - a.timestamp;
         case 'author':
           return a.author.localeCompare(b.author);
         case 'position':
             return a.y - b.y;
+        case 'pagenumber':
+            return b.pagenumber - a.pagenumber;
+        case 'annotation':
+            return a.type - b.type + (a.subtype - b.subtype);
+  
 
       }
     });
@@ -207,13 +219,14 @@ export class NotePanelComponent implements OnInit {
       }, {});
     } else {
       this.list = {
-        "": query
-      }
+        '': query,
+      };
     }
   }
 
   ngOnInit(): void {
-    this.annotationToolsService.notePanelState$.subscribe(state => {
+    //this.annotationToolsService.notePanelState$.subscribe(state => {
+    this.annotationToolsService.notePanelState$.subscribe((state) => {  
       /*added for comment list panel */
       this.activeMarkupNumber = state?.markupnumber;
       if (this.activeMarkupNumber) {
@@ -295,7 +308,7 @@ export class NotePanelComponent implements OnInit {
       }
       if (list.length > 0 && !this.isHideAnnotation){
         setTimeout(() => {
-          if (list.find(itm => itm.getselected()) === undefined)
+          if (list.find((itm) => itm.getselected()) === undefined)
             this.activeMarkupNumber = -1;
               //console.log(itm.selected);
 
@@ -474,7 +487,7 @@ export class NotePanelComponent implements OnInit {
 
     let noOfComments = 0;
 
-    Object.values(this.list || {}).forEach(comment => {
+    Object.values(this.list || {}).forEach((comment) => {
       noOfComments += comment.length;
     });
     return noOfComments;
@@ -576,7 +589,7 @@ export class NotePanelComponent implements OnInit {
         this._setPosition(markup);
       }, 100);
 
-      Object.values(this.list || {}).forEach(comments => {
+      Object.values(this.list || {}).forEach((comments) => {
         comments.forEach((comment: any) => {
           if (comment.markupnumber === markupNo) {
             //comment.IsExpanded = true;
@@ -774,7 +787,7 @@ export class NotePanelComponent implements OnInit {
   onHideComment(event: any, markupNo: number): void {
     this.isHideAnnotation = true;
     event.preventDefault();
-    Object.values(this.list || {}).forEach(comments => {
+    Object.values(this.list || {}).forEach((comments) => {
       comments.forEach((comment: any) => {
         if (comment.markupnumber === markupNo) {
           comment.IsExpanded = false;

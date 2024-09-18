@@ -652,7 +652,11 @@ export class RXCore {
         RxCore.restrictPan(onoff);
     }
 
+    public static markupAddMulti(onoff: boolean) : void{
 
+         RxCore.markupAddMulti(onoff);
+    }
+    
     public static exportPDF(paperSize: string = "A4"): void {
         RxCore.exportFile(false, "PDF", "0", paperSize, "1");
     }
@@ -860,7 +864,7 @@ export class RXCore {
         RxCore.GUI_pagethumbs.connect(callback);
     }
 
-    public static onGuiPagethumb(callback: (thumbnail: any) => void): void {
+    public static onGuiPagethumb(callback: (pageindex : number , thumbnail: any) => void): void {
         RxCore.GUI_pagethumb.connect(callback);
     }
 

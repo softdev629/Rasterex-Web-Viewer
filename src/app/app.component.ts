@@ -6,6 +6,7 @@ import { NotificationService } from './components/notification/notification.serv
 import { MARKUP_TYPES } from 'src/rxcore/constants';
 import { AnnotationToolsService } from './components/annotation-tools/annotation-tools.service';
 import { RecentFilesService } from './components/recent-files/recent-files.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
@@ -29,13 +30,17 @@ export class AppComponent implements AfterViewInit {
   timeoutId: any;
   pasteStyle: { [key: string]: string } = { display: 'none' };
 
+
   constructor(
     private readonly recentfilesService: RecentFilesService,
     private readonly rxCoreService: RxCoreService,
     private readonly fileGaleryService: FileGaleryService,
-    private readonly notificationService: NotificationService) { }
+    private readonly notificationService: NotificationService,
+    private titleService:Title) { }
 
   ngOnInit() {
+
+    this.titleService.setTitle(this.title);
     this.fileGaleryService.getEventUploadFile().subscribe(event => this.eventUploadFile = event);
     this.fileGaleryService.modalOpened$.subscribe(opened => {
       if (!opened) {
@@ -160,9 +165,16 @@ export class AppComponent implements AfterViewInit {
 
       let FileInfo = RXCore.getCurrentFileInfo();
 
+      //this.title = FileInfo.name;
+
+      //this.titleService.setTitle(this.title);
+
       this.recentfilesService.addRecentFile(FileInfo);
       
       this.rxCoreService.guiFileLoadComplete.next();
+
+      
+      
 
     });
     
@@ -246,7 +258,7 @@ export class AppComponent implements AfterViewInit {
       this.rxCoreService.setGuiPageThumbs(thumbnails);
     });
 
-    RXCore.onGuiPagethumb((thumbnail) => {
+    RXCore.onGuiPagethumb((pageindex, thumbnail) => {
       this.rxCoreService.setGuiPageThumb(thumbnail);
     });
 
@@ -282,6 +294,8 @@ export class AppComponent implements AfterViewInit {
       this.rxCoreService.guiOnZoomUpdate.next({zoomparams, type});
     });
 
+
+  
 
   }
 

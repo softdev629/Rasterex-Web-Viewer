@@ -40,12 +40,27 @@ export class TextSelectionHighlightComponent implements OnInit {
       });
     });
 
-    RXCore.onGuiTextCopied(selectionData => {
-      if (typeof selectionData === 'object') {
-        this.pdfTextSelectionData = selectionData;
+
+    
+
+    RXCore.onGuiTextCopied((fileurl: string, textData : string) => {
+      if (typeof textData === 'string') {
+        //this.copyToClipBoard(textData);
+
+       this.copyToClipBoard(textData).then(() =>{
+          this.notificationService.notification({message: 'Text successfully copied.', type: 'info'});     
+
+       }).catch((error) =>{
+          this.notificationService.notification({message: 'Something went wrong.', type: 'error'});    
+       });
+
+
+        this.pdfTextSelectionData = textData;
       }
     });
   }
+
+
 
   handleSelectionEnd(event): void {
     const rect = window.getSelection()?.getRangeAt(0)?.getClientRects()[0];
@@ -107,4 +122,47 @@ export class TextSelectionHighlightComponent implements OnInit {
       })
       .catch((err) => { this.notificationService.notification({message: 'Something went wrong.', type: 'error'}); });
   }
+
+  copyToClipBoard(textToCopy : string) : Promise<any>{
+    // navigator clipboard api needs a secure context (https)
+
+    var ok : boolean = false;
+    //var fail 
+
+    if (navigator.clipboard && window.isSecureContext) {
+      // navigator clipboard api method'
+      try{
+        navigator.clipboard.writeText(textToCopy);
+        ok = true;
+      }
+      
+      catch{
+        ok = false;
+      }
+      
+    } else {
+      // text area method
+      let textArea = document.createElement("textarea");
+      textArea.value = textToCopy;
+      // make the textarea out of viewport
+      textArea.style.position = "fixed";
+      textArea.style.left = "-999999px";
+      textArea.style.top = "-999999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+
+      document.execCommand('copy') ? ok = true : ok = false;
+      textArea.remove();
+    }
+
+    return new Promise<void>((res, rej) => {
+      // here the magic happens
+      ok ? res() : rej();
+      
+    });
+
+
+  }
+
 }

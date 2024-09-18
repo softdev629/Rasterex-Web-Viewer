@@ -23,7 +23,7 @@
 
     .footer {
         display: flex;
-        justify-content: end;
+        justify-content: flex-end; /* changed from end to flex-end */
         column-gap: 16px;
         padding: 8px;
     }

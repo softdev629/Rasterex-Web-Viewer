@@ -18,6 +18,7 @@ type Action = 'move-top' | 'move-bottom' | 'move-up' | 'move-down' | 'rotate-r' 
 export class PagesComponent implements OnInit {
 
   tabActiveIndex: number = 0;
+  isPDF : boolean = true;
   thumbnails: Array<any> = [];
   numpages: number = 1;
   selectedPageIndex: number = 0;
@@ -62,6 +63,9 @@ export class PagesComponent implements OnInit {
   ngOnInit(): void {
     this.rxCoreService.guiState$.subscribe(state => {
       this.numpages = state.numpages;
+
+      this.isPDF = state.isPDF;
+
     });
 
     this.rxCoreService.guiPageThumbs$.subscribe(data => {
@@ -329,6 +333,11 @@ export class PagesComponent implements OnInit {
   }
 
   onRightClick(event: MouseEvent | PointerEvent, pageIndex: number) {
+    
+    if(!this.isPDF){
+      return;
+    }    
+
     event.preventDefault();
     event.stopPropagation();
 

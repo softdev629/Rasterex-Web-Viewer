@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, Title } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
+
 //import { FormsModule } from '@angular/forms';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -183,7 +184,8 @@ import { SizeModalComponent } from './components/size-modal/size-modal.component
     TreeviewModule.forRoot(),
     ToastrModule.forRoot(), // ToastrModule added
   ],
-  providers: [ColorHelper],
-  bootstrap: [AppComponent]
+  providers: [ColorHelper, Title],
+  bootstrap: [AppComponent],
+  
 })
 export class AppModule { }

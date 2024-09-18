@@ -102,15 +102,18 @@
 @media print {
     body * {
         display: none;
+        
     }
 
     #printdiv, #printdiv * {
         display: block;
+        
     }
 }
 
 @media screen {
     #printdiv, #printdiv * {
         display: none;
+        
     }
 }

@@ -16,7 +16,7 @@
     </ul>
     <div [ngSwitch]="tabActiveIndex" class="nav-tabs-content" [class.no-padding]="tabActiveIndex == 1">
         <ng-container *ngSwitchDefault>
-            <div class="search-section">
+            <div *ngIf="isPDF" class="search-section">
                 <span>Search page:</span>
                 <input
                     type="text"
@@ -24,7 +24,7 @@
                     [(ngModel)]="page"
                     (keyup)="onPageSearch($event)" />
             </div>
-            <div class="page-multiselect">
+            <div *ngIf="isPDF" class="page-multiselect">
                 <input 
                 [(ngModel)]="checkString"
                 (blur)="onBlurInputCheckString()"
@@ -74,7 +74,7 @@
                     class="check" [(value)]="checkList[i]"
                         (valueChange)="onChangeCheckString()"></rx-checkbox>
                     <span>{{i+1}} / {{numpages}}</span>
-                    <button (click)="onRightClick($event, i)">
+                    <button *ngIf="isPDF" (click)="onRightClick($event, i)">
                         <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
                             <path fill="white"
                                 d="M3 9.5a1.5 1.5 0 1 1 0-3a1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3a1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3a1.5 1.5 0 0 1 0 3" />
