@@ -42,6 +42,7 @@ export class TopNavMenuComponent implements OnInit {
   sidebarOpened: boolean = false;
   modalFileGaleryOpened$ = this.fileGaleryService.modalOpened$;
   isPrint: boolean = false;
+  isPDF : boolean = false;
   fileInfo: any = {};
   selectedValue: any;
   options: Array<{ value: GuiMode, label: string, hidden?: boolean }> = [];
@@ -87,6 +88,9 @@ export class TopNavMenuComponent implements OnInit {
       this.guiState = state;
       this.canChangeSign = state.numpages && state.isPDF && RXCore.getCanChangeSign();
       this._setOptions();
+
+      this.isPDF = state.isPDF;
+
       if (this.compareService.isComparisonActive) {
         const value = this.options.find(option => option.value == "compare");
         if (value) {
@@ -382,6 +386,17 @@ export class TopNavMenuComponent implements OnInit {
       this.burgerOpened = false;
       RXCore.exportPDF();
     }
+  }
+
+  onPDFDownloadClick():void{
+    if (this.state?.activefile) {
+      this.burgerOpened = false;
+
+      RXCore.downloadPDF();
+
+      //RXCore.exportPDF();
+    }
+
   }
 
 

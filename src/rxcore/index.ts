@@ -656,10 +656,17 @@ export class RXCore {
 
          RxCore.markupAddMulti(onoff);
     }
-    
+
     public static exportPDF(paperSize: string = "A4"): void {
         RxCore.exportFile(false, "PDF", "0", paperSize, "1");
     }
+
+    public static downloadPDF(): void {
+        RxCore.downloadPDF();
+    }
+
+
+    
 
     public static get markupChanged(): boolean {
         return RxCore.markupChanged();
