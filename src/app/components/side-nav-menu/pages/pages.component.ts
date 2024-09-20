@@ -38,11 +38,10 @@ export class PagesComponent implements OnInit {
   checkString: string = ""
 
   // Context menu properties
-
-  showContextMenu: boolean = false;
+  
   contextMenuX: number = 0;
   contextMenuY: number = 0;
-  
+  showContextMenu: boolean = false;
 
 
   config = TreeviewConfig.create({

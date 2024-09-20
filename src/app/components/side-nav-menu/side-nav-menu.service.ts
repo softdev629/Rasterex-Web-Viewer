@@ -12,6 +12,7 @@ export class SideNavMenuService {
 
   private sidebarChanged: Subject<any> = new Subject<any>();
   public sidebarChanged$: Observable<any> = this.sidebarChanged.asObservable();
+  
   toggleSidebar(index: number) {
     this.sidebarChanged.next(index);
   }
@@ -20,7 +21,11 @@ export class SideNavMenuService {
   public extractModalChanged$: Observable<boolean> = this.extractModalChanged.asObservable();
 
   toggleExtractModal(visible: boolean): void {
+    
     this.extractModalChanged.next(visible);
+    //this.extractModalChanged.next(visible);
+
+
   }
 
   private insertModalChanged: Subject<ModalType> = new Subject<ModalType>();

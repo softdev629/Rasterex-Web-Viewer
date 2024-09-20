@@ -19,7 +19,7 @@ html {
     background-color: $background;
     font-family: OpenSans;
     height: 100%;
-    //overflow: hidden;
+    overflow: var(--body-overflow);
 }
 
 /* Scrollbar */

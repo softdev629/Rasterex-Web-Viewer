@@ -348,6 +348,13 @@ export class TopNavMenuComponent implements OnInit {
 
   openModalPrint() {
     this.state?.activefile ? (this.isPrint = true, this.burgerOpened = false) : this.isPrint = false;
+
+    if(this.isPrint){
+      document.documentElement.style.setProperty("--body-overflow", "visible");
+    }
+
+    //
+
   }
 
   
@@ -399,8 +406,8 @@ export class TopNavMenuComponent implements OnInit {
     console.log(actionType, this.isActionSelected)
 
     if(actionType === "Comment"){
-      this.annotationToolsService.setNotePanelState({ visible: this.isActionSelected && actionType === "Comment" });
       this.annotationToolsService.setSearchPanelState({ visible: false });
+      this.annotationToolsService.setNotePanelState({ visible: this.isActionSelected && actionType === "Comment" });
     }
 
     if(actionType === "Search"){

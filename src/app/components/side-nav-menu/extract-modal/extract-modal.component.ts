@@ -18,12 +18,19 @@ export class ExtractModalComponent implements OnInit {
     ){}
 
     ngOnInit(): void {
-        this.sideNavMenuService.extractModalChanged$.subscribe(value => {
+        this.sideNavMenuService.extractModalChanged$.subscribe((value) => {
             this.visible = value
-        })
-        this.sideNavMenuService.pageRange$.subscribe(value => {
+        });
+
+        /*this.sideNavMenuService.pageRange$.subscribe(value => {
             this.pageRange = value
-        })
+        })*/
+
+        this.sideNavMenuService.pageRange$.subscribe((value) => {
+            this.pageRange = value;
+           // this.pageRangeStr = this.convertArrayToString(value)
+            //this.currentPage = value[0][0] + 1;
+        });
     }
 
     cancel() {

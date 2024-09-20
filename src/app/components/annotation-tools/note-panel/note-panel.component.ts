@@ -42,6 +42,7 @@ export class NotePanelComponent implements OnInit {
   //sortByField: 'created' | 'author' = 'created';
   //sortByField: 'created' | 'position' | 'author' = 'created';
   sortByField: 'created' | 'position' | 'author' | 'pagenumber' | 'annotation' = 'created';
+  
 
 
   sortOptions = [
@@ -196,17 +197,85 @@ export class NotePanelComponent implements OnInit {
         case 'author':
           return a.author.localeCompare(b.author);
         case 'position':
-            return a.y - b.y;
+
+          return a.pagenumber === b.pagenumber ? a.y === b.y ? a.x - b.x : a.y - b.y : a.pagenumber - b.pagenumber;
+
+            //return a.y - b.y;
         case 'pagenumber':
-            return b.pagenumber - a.pagenumber;
+            
+        return a.pagenumber - b.pagenumber;
+
         case 'annotation':
-            return a.type - b.type + (a.subtype - b.subtype);
-  
+            //return a.type - b.type + (a.subtype - b.subtype);
+            return a.getMarkupType().label.localeCompare(b.getMarkupType().label);
 
       }
     });
 
-    if (this.sortByField == 'created') {
+    switch (this.sortByField) {
+      case 'created':
+        this.list = query.reduce((list, item) => {
+          const date = dayjs(item.timestamp).fromNow();
+          if (!list[date]) {
+            list[date] = [item];
+          } else {
+            list[date].push(item);
+          }
+          return list;
+        }, {});
+        break;
+      case 'author':
+        this.list = query.reduce((list, item) => {
+          if (!list[item.author]) {
+            list[item.author] = [item];
+          } else {
+            list[item.author].push(item);
+          }
+
+          return list;
+        }, {});
+        break;
+      case 'annotation':
+        this.list = query.reduce((list, item) => {
+          const annotationLabel = item.getMarkupType().label;
+          if (!list[annotationLabel]) {
+            list[annotationLabel] = [item];
+          } else {
+            list[annotationLabel].push(item);
+          }
+          return list;
+        }, {});
+        break;
+      case 'pagenumber':
+        this.list = query.reduce((list, item) => {
+          if (!list[`Page ${item.pagenumber + 1}`]) {
+            list[`Page ${item.pagenumber + 1}`] = [item];
+          } else {
+            list[`Page ${item.pagenumber + 1}`].push(item);
+          }
+          return list;
+        }, {});
+        break;
+
+      case 'position':
+        this.list = query.reduce((list, item) => {
+          if (!list[`Page ${item.pagenumber + 1}`]) {
+            list[`Page ${item.pagenumber + 1}`] = [item];
+          } else {
+            list[`Page ${item.pagenumber + 1}`].push(item);
+          }
+
+          return list;
+        }, {});
+
+        break;
+
+      default:
+        this.list = {'': query};
+    }
+
+
+    /*if (this.sortByField == 'created') {
       this.list = query.reduce((list, item) => {
         const date = dayjs(item.timestamp).fromNow();
         if (!list[date]) {
@@ -221,7 +290,7 @@ export class NotePanelComponent implements OnInit {
       this.list = {
         '': query,
       };
-    }
+    }*/
   }
 
   ngOnInit(): void {

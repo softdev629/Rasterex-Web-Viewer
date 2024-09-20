@@ -157,6 +157,9 @@ export class PrintComponent {
 
   cancel() {
     this.initializeFormValues();
+
+    document.documentElement.style.setProperty("--body-overflow", "hidden");
+
     this.closed.emit();
   }
 
