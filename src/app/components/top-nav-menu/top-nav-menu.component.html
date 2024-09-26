@@ -146,7 +146,7 @@
     <div class="top-nav-item dropdown">
         <rx-dropdown [options]="options" [value]="selectedValue" [align]="'right'" [transparent]="false" (valueChange)="onModeChange($event)"></rx-dropdown>
     </div>
-    <div [ngClass]="{'selected': isActionSelected && actionType === 'Search'}" class="tooltip Comments-icon"
+    <div *ngIf="isPDF" [ngClass]="{'selected': isActionSelected && actionType === 'Search'}" class="tooltip Comments-icon"
         (click)="onSearchPanelSelect()">
         <svg xmlns="http://www.w3.org/2000/svg" style="margin-top: 4px; margin-left: 2px;" width="24" height="24" viewBox="0 0 28 28">
             <path fill="#333C4E" stroke="#333C4E" stroke-width="0.2"

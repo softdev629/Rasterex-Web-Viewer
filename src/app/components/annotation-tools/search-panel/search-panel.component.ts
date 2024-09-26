@@ -88,7 +88,9 @@ export class SearchPanelComponent implements OnInit {
             this.searchCurrentMatches = 0;
             this.searchResult = matches;
 
-            this.splitedResult = this.searchResult.slice(0, this.getPageNumFromId(Math.min(40, this.searchResult.length)))
+            //not sure what this is supposed to do currently this makes the list empty. modified to retun result.
+            //this.splitedResult = this.searchResult.slice(0, this.getPageNumFromId(Math.min(40, this.searchResult.length)))
+            this.splitedResult = this.searchResult.slice(0, Math.min(40, this.searchResult.length))
             console.log(matches)
             this.cdr.markForCheck()
         })

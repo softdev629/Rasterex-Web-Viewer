@@ -1,3 +1,8 @@
+September 26, 2024
+
+# 1. Code merge of fixed comment list with corrected comment reply listing.
+
+
 September 20, 2024
 
 # 1. Code merge of new Text search and PDF page manipulation functions.
