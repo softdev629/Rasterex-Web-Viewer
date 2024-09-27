@@ -94,7 +94,7 @@ export class AnnotationToolsComponent implements OnInit {
 
     this.rxCoreService.guiState$.subscribe(state => {
       this._deselectAllActions();
-      this.service.setNotePanelState({ visible: false });
+      //this.service.setNotePanelState({ visible: false });
       this.service.hideQuickActionsMenu();
       this.service.setNotePopoverState({visible: false, markup: -1});
       this.service.hide();

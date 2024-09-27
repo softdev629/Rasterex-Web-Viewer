@@ -1,6 +1,18 @@
+September 27, 2024
+
+# 1. Code merge of fixed comment list to make it stay open when switching between files.
+
+Component Paths: `src\app\components\annotation-tools\note-panel\note-panel.component.ts`
+                 `src\app\components\annotation-tools\annotation-tools.component.ts`
+
+
 September 26, 2024
 
 # 1. Code merge of fixed comment list with corrected comment reply listing.
+
+Component Paths: `src\app\components\annotation-tools\note-panel\note-panel.component.html`
+                 `src\assets\scripts\rxcorefunctions.js`
+
 
 
 September 20, 2024
@@ -12,6 +24,10 @@ September 20, 2024
 # 5. Fixed problem with undo redo restoring annoation with correct page number property.
 
 # 6. Added new sort functions for comment list.
+
+Component Paths: `src\app\components\annotation-tools\note-panel\note-panel.component.ts`
+                 `src\assets\scripts\rxcorefunctions.js`
+
 # 7. Added new download PDF method to download PDF modified in client.
 
 
