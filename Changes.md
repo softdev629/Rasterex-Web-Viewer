@@ -5,6 +5,10 @@ September 27, 2024
 Component Paths: `src\app\components\annotation-tools\note-panel\note-panel.component.ts`
                  `src\app\components\annotation-tools\annotation-tools.component.ts`
 
+# 2. Fixed issue with canvas scaling on startup not working correctly.
+
+Component Paths: `src\app\app.component.ts`
+
 
 September 26, 2024
 

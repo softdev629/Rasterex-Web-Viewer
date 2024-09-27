@@ -96,6 +96,11 @@ export class AppComponent implements AfterViewInit {
 
       console.log('RxCore GUI_Ready.');
       console.log(`Read Only Mode - ${RXCore.getReadOnly()}.`);
+
+      RXCore.setLayout(0, 0, false);
+      RXCore.doResize(false,0, 0);/*added to set correct canvas size on startup */
+
+
       RXCore.setdisplayBackground(document.documentElement.style.getPropertyValue("--background") || '#D6DADC');
       RXCore.setrxprintdiv(document.getElementById('printdiv'));
 
