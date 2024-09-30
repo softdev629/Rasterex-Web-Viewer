@@ -87,7 +87,7 @@ export class TopNavMenuComponent implements OnInit {
     this.rxCoreService.guiState$.subscribe((state) => {
       this.guiState = state;
       this.canChangeSign = state.numpages && state.isPDF && RXCore.getCanChangeSign();
-      this._setOptions();
+      //this._setOptions();
 
       this.isPDF = state.isPDF;
 

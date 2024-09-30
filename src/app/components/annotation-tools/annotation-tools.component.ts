@@ -95,10 +95,10 @@ export class AnnotationToolsComponent implements OnInit {
     this.rxCoreService.guiState$.subscribe(state => {
       this._deselectAllActions();
       //this.service.setNotePanelState({ visible: false });
-      this.service.hideQuickActionsMenu();
-      this.service.setNotePopoverState({visible: false, markup: -1});
-      this.service.hide();
-      this.service.setMeasurePanelState({ visible: false });
+      //this.service.hideQuickActionsMenu();
+      //this.service.setNotePopoverState({visible: false, markup: -1});
+      //this.service.hide();
+      //this.service.setMeasurePanelState({ visible: false });
     });
 
     this.rxCoreService.guiTextInput$.subscribe(({rectangle, operation}) => {
@@ -189,11 +189,11 @@ export class AnnotationToolsComponent implements OnInit {
 
     console.log("deselect all called");
     RXCore.restoreDefault();
-    this.service.hideQuickActionsMenu();
+    //this.service.hideQuickActionsMenu();
     //this.service.setNotePanelState({ visible: false });
-    this.service.setPropertiesPanelState({ visible: false });
-    this.service.setMeasurePanelState({ visible: false });
-    this.service.setMeasurePanelDetailState({ visible: false });
+    //this.service.setPropertiesPanelState({ visible: false });
+    //this.service.setMeasurePanelState({ visible: false });
+    //this.service.setMeasurePanelDetailState({ visible: false });
     
   }
 

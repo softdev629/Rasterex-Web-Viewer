@@ -109,12 +109,12 @@ export class OpenedFilesTabsComponent implements OnInit {
 
     //RXCore.doResize(0, 0);
 
-    this.rxCoreService.resetGuiConfig();
+    /*this.rxCoreService.resetGuiConfig();
     if (this.compareService.isComparisonActive) {
       this.rxCoreService.setGuiMode(GuiMode.Compare);
     } else {
       this.rxCoreService.setGuiMode(GuiMode.View);
-    }
+    }*/
 
     // broadcast if viewer is inside iframe
     if (window !== top) {

@@ -26,8 +26,8 @@ export class SideNavMenuComponent implements OnInit {
   ngOnInit(): void {
     this.guiState$.subscribe(state => {
       this.numpages = state.numpages;
-      this.toggleablePanelOpened = false;
-      this.activeIndex = -1;
+      //this.toggleablePanelOpened = false;
+      //this.activeIndex = -1;
       this.canChangeSign = state.numpages && state.isPDF && RXCore.getCanChangeSign();
     });
 
