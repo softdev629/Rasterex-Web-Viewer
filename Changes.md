@@ -2,7 +2,8 @@ October 1, 2024
 
 # 1. Comment Status Menu
 
-Component Paths: `src\app\app.module.t`
+Component Paths:
+`src\app\app.module.t`
 `src\app\components\annotation-tools\comment-status-icon\comment-status-icon.component.html`
 `src\app\components\annotation-tools\comment-status-icon\comment-status-icon.component.scss`
 `src\app\components\annotation-tools\comment-status-icon\comment-status-icon.component.spec.ts`
@@ -12,6 +13,12 @@ Component Paths: `src\app\app.module.t`
 `src\app\components\annotation-tools\note-panel\note-panel.component.ts`
 `src\assets\scripts\rxcorefunctions.js`
 `src\rxcore\constrants\index.ts`
+
+# 2. Separate annotate objects and measure objects
+
+Component Path:
+`src\app\components\top-nav-menu\top-nav-menu.component.ts`
+`src\app\components\annotation-tools\note-panel\note-panel.component.ts`
 
 September 30, 2024
 

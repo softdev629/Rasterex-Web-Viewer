@@ -77,6 +77,7 @@ export class NotePanelComponent implements OnInit {
     { value: 'marked', text: 'Marked' },
     { value: 'unmarked', text: 'Unmarked' },
   ];
+  objectType: string | null = null;
 
   constructor(
     private readonly rxCoreService: RxCoreService,
@@ -145,6 +146,29 @@ export class NotePanelComponent implements OnInit {
   private _processList(list: Array<IMarkup> = []): void {
     /*modified for comment list panel */
     const query = list
+      .filter((i: any) => {
+        if (this.objectType === 'measure') {
+          return (
+            i.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
+            (i.type === MARKUP_TYPES.MEASURE.AREA.type &&
+              i.subtype === MARKUP_TYPES.MEASURE.AREA.subType) ||
+            (i.type === MARKUP_TYPES.MEASURE.PATH.type &&
+              i.subtype === MARKUP_TYPES.MEASURE.PATH.subType) ||
+            (i.type === MARKUP_TYPES.MEASURE.RECTANGLE.type &&
+              i.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType)
+          );
+        } else {
+          return !(
+            i.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
+            (i.type === MARKUP_TYPES.MEASURE.AREA.type &&
+              i.subtype === MARKUP_TYPES.MEASURE.AREA.subType) ||
+            (i.type === MARKUP_TYPES.MEASURE.PATH.type &&
+              i.subtype === MARKUP_TYPES.MEASURE.PATH.subType) ||
+            (i.type === MARKUP_TYPES.MEASURE.RECTANGLE.type &&
+              i.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType)
+          );
+        }
+      })
       .filter((i: any) => {
         if (this.search) {
           if (this.connectorLine) this.connectorLine.hide();
@@ -355,6 +379,11 @@ export class NotePanelComponent implements OnInit {
       } else {
         RXCore.setLayout(0, 0, false);
         RXCore.doResize(false, 0, 0); /*added for comment list panel */
+      }
+
+      if (state?.objectType !== this.objectType) {
+        this.objectType = state?.objectType;
+        this._processList(this.rxCoreService.getGuiMarkupList());
       }
 
       this._hideLeaderLine();
