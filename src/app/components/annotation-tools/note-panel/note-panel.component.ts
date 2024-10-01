@@ -18,16 +18,15 @@ declare var LeaderLine: any;
   templateUrl: './note-panel.component.html',
   styleUrls: ['./note-panel.component.scss'],
   host: {
-    '(window:resize)': 'onWindowResize($event)'
-  }
+    '(window:resize)': 'onWindowResize($event)',
+  },
 })
 export class NotePanelComponent implements OnInit {
   visible: boolean = false;
-  
+
   list: { [key: string]: Array<IMarkup> };
   search: string;
-  panelwidth : number = 300;
-
+  panelwidth: number = 300;
 
   /*added for comment list panel */
   note: any[] = [];
@@ -39,31 +38,27 @@ export class NotePanelComponent implements OnInit {
   pageNumber: number = -1;
   isHideAnnotation: boolean = false;
   pageNumbers: any[] = [];
-  //sortByField: 'created' | 'author' = 'created';
-  //sortByField: 'created' | 'position' | 'author' = 'created';
-  sortByField: 'created' | 'position' | 'author' | 'pagenumber' | 'annotation' = 'created';
-  
-
+  sortByField: 'created' | 'position' | 'author' | 'pagenumber' | 'annotation' =
+    'created';
 
   sortOptions = [
-    { value: "created", label: "Created day" },
-    { value: "author", label: "Author" },
-    { value: "pagenumber", label: "Page" },
-    { value: "position", label: "Position" },
+    { value: 'created', label: 'Created day' },
+    { value: 'author', label: 'Author' },
+    { value: 'pagenumber', label: 'Page' },
+    { value: 'position', label: 'Position' },
     { value: 'annotation', label: 'Annotation Type' },
   ];
 
- /*added for comment list panel */
-
+  /*added for comment list panel */
 
   sortOrder = (a, b): number => 0;
   filterVisible: boolean = false;
   createdByFilterOptions: Array<any> = [];
   createdByFilter: Set<string> = new Set<string>();
   dateFilter: {
-    startDate: dayjs.Dayjs | undefined,
-    endDate: dayjs.Dayjs | undefined
-  } = { startDate: undefined, endDate: undefined};
+    startDate: dayjs.Dayjs | undefined;
+    endDate: dayjs.Dayjs | undefined;
+  } = { startDate: undefined, endDate: undefined };
 
   /*added for comment list panel */
   private guiOnPanUpdatedSubscription: Subscription;
@@ -72,34 +67,46 @@ export class NotePanelComponent implements OnInit {
   leaderLine: any = undefined;
   rectangle: any;
 
+  visibleStatusMenuIndex: number | null = null;
+  statusTypes = [
+    { value: 'accepted', text: 'Accepted' },
+    { value: 'rejected', text: 'Rejected' },
+    { value: 'cancelled', text: 'Cancelled' },
+    { value: 'completed', text: 'Completed' },
+    { value: 'none', text: 'None' },
+    { value: 'marked', text: 'Marked' },
+    { value: 'unmarked', text: 'Unmarked' },
+  ];
+
   constructor(
     private readonly rxCoreService: RxCoreService,
-    private readonly annotationToolsService: AnnotationToolsService) {
-      dayjs.extend(relativeTime);
-      dayjs.extend(updateLocale);
-      dayjs.extend(isSameOrAfter);
-      dayjs.extend(isSameOrBefore);
-      dayjs.updateLocale('en', {
-        relativeTime: {
-          past: "%s",
-          s: 'A few seconds ago',
-          m: "A minute ago",
-          mm: function (number) {
-            return number > 10 ? `${number} minutes ago` : "A few minutes ago";
-          },
-          h: "An hour ago",
-          hh:"Today",
-          d: "Yesterday",
-          dd: function (number) {
-            return number > 1 ? `${number} days ago` : "Yesterday";
-          },
-          M: "A month ago",
-          MM: "%d months ago",
-          y: "A year ago",
-          yy: "%d years ago"
-        }
-      });
-    }
+    private readonly annotationToolsService: AnnotationToolsService
+  ) {
+    dayjs.extend(relativeTime);
+    dayjs.extend(updateLocale);
+    dayjs.extend(isSameOrAfter);
+    dayjs.extend(isSameOrBefore);
+    dayjs.updateLocale('en', {
+      relativeTime: {
+        past: '%s',
+        s: 'A few seconds ago',
+        m: 'A minute ago',
+        mm: function (number) {
+          return number > 10 ? `${number} minutes ago` : 'A few minutes ago';
+        },
+        h: 'An hour ago',
+        hh: 'Today',
+        d: 'Yesterday',
+        dd: function (number) {
+          return number > 1 ? `${number} days ago` : 'Yesterday';
+        },
+        M: 'A month ago',
+        MM: '%d months ago',
+        y: 'A year ago',
+        yy: '%d years ago',
+      },
+    });
+  }
 
   private _showLeaderLine(markup: IMarkup): void {
     this._hideLeaderLine();
@@ -117,11 +124,11 @@ export class NotePanelComponent implements OnInit {
     this.leaderLine = new LeaderLine({
       start,
       end,
-      color: document.documentElement.style.getPropertyValue("--accent"),
+      color: document.documentElement.style.getPropertyValue('--accent'),
       size: 2,
       path: 'grid',
       endPlug: 'arrow2',
-      endPlugSize: 1.5
+      endPlugSize: 1.5,
     });
   }
 
@@ -130,88 +137,121 @@ export class NotePanelComponent implements OnInit {
       this.leaderLine.remove();
       this.leaderLine = undefined;
     }
-    document.querySelectorAll(".leader-line-end,.leader-line").forEach(el => el.remove());
+    document
+      .querySelectorAll('.leader-line-end,.leader-line')
+      .forEach((el) => el.remove());
   }
 
   private _processList(list: Array<IMarkup> = []): void {
     /*modified for comment list panel */
     const query = list
-    .filter((i: any) => {
-      if (this.search) {
-        if (this.connectorLine)
-        this.connectorLine.hide();
-        let searchQuery = this.search.toLocaleLowerCase();
-        let comments: any = i.comments.map((i: any) => { return i.value.toLocaleLowerCase(); });
+      .filter((i: any) => {
+        if (this.search) {
+          if (this.connectorLine) this.connectorLine.hide();
+          let searchQuery = this.search.toLocaleLowerCase();
+          let comments: any = i.comments.map((i: any) => {
+            return i.value.toLocaleLowerCase();
+          });
 
-        /* if (comments.find((x:string) => x.indexOf(searchQuery) > -1) || i.author.toLocaleLowerCase().includes(searchQuery) || i.getMarkupType().label.toLocaleLowerCase().includes(searchQuery)) {
-          return (this.dateFilter.startDate ? dayjs(i.timestamp).isSameOrAfter(this.dateFilter.startDate) : true)
-            && (this.dateFilter.endDate ? dayjs(i.timestamp).isSameOrBefore(this.dateFilter.endDate.endOf('day')) : true) && !i.bisTextArrow
-        }
-        return;
-      } else {
-        return (this.dateFilter.startDate ? dayjs(i.timestamp).isSameOrAfter(this.dateFilter.startDate) : true)
-          && (this.dateFilter.endDate ? dayjs(i.timestamp).isSameOrBefore(this.dateFilter.endDate.endOf('day')) : true) && !i.bisTextArrow
-      }
-     }
-    ) */
-    /*modified for comment list panel */
-
-
-        if (this.pageNumber > 0) {
-          if (comments.find((x: string) => x.indexOf(searchQuery) > -1) || i.author.toLocaleLowerCase().includes(searchQuery) || i.getMarkupType().label.toLocaleLowerCase().includes(searchQuery)) {
-            return (this.dateFilter.startDate ? dayjs(i.timestamp).isSameOrAfter(this.dateFilter.startDate) : true)
-              && (this.dateFilter.endDate ? dayjs(i.timestamp).isSameOrBefore(this.dateFilter.endDate.endOf('day')) : true) && !i.bisTextArrow && i.pagenumber === (this.pageNumber - 1)
+          if (this.pageNumber > 0) {
+            if (
+              comments.find((x: string) => x.indexOf(searchQuery) > -1) ||
+              i.author.toLocaleLowerCase().includes(searchQuery) ||
+              i.getMarkupType().label.toLocaleLowerCase().includes(searchQuery)
+            ) {
+              return (
+                (this.dateFilter.startDate
+                  ? dayjs(i.timestamp).isSameOrAfter(this.dateFilter.startDate)
+                  : true) &&
+                (this.dateFilter.endDate
+                  ? dayjs(i.timestamp).isSameOrBefore(
+                      this.dateFilter.endDate.endOf('day')
+                    )
+                  : true) &&
+                !i.bisTextArrow &&
+                i.pagenumber === this.pageNumber - 1
+              );
+            }
+          } else {
+            if (
+              comments.find((x: string) => x.indexOf(searchQuery) > -1) ||
+              i.author.toLocaleLowerCase().includes(searchQuery) ||
+              i.getMarkupType().label.toLocaleLowerCase().includes(searchQuery)
+            ) {
+              return (
+                (this.dateFilter.startDate
+                  ? dayjs(i.timestamp).isSameOrAfter(this.dateFilter.startDate)
+                  : true) &&
+                (this.dateFilter.endDate
+                  ? dayjs(i.timestamp).isSameOrBefore(
+                      this.dateFilter.endDate.endOf('day')
+                    )
+                  : true) &&
+                !i.bisTextArrow
+              );
+            }
           }
+          return;
         } else {
-          if (comments.find((x: string) => x.indexOf(searchQuery) > -1) || i.author.toLocaleLowerCase().includes(searchQuery) || i.getMarkupType().label.toLocaleLowerCase().includes(searchQuery)) {
-            return (this.dateFilter.startDate ? dayjs(i.timestamp).isSameOrAfter(this.dateFilter.startDate) : true)
-              && (this.dateFilter.endDate ? dayjs(i.timestamp).isSameOrBefore(this.dateFilter.endDate.endOf('day')) : true) && !i.bisTextArrow
+          if (this.pageNumber > 0) {
+            return (
+              (this.dateFilter.startDate
+                ? dayjs(i.timestamp).isSameOrAfter(this.dateFilter.startDate)
+                : true) &&
+              (this.dateFilter.endDate
+                ? dayjs(i.timestamp).isSameOrBefore(
+                    this.dateFilter.endDate.endOf('day')
+                  )
+                : true) &&
+              !i.bisTextArrow &&
+              i.pagenumber === this.pageNumber - 1
+            );
+          } else {
+            return (
+              (this.dateFilter.startDate
+                ? dayjs(i.timestamp).isSameOrAfter(this.dateFilter.startDate)
+                : true) &&
+              (this.dateFilter.endDate
+                ? dayjs(i.timestamp).isSameOrBefore(
+                    this.dateFilter.endDate.endOf('day')
+                  )
+                : true) &&
+              !i.bisTextArrow
+            );
           }
         }
-        return;
-      } else {
-        if (this.pageNumber > 0) {
-          return (this.dateFilter.startDate ? dayjs(i.timestamp).isSameOrAfter(this.dateFilter.startDate) : true)
-            && (this.dateFilter.endDate ? dayjs(i.timestamp).isSameOrBefore(this.dateFilter.endDate.endOf('day')) : true) && !i.bisTextArrow && i.pagenumber === (this.pageNumber - 1)
+      })
+      .map((item: any) => {
+        item.author = RXCore.getDisplayName(item.signature);
+        item.createdStr = dayjs(item.timestamp).format(
+          `MMM D,${
+            dayjs().year() != dayjs(item.timestamp).year() ? 'YYYY ' : ''
+          } h:mm A`
+        );
+        item.IsExpanded = item?.IsExpanded;
+        item;
+        return item;
+      })
+      .sort((a, b) => {
+        switch (this.sortByField) {
+          case 'created':
+            return b.timestamp - a.timestamp;
+          case 'author':
+            return a.author.localeCompare(b.author);
+          case 'position':
+            return a.pagenumber === b.pagenumber
+              ? a.y === b.y
+                ? a.x - b.x
+                : a.y - b.y
+              : a.pagenumber - b.pagenumber;
+          case 'pagenumber':
+            return a.pagenumber - b.pagenumber;
+          case 'annotation':
+            return a
+              .getMarkupType()
+              .label.localeCompare(b.getMarkupType().label);
         }
-        else {
-          return (this.dateFilter.startDate ? dayjs(i.timestamp).isSameOrAfter(this.dateFilter.startDate) : true)
-            && (this.dateFilter.endDate ? dayjs(i.timestamp).isSameOrBefore(this.dateFilter.endDate.endOf('day')) : true) && !i.bisTextArrow
-        }
-      }
-    }
-    )
-    .map((item: any) => {
-      item.author = RXCore.getDisplayName(item.signature);
-      item.createdStr = dayjs(item.timestamp).format(`MMM D,${dayjs().year() != dayjs(item.timestamp).year() ? 'YYYY ': ''} h:mm A`);
-      //item.IsExpanded = item?.IsExpanded;
-      //item.IsExpanded = this.activeMarkupNumber > 0 ? item?.IsExpanded : false;
-      item.IsExpanded = item?.IsExpanded;
-      return item;
-    })
-    .sort((a, b) => {
-
-      switch(this.sortByField) {
-
-        case 'created':
-          return b.timestamp - a.timestamp;
-        case 'author':
-          return a.author.localeCompare(b.author);
-        case 'position':
-
-          return a.pagenumber === b.pagenumber ? a.y === b.y ? a.x - b.x : a.y - b.y : a.pagenumber - b.pagenumber;
-
-            //return a.y - b.y;
-        case 'pagenumber':
-            
-        return a.pagenumber - b.pagenumber;
-
-        case 'annotation':
-            //return a.type - b.type + (a.subtype - b.subtype);
-            return a.getMarkupType().label.localeCompare(b.getMarkupType().label);
-
-      }
-    });
+      });
 
     switch (this.sortByField) {
       case 'created':
@@ -272,32 +312,12 @@ export class NotePanelComponent implements OnInit {
         break;
 
       default:
-        this.list = {'': query};
+        this.list = { '': query };
     }
-
-
-    /*if (this.sortByField == 'created') {
-      this.list = query.reduce((list, item) => {
-        const date = dayjs(item.timestamp).fromNow();
-        if (!list[date]) {
-          list[date] = [item];
-        } else {
-          list[date].push(item);
-        }
-
-        return list;
-      }, {});
-    } else {
-      this.list = {
-        '': query,
-      };
-    }*/
   }
 
   ngOnInit(): void {
-    //this.annotationToolsService.notePanelState$.subscribe(state => {
-    this.annotationToolsService.notePanelState$.subscribe((state) => {  
-      /*added for comment list panel */
+    this.annotationToolsService.notePanelState$.subscribe((state) => {
       this.activeMarkupNumber = state?.markupnumber;
       if (this.activeMarkupNumber) {
         this.markupNoteList.push(this.activeMarkupNumber);
@@ -324,14 +344,17 @@ export class NotePanelComponent implements OnInit {
       }
       /*added for comment list panel */
 
-      
       this.visible = state?.visible;
-      if(this.visible){
+      if (this.visible) {
         RXCore.setLayout(this.panelwidth, 0, false);
-        RXCore.doResize(false,this.panelwidth, 0);/*added for comment list panel */
-      }else{
+        RXCore.doResize(
+          false,
+          this.panelwidth,
+          0
+        ); /*added for comment list panel */
+      } else {
         RXCore.setLayout(0, 0, false);
-        RXCore.doResize(false,0, 0);/*added for comment list panel */
+        RXCore.doResize(false, 0, 0); /*added for comment list panel */
       }
 
       this._hideLeaderLine();
@@ -339,24 +362,24 @@ export class NotePanelComponent implements OnInit {
 
     this.rxCoreService.guiMarkupList$.subscribe((list = []) => {
       this.createdByFilter = new Set();
-      if (this.activeMarkupNumber > 0){
-        //this.createdByFilterOptions = Object.values(list.filter(i => i.text.length > 0).reduce((options, item) => {
-        this.createdByFilterOptions = Object.values(list.filter((i: any) => i.text.length > 0).reduce((options, item: any) => {
-          if (!options[item.signature]) {
-            options[item.signature] = {
-              value: item.signature,
-              label: RXCore.getDisplayName(item.signature),
-              selected: true
-            };
-            this.createdByFilter.add(item.signature);
-          }
-          return options;
-        }, {}));
-        
-        
-        if (list.length > 0){
-          
-          //this._processList(list);
+      if (this.activeMarkupNumber > 0) {
+        this.createdByFilterOptions = Object.values(
+          list
+            .filter((i: any) => i.text.length > 0)
+            .reduce((options, item: any) => {
+              if (!options[item.signature]) {
+                options[item.signature] = {
+                  value: item.signature,
+                  label: RXCore.getDisplayName(item.signature),
+                  selected: true,
+                };
+                this.createdByFilter.add(item.signature);
+              }
+              return options;
+            }, {})
+        );
+
+        if (list.length > 0) {
           setTimeout(() => {
             list.filter((itm: any) => {
               if (itm.markupnumber === this.activeMarkupNumber) {
@@ -369,116 +392,97 @@ export class NotePanelComponent implements OnInit {
               }
             });
           }, 400);
-
-
-        }else{
+        } else {
           this._processList(list);
-        } 
-
+        }
       }
-      if (list.length > 0 && !this.isHideAnnotation){
+      if (list.length > 0 && !this.isHideAnnotation) {
         setTimeout(() => {
           if (list.find((itm) => itm.getselected()) === undefined)
             this.activeMarkupNumber = -1;
-              //console.log(itm.selected);
 
           this._processList(list);
         }, 250);
-      }else{
+      } else {
         this._processList(list);
       }
-        
-
     });
-
 
     this.rxCoreService.guiPage$.subscribe((state) => {
-      //this.currentPage = state.currentpage;
       if (this.connectorLine) {
-        //RXCore.unSelectAllMarkup();
         this.annotationToolsService.hideQuickActionsMenu();
         this.connectorLine.hide();
         this._hideLeaderLine();
       }
-
     });
 
-
-
-    this.rxCoreService.guiMarkupIndex$.subscribe(({markup, operation}) => {
+    this.rxCoreService.guiMarkupIndex$.subscribe(({ markup, operation }) => {
       this._hideLeaderLine();
 
-      if(operation.modified || operation.created){
+      if (operation.modified || operation.created) {
         this.SetActiveCommentSelect(markup);
       }
 
-      if(operation.created){
-       
+      if (operation.created) {
         this.addTextNote(markup);
       }
-
-
     });
 
-
-    this.rxCoreService.guiMarkup$.subscribe(({markup, operation}) => {
+    this.rxCoreService.guiMarkup$.subscribe(({ markup, operation }) => {
       this._hideLeaderLine();
 
-      if(operation.modified || operation.created){
+      if (operation.modified || operation.created) {
         this.SetActiveCommentSelect(markup);
       }
 
-      if(operation.created){
-       
+      if (operation.created) {
         this.addTextNote(markup);
       }
-
-
     });
 
-    this.guiOnPanUpdatedSubscription = this.rxCoreService.guiOnPanUpdated$.subscribe(({ sx, sy, pagerect }) => {
-      if (this.connectorLine) {
-        //RXCore.unSelectAllMarkup();
-        this.annotationToolsService.hideQuickActionsMenu();
-        this.connectorLine.hide();
+    this.guiOnPanUpdatedSubscription =
+      this.rxCoreService.guiOnPanUpdated$.subscribe(({ sx, sy, pagerect }) => {
+        if (this.connectorLine) {
+          this.annotationToolsService.hideQuickActionsMenu();
+          this.connectorLine.hide();
+          this._hideLeaderLine();
+        }
+      });
+
+    this.guiOnPanUpdatedSubscription =
+      this.rxCoreService.resetLeaderLine$.subscribe((response: boolean) => {
+        if (this.connectorLine) {
+          this.annotationToolsService.hideQuickActionsMenu();
+          this.connectorLine.hide();
+          this._hideLeaderLine();
+        }
+      });
+
+    this.rxCoreService.guiOnMarkupChanged.subscribe(
+      ({ annotation, operation }) => {
         this._hideLeaderLine();
       }
-    });
-
-    this.guiOnPanUpdatedSubscription = this.rxCoreService.resetLeaderLine$.subscribe((response: boolean) => {
-      if (this.connectorLine) {
-        //RXCore.unSelectAllMarkup();
-        this.annotationToolsService.hideQuickActionsMenu();
-        this.connectorLine.hide();
-        this._hideLeaderLine();
-      }
-    });
-
-
-    this.rxCoreService.guiOnMarkupChanged.subscribe(({annotation, operation}) => {
-      //this.visible = false;
-      this._hideLeaderLine();
-    });
-
-
+    );
   }
 
   get isEmpytyList(): boolean {
-    return Object.keys(this.list || {}).length == 0 || this.list[""]?.length == 0;
+    return (
+      Object.keys(this.list || {}).length == 0 || this.list['']?.length == 0
+    );
   }
 
   get isFilterActive(): boolean {
-    return this.filterVisible == true
-    || this.createdByFilterOptions.length != this.createdByFilter.size
-    || this.dateFilter.startDate != undefined
-    || this.dateFilter.endDate != undefined;
+    return (
+      this.filterVisible == true ||
+      this.createdByFilterOptions.length != this.createdByFilter.size ||
+      this.dateFilter.startDate != undefined ||
+      this.dateFilter.endDate != undefined
+    );
   }
 
   onNoteClick(markup: IMarkup): void {
-    //RXCore.unSelectAllMarkup();
     RXCore.selectMarkUpByIndex(markup.markupnumber);
     this.rxCoreService.setGuiMarkupIndex(markup, {});
-    //this._showLeaderLine(markup);
   }
 
   onSearch(event): void {
@@ -494,7 +498,10 @@ export class NotePanelComponent implements OnInit {
     this.createdByFilter = new Set(values);
   }
 
-  onDateSelect(dateRange: { startDate: dayjs.Dayjs, endDate: dayjs.Dayjs }): void {
+  onDateSelect(dateRange: {
+    startDate: dayjs.Dayjs;
+    endDate: dayjs.Dayjs;
+  }): void {
     this.dateFilter = dateRange;
   }
 
@@ -502,7 +509,6 @@ export class NotePanelComponent implements OnInit {
     this.pageNumber = event.value;
     this._processList(this.rxCoreService.getGuiMarkupList());
   }
-
 
   onFilterApply(): void {
     this._processList(this.rxCoreService.getGuiMarkupList());
@@ -513,7 +519,7 @@ export class NotePanelComponent implements OnInit {
     this.visible = false;
     this._hideLeaderLine();
     RXCore.setLayout(0, 0, false);
-    RXCore.doResize(false, 0, 0);/*added for comment list panel */
+    RXCore.doResize(false, 0, 0); /*added for comment list panel */
     this.rxCoreService.setCommentSelected(false);
   }
 
@@ -521,11 +527,10 @@ export class NotePanelComponent implements OnInit {
     this._hideLeaderLine();
   }
 
-  addTextNote(markup : any) : void{
-    if(markup.type == 9 || markup.type == 10){
+  addTextNote(markup: any): void {
+    if (markup.type == 9 || markup.type == 10) {
       this.note[markup.markupnumber] = markup.text;
     }
-
   }
 
   onAddNote(markup: any): void {
@@ -533,38 +538,26 @@ export class NotePanelComponent implements OnInit {
       if (this.noteIndex >= 0) {
         markup.editComment(this.noteIndex, this.note[markup.markupnumber]);
         this.noteIndex = -1;
-      }
-      else {
-        /*const commentsObj = {
-          id: markup.comments.length,
-          signature: markup.signature,
-          value: this.note[markup.markupnumber]
-        };*/
-        markup.AddComment(markup.comments.length, markup.signature, this.note[markup.markupnumber]);
-        //markup.comments.push(commentsObj);
+      } else {
+        markup.AddComment(
+          markup.comments.length,
+          markup.signature,
+          this.note[markup.markupnumber]
+        );
       }
 
-      
-
-      this.note[markup.markupnumber] = "";
-    }
-    else
-      return;
+      this.note[markup.markupnumber] = '';
+    } else return;
   }
 
-
   GetCommentLength(): number {
-
     let noOfComments = 0;
 
     Object.values(this.list || {}).forEach((comment) => {
       noOfComments += comment.length;
     });
     return noOfComments;
-
-    //return Object.keys(this.list || {}).length;
   }
-
 
   OnEditComment(event, markupNo: any, itemNote: any): void {
     event.stopPropagation();
@@ -573,36 +566,28 @@ export class NotePanelComponent implements OnInit {
     this.note[markupNo] = itemNote.value;
   }
 
-
   OnRemoveComment(event, markup: any, id: number, index: number): void {
     event.stopPropagation();
-    
+
     markup.deleteComment(id);
     if (markup.comments.length === 0) {
-      if (this.connectorLine)
-        this.connectorLine.hide();
-      this.markupNoteList = this.markupNoteList.filter(item => { return item !== markup.markupnumber; });
+      if (this.connectorLine) this.connectorLine.hide();
+      this.markupNoteList = this.markupNoteList.filter((item) => {
+        return item !== markup.markupnumber;
+      });
       this._processList(this.rxCoreService.getGuiMarkupList());
     }
     if (index === 0) {
       markup.comments = [];
-      //markup.selected = true;
 
       markup.deleteComment(id);
-      //RXCore.deleteMarkUp();
-
-
     }
   }
 
-
   DrawConnectorLine(startElem, endElem) {
     if (startElem !== null && endElem !== null) {
-      if (this.connectorLine)
-        this.connectorLine.hide();
-      this.connectorLine = new LeaderLine(
-        startElem,
-        endElem, {
+      if (this.connectorLine) this.connectorLine.hide();
+      this.connectorLine = new LeaderLine(startElem, endElem, {
         startPlug: 'square',
         endPlug: 'square',
         endPlugOutline: false,
@@ -610,13 +595,12 @@ export class NotePanelComponent implements OnInit {
         color: '#14ab0a',
         path: 'grid',
         startSocketGravity: 0,
-        animOptions: { duration: 300, timing: 'linear' }
+        animOptions: { duration: 300, timing: 'linear' },
       });
     }
   }
 
-  SetActiveCommentSelect(markup: any){
-
+  SetActiveCommentSelect(markup: any) {
     if (markup.bisTextArrow && markup.textBoxConnected != null) {
       markup = markup.textBoxConnected;
     }
@@ -628,41 +612,24 @@ export class NotePanelComponent implements OnInit {
       //this.onSelectAnnotation(markup);
       this._setPosition(markup);
     }
-
   }
 
   ItemNoteClick(event, markupNo: number, markup: any): void {
-
     console.log(markupNo);
-
   }
 
   SetActiveCommentThread(event, markupNo: number, markup: any): void {
-
-
-
     if (markupNo) {
       this.activeMarkupNumber = markupNo;
       this.onSelectAnnotation(markup);
-      const frame: any = document.getElementById('foxitframe')
-
-
-      /*if (frame && frame.contentWindow) {
-        if (markup.yscaled && Number(markup.yscaled) < 0)
-          frame.contentWindow?.scrollTo(0, markup.yscaled);
-      }*/
 
       setTimeout(() => {
-
-
-
         this._setPosition(markup);
       }, 100);
 
       Object.values(this.list || {}).forEach((comments) => {
         comments.forEach((comment: any) => {
           if (comment.markupnumber === markupNo) {
-            //comment.IsExpanded = true;
             comment.IsExpanded = !comment.IsExpanded;
           }
         });
@@ -671,43 +638,20 @@ export class NotePanelComponent implements OnInit {
     event.preventDefault();
   }
 
-
-  /* SetActiveCommentThread(event, markupNo: number, markup: any): void {
-    if (markupNo) {
-      this.activeMarkupNumber = markupNo;
-      this.onSelectAnnotation(markup);
-      this._setPosition(markup);
-    }
-    event.preventDefault();
-  } */
-
-
   trackByFn(index, item) {
     return item.id;
   }
-
 
   ngOnDestroy(): void {
     this.guiOnPanUpdatedSubscription.unsubscribe();
   }
 
   onSelectAnnotation(markup: any): void {
-    //RXCore.unSelectAllMarkup();
-    //RXCore.selectMarkUp(true);
     RXCore.selectMarkUpByIndex(markup.markupnumber);
-    //markup.selected = true;
     this.rxCoreService.setGuiMarkupIndex(markup, {});
-
   }
 
-
   private _setPosition(markup: any): void {
-    //RXCore.unSelectAllMarkup();
-    //this.rxCoreService.setGuiMarkup(markup, {});
-    //this.lineConnectorNativElement.style.top = (markup.yscaled + (markup.hscaled / 2) - 10) + 'px';
-    //this.lineConnectorNativElement.style.left = (markup.xscaled + markup.wscaled - 5) + 'px';
-    //this.DrawConnectorLine(document.getElementById('note-panel-' + this.activeMarkupNumber), this.lineConnectorNativElement);
-
     if (markup.bisTextArrow && markup.textBoxConnected != null) {
       markup = markup.textBoxConnected;
     }
@@ -717,23 +661,20 @@ export class NotePanelComponent implements OnInit {
       const hscaled = (markup.hscaled || markup.h) / window.devicePixelRatio;
       const xscaled = (markup.xscaled || markup.x) / window.devicePixelRatio;
       const yscaled = (markup.yscaled || markup.y) / window.devicePixelRatio;
-      let rely = yscaled + (hscaled  * 0.5);
-      let absy = yscaled + ((hscaled - yscaled) * 0.5);
+      let rely = yscaled + hscaled * 0.5;
+      let absy = yscaled + (hscaled - yscaled) * 0.5;
 
       let sidepointabs = {
-        x : wscaled,
-        y : absy
-      }
-      
+        x: wscaled,
+        y: absy,
+      };
+
       let sidepointrel = {
-        x : xscaled + wscaled,
-        y : rely
-      }
-      
+        x: xscaled + wscaled,
+        y: rely,
+      };
 
-
-
-      let _dx = window == top ? 0 : - 82;
+      let _dx = window == top ? 0 : -82;
       let _dy = window == top ? 0 : -48;
 
       let dx = 0 + _dx;
@@ -752,37 +693,23 @@ export class NotePanelComponent implements OnInit {
             }
           }
           this.rectangle = {
-            //x: (p.x / window.devicePixelRatio) - (markup.subtype == MARKUP_TYPES.SHAPE.POLYGON.subType ? 26 : 4),
-            //y: (p.y / window.devicePixelRatio) - 16,
-            x : sidepointabs.x,
-            y : sidepointabs.y,
-            //x_1: xscaled + wscaled - 20,
+            x: sidepointabs.x,
+            y: sidepointabs.y,
             x_1: wscaled - 20,
             y_1: yscaled - 20,
           };
           break;
         }
         case MARKUP_TYPES.NOTE.type:
-          dx = (wscaled / 2) - 5 + _dx;
+          dx = wscaled / 2 - 5 + _dx;
           dy = -10 + _dy;
           this.rectangle = {
-            //x: xscaled + dx,
-            //y: yscaled + dy,
-            x : sidepointrel.x,
-            y:  sidepointrel.y,
+            x: sidepointrel.x,
+            y: sidepointrel.y,
             x_1: xscaled + wscaled - 20,
             y_1: yscaled - 20,
           };
           break;
-        /*case MARKUP_TYPES.ERASE.type:
-          dx = ((wscaled - xscaled) / 2) - 5 + _dx;
-          this.rectangle = {
-            x: xscaled + dx,
-            y: yscaled + dy,
-            x_1: xscaled + wscaled - 20,
-            y_1: yscaled - 20,
-          };
-          break;*/
         case MARKUP_TYPES.ARROW.type:
           dx = -26 + _dx;
           this.rectangle = {
@@ -801,12 +728,11 @@ export class NotePanelComponent implements OnInit {
           };
           break;
         default:
-          dx = (wscaled / 2) - 24 + _dx;
+          dx = wscaled / 2 - 24 + _dx;
           this.rectangle = {
-
             /* bugfix 2 */
-            x: xscaled + dx + (wscaled / 2) + 20,
-            y: yscaled + dy + (hscaled / 2) + 10,
+            x: xscaled + dx + wscaled / 2 + 20,
+            y: yscaled + dy + hscaled / 2 + 10,
             //x: xscaled + dx,
             //y: yscaled + dy,
             /* bugfix 2 */
@@ -818,9 +744,9 @@ export class NotePanelComponent implements OnInit {
 
       if (this.rectangle.y < 0) {
         this.rectangle.y += hscaled + 72;
-        this.rectangle.position = "bottom";
+        this.rectangle.position = 'bottom';
       } else {
-        this.rectangle.position = "top";
+        this.rectangle.position = 'top';
       }
 
       if (this.rectangle.x < 0) {
@@ -830,28 +756,21 @@ export class NotePanelComponent implements OnInit {
       if (this.rectangle.x > document.body.offsetWidth - 200) {
         this.rectangle.x = document.body.offsetWidth - 200;
       }
-      /* bugfix 2 */
-      //this.lineConnectorNativElement.style.top = this.rectangle.y + (hscaled / 2) + 10 + 'px';
-      //this.lineConnectorNativElement.style.left = this.rectangle.x + (wscaled / 2) + 20 + 'px';
 
       this.lineConnectorNativElement.style.top = this.rectangle.y + 'px';
       this.lineConnectorNativElement.style.left = this.rectangle.x + 'px';
-      /* bugfix 2 */
 
       this.lineConnectorNativElement.style.position = this.rectangle.position;
-      
-      /* bugfix 2 */
-      //this.DrawConnectorLine(document.getElementById('note-panel-' + this.activeMarkupNumber), this.lineConnectorNativElement);
 
-      const lineConnectorEnd = document.getElementById('note-panel-' + this.activeMarkupNumber);
+      const lineConnectorEnd = document.getElementById(
+        'note-panel-' + this.activeMarkupNumber
+      );
       if (lineConnectorEnd && this.lineConnectorNativElement)
-        this.DrawConnectorLine(document.getElementById('note-panel-' + this.activeMarkupNumber), this.lineConnectorNativElement);
-      /* bugfix 2 */
-
-    }else{
-      //this.onSelectAnnotation(markup);
+        this.DrawConnectorLine(
+          document.getElementById('note-panel-' + this.activeMarkupNumber),
+          this.lineConnectorNativElement
+        );
     }
-
   }
 
   onHideComment(event: any, markupNo: number): void {
@@ -872,10 +791,10 @@ export class NotePanelComponent implements OnInit {
     }
     event.stopPropagation();
   }
-  
+
   @HostListener('scroll', ['$event'])
   scrollHandler(event) {
-    if(event.type == 'scroll'){
+    if (event.type == 'scroll') {
       event.preventDefault();
       if (this.connectorLine) {
         //RXCore.unSelectAllMarkup();
@@ -884,8 +803,42 @@ export class NotePanelComponent implements OnInit {
         this._hideLeaderLine();
         event.stopPropagation();
       }
-  
     }
   }
 
+  toogleStatusMenu(index: number) {
+    if (this.visibleStatusMenuIndex === index) {
+      this.visibleStatusMenuIndex = null;
+    } else {
+      this.visibleStatusMenuIndex = index;
+    }
+    event?.stopPropagation();
+  }
+
+  closeStatusMenu() {
+    this.visibleStatusMenuIndex = null;
+  }
+
+  @HostListener('document:mousedown', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const menus = document.querySelectorAll('.statusMenu');
+    const buttons = document.querySelectorAll('.statusMenuButton');
+
+    let isClickInsideMenu = Array.from(menus).some((menu) =>
+      menu.contains(event.target as Node)
+    );
+    let isClickInsideButton = Array.from(buttons).some((button) =>
+      button.contains(event.target as Node)
+    );
+
+    if (!isClickInsideMenu && !isClickInsideButton) {
+      this.closeStatusMenu();
+    }
+  }
+
+  onSetStatus(markup: any, statusValue: string) {
+    markup.status = statusValue;
+    this.closeStatusMenu();
+    event?.stopPropagation();
+  }
 }

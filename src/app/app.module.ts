@@ -92,6 +92,7 @@ import { SelectComponent } from './components/common/select/select.component';
 import { ThumbnailDirective } from './components/side-nav-menu/insert-modal/thumbnail.directive';
 import { RecentFilesComponent } from './components/recent-files/recent-files.component';
 import { SizeModalComponent } from './components/size-modal/size-modal.component';
+import { CommentStatusIconComponent } from './components/annotation-tools/comment-status-icon/comment-status-icon.component';
 
 
 
@@ -168,7 +169,8 @@ import { SizeModalComponent } from './components/size-modal/size-modal.component
     InsertModalComponent,
     RecentFilesComponent,
     HighlightPipe,
-    SizeModalComponent
+    SizeModalComponent,
+    CommentStatusIconComponent
   ],
   imports: [
     BrowserModule,
