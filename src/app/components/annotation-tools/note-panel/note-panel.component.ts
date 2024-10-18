@@ -25,6 +25,7 @@ export class NotePanelComponent implements OnInit {
   visible: boolean = false;
 
   list: { [key: string]: Array<IMarkup> };
+  annotList: { [key: string]: Array<any> };
   search: string;
   panelwidth: number = 300;
 
@@ -347,6 +348,7 @@ export class NotePanelComponent implements OnInit {
         this.markupNoteList.push(this.activeMarkupNumber);
         this.markupNoteList = [...new Set(this.markupNoteList)];
         let markupList = this.rxCoreService.getGuiMarkupList();
+        
         this._processList(markupList);
         if (Object.values(this.list).length > 0) {
           setTimeout(() => {
@@ -436,6 +438,11 @@ export class NotePanelComponent implements OnInit {
         this._processList(list);
       }
     });
+
+    this.rxCoreService.guiAnnotList$.subscribe((list = []) => {
+      this.annotList = { 'FoxitAnnots': list };
+      console.log(this.annotList);
+    })
 
     this.rxCoreService.guiPage$.subscribe((state) => {
       if (this.connectorLine) {

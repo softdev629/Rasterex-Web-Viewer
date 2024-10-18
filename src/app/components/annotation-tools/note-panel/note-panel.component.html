@@ -70,7 +70,7 @@
         </div>
       </div>
 
-      <div *ngIf="!isEmpytyList; else emptyList" class="list">
+      <div *ngIf="!isEmpytyList || annotList['FoxitAnnots'].length !== 0; else emptyList" class="list">
         <ng-container
           *ngFor="let group of list | keyvalue : sortOrder; trackBy: trackByFn"
         >
@@ -240,6 +240,43 @@
                       [disabled]="!note[item.markupnumber]"
                       (click)="onAddNote(item)"
                     />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container
+          *ngFor="let group of annotList | keyvalue"
+        >
+          <div class="list-item">
+            <h4 class="date">{{ group.key }}</h4>
+            <div
+              *ngFor="let item of group.value"
+              class="note"
+            >
+              <div [id]="'note-panel-' + item.getUniqueID()">
+                <div>
+                  <div class="note-comment-list">
+                    <div class="note-comment">
+                      <div class="item-note">
+                        <div class="item-comment-left">
+                          <div class="comment-img">
+                            {{ item.getType() }}
+                          </div>
+                          <div>
+                            <div class="author">{{ item.getTitle() }}</div>
+                            <div class="comments-date-count">
+                              <div class="date-and-time">
+                                {{ item.getModifiedDateTime() }}
+                              </div>
+                            </div>
+                          </div>
+                          <div style="flex: 1"></div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -121,6 +121,16 @@ export class RxCoreService {
     return this._guiMarkupList.getValue();
   }
 
+  private _guiAnnotList: BehaviorSubject<Array<any>> = new BehaviorSubject<Array<any>>([]);
+  guiAnnotList$: Observable<Array<any>> = this._guiAnnotList.asObservable();
+  public setGuiAnnotList(list: Array<any>): void {
+    
+    this._guiAnnotList.next(list);
+  }
+  public getGuiAnnotList(): Array<any> {
+    return this._guiAnnotList.getValue();
+  }
+
   private _guiTextInput: Subject<{rectangle: any, operation: any}> = new Subject<{rectangle: any, operation: any}>();
   guiTextInput$: Observable<{rectangle, operation}> = this._guiTextInput.asObservable();
   public setGuiTextInput(rectangle, operation): void {

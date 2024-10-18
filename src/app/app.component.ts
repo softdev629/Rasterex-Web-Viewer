@@ -220,7 +220,6 @@ export class AppComponent implements AfterViewInit {
     });
 
     RXCore.onGuiMarkupList(list => {
-      
       this.rxCoreService.setGuiMarkupList(list);
       this.lists = list?.filter(markup => markup.type != MARKUP_TYPES.SIGNATURE.type && markup.subtype != MARKUP_TYPES.SIGNATURE.subType);
       this.lists?.forEach(list => {
@@ -229,6 +228,10 @@ export class AppComponent implements AfterViewInit {
         }, 100);
       });
     });
+
+    RXCore.onFoxitAnnotlist(list => {
+      this.rxCoreService.setGuiAnnotList(list);
+    })
 
     /*RXCore.onGuiMarkupPaths((pathlist) => {
 

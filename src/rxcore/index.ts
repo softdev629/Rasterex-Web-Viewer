@@ -818,6 +818,10 @@ export class RXCore {
         RxCore.GUI_Markuplist.connect(callback);
     }
 
+    public static onFoxitAnnotlist(callback: (list: Array<any>) => void): void {
+        RxCore.GUI_FoxitAnnotlist.connect(callback);
+    }
+
     /*public static onGuiMarkupPaths(callback: (list: Array<any>) => void): void {
         RxCore.GUI_MarkupPaths.connect(callback);
     }*/
